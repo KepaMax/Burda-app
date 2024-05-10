@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "22012870552",
+    "project_id": "tredu-app",
+    "storage_bucket": "tredu-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:22012870552:android:d58ef8fe21e1f7311eb5ed",
+        "android_client_info": {
+          "package_name": "io.tredu.tredu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFFG2rW4LO0POL0CZJAu3_xRD5hAYnG_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -11,7 +11,7 @@ const RegisterSuccess = () => {
     return (
         <>
             <StyledView className="w-full bg-[#7658F2] px-4 py-2">
-                <StyledTouchableOpacity onPress={() => navigation.navigate("MainPage")} className="border-[1px] border-[#BABABA] w-[44px] h-[44px] items-center justify-center rounded-[10px]">
+                <StyledTouchableOpacity onPress={() => navigation.navigate("Home Page")} className="border-[1px] border-[#BABABA] w-[44px] h-[44px] items-center justify-center rounded-[10px]">
                     <LogoIcon />
                 </StyledTouchableOpacity>
             </StyledView>

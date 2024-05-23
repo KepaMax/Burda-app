@@ -260,11 +260,11 @@ const EditProfile = () => {
                         </StyledView>
                         <StyledView>
                             <StyledText className='text-[15px] mb-2 text-[#C0C0BF] font-poppi-medium'>Last name</StyledText>
-                            <StyledTextInput onChange={handleInputChange} placeholder='Surname' placeholderTextColor={"#7A7A7A"} editable={editActive} className={`w-max border-[1px] text-base font-poppi ${editActive ? "text-black" : "text-[#7A7A7A]"} border-[#EDEFF3] rounded-[18px] px-4 py-2`}></StyledTextInput>
+                            <StyledTextInput onChange={handleInputChange} placeholder='Surname' placeholderTextColor={"#7A7A7A"} editable={editActive} className={`w-max border-[1px] h-[45px] text-base font-poppi ${editActive ? "text-black" : "text-[#7A7A7A]"} border-[#EDEFF3] rounded-[18px] px-4 py-2`}></StyledTextInput>
                         </StyledView>
                         <StyledView>
                             <StyledText className='text-[15px] mb-2 text-[#C0C0BF] font-poppi-medium'>Email</StyledText>
-                            <StyledTextInput value={isParent ? formData?.email : data?.user?.email} placeholder='Email' placeholderTextColor={"#7A7A7A"} editable={editActive} className={`w-max border-[1px] text-base font-poppi ${editActive ? "text-black" : "text-[#7A7A7A]"} border-[#EDEFF3] rounded-[18px] px-4 py-2`}></StyledTextInput>
+                            <StyledTextInput value={isParent ? formData?.email : data?.user?.email} placeholder='Email' placeholderTextColor={"#7A7A7A"} editable={editActive} className={`w-max border-[1px] h-[45px] text-base font-poppi ${editActive ? "text-black" : "text-[#7A7A7A]"} border-[#EDEFF3] rounded-[18px] px-4 py-2`}></StyledTextInput>
                         </StyledView>
 
                         <StyledView>
@@ -280,7 +280,7 @@ const EditProfile = () => {
                                         placeholder="Phone number"
                                         placeholderTextColor={"#7A7A7A"}
                                         editable={editActive}
-                                        className={`border-[1px] text-base font-poppi ${editActive ? "text-black" : "text-[#7A7A7A]"} border-[#EDEFF3] rounded-r-[18px] px-4 py-[10px]`}
+                                        className={`border-[1px] h-[45px] text-base font-poppi ${editActive ? "text-black" : "text-[#7A7A7A]"} border-[#EDEFF3] rounded-r-[18px] px-4 py-[10px]`}
                                     />
                                 </StyledView>
                             </StyledView>

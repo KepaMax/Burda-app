@@ -29,6 +29,7 @@ const Rides = ({ items, setModalOpen }) => {
         <StyledView className='border-[1px] items-center p-4 pb-0 border-[#EDEFF3] max-h-[300px] rounded-[18px] '>
             <StyledView className='h-[90%]'>
                 <FlatList
+                    showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ gap: 0 }}
                     data={items}
                     scrollEnabled={false}

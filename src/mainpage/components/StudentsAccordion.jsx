@@ -8,9 +8,11 @@ import PhoneIcon from "../../../assets/icons/phone-home.svg"
 import { useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
 import { Linking } from "react-native";
+import { useTranslation } from "react-i18next";
 
 const StudentsAccordion = ({ items }) => {
     const [activeIndex, setActiveIndex] = useState();
+    const { t } = useTranslation();
     const handlePress = (index) => {
         index === activeIndex ? setActiveIndex(null) : setActiveIndex(index)
     }
@@ -27,7 +29,7 @@ const StudentsAccordion = ({ items }) => {
                         <StyledView className="">
                             <StyledText className="font-poppi-medium text-base text-[#204F50]">{item.firstname} {item.lastname}</StyledText>
                             <StyledTouchableOpacity>
-                                <StyledText className="text-sm text-[#7658F2] font-poppi-semibold">Go to profile</StyledText>
+                                <StyledText className="text-sm text-[#7658F2] font-poppi-semibold">{t("attributes.goToProfile")}</StyledText>
                             </StyledTouchableOpacity>
                         </StyledView>
                     </StyledView>

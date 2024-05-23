@@ -11,6 +11,7 @@ import CreateRideRequest from './components/CreateRideRequest';
 import StudentsAccordion from './components/StudentsAccordion';
 import Rides from './components/Rides';
 import RidesModal from './components/RidesModal';
+import { useTranslation } from 'react-i18next';
 
 const StyledView = styled(View);
 
@@ -21,6 +22,7 @@ const MainPage = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [fetchData, setFetchData] = useState(true);
   const [guestMode, setGuestMode] = useState(null);
+  const {t} = useTranslation();
 
   const onRefresh = () => {
     setFetchData(!fetchData);
@@ -135,9 +137,9 @@ const MainPage = ({ navigation }) => {
     <StyledView className="flex-1 bg-white">
       <MainPageHeader navigation={navigation} />
       <StyledView className="bg-white w-full h-full p-4">
-        <StyledText className="text-lg text-[#204F50] font-poppi-semibold">Today’s ride (To school)</StyledText>
+        <StyledText className="text-lg mb-4 text-[#204F50] font-poppi-semibold">{t("attributes.todaysRideToSchool")}</StyledText>
         <Rides setModalOpen={setRidesModalOpen} items={rides} />
-        <StyledText className="text-lg text-[#204F50] font-poppi-semibold">Student list</StyledText>
+        <StyledText className="text-lg my-4 text-[#204F50] font-poppi-semibold">{t("attributes.studentList")}</StyledText>
         <StudentsAccordion items={students} />
       </StyledView>
       {ridesModalOpen && <RidesModal items={rides} setModalOpen={setRidesModalOpen} />}

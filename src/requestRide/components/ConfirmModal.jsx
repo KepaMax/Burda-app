@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import DocsIcon from "../../../assets/icons/docs-modal.svg"
 import { StyledText, StyledTouchableOpacity, StyledView } from "../../common/components/StyledComponents";
 
 const ConfirmModal = ({ setModalOpen, setSuccessModalOpen }) => {
+    const {t} = useTranslation();
     return (
         <StyledView className="flex-1 items-center justify-center bg-black/20 absolute h-screen w-screen z-50">
             <StyledView
@@ -10,10 +12,10 @@ const ConfirmModal = ({ setModalOpen, setSuccessModalOpen }) => {
                     <DocsIcon />
                 </StyledView>
                 <StyledText className="text-center text-base font-poppi-semibold text-[#414141] my-4">
-                    Are you sure?
+                    {t("attributes.submitRequestTitle")}
                 </StyledText>
                 <StyledText className="text-center text-sm font-serrat text-[#414141]">
-                    Please review the information before submitting
+                {t("attributes.submitRequestDesc")}
                 </StyledText>
                 <StyledView className="flex-row w-full items-center mt-10">
                     <StyledTouchableOpacity
@@ -22,7 +24,7 @@ const ConfirmModal = ({ setModalOpen, setSuccessModalOpen }) => {
                         }}
                         className="py-2 w-[64px] rounded-md">
                         <StyledText className="text-center text-lg font-serrat-medium text-[#757575]">
-                            No
+                        {t("attributes.submitNo")}
                         </StyledText>
                     </StyledTouchableOpacity>
                     <StyledTouchableOpacity
@@ -32,7 +34,7 @@ const ConfirmModal = ({ setModalOpen, setSuccessModalOpen }) => {
                         }}
                         className="py-2 bg-[#7658F2] ml-12 w-[64px] rounded-md">
                         <StyledText className="text-center text-lg text-white font-serrat-medium">
-                            Yes
+                        {t("attributes.submitYes")}
                         </StyledText>
                     </StyledTouchableOpacity>
                 </StyledView>

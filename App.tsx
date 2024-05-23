@@ -35,6 +35,7 @@ import OTP from "./src/otp/OTP";
 import RegisterSuccess from "./src/common/components/RegisterSuccces";
 import ChooseLanguageBottomSheet from "./src/startPage/ChooseLanguageBottomSheet";
 import WelcomeBottomSheet from "./src/startPage/WelcomeBottomSheet";
+import ChildProfile from "./src/ChildProfile/ChildProfile";
 
 function App(): JSX.Element {
   const {
@@ -231,12 +232,13 @@ function App(): JSX.Element {
     { name: "Mikael", surname: "David" },
   ]
   return (
-    <SafeAreaProvider style={{ backgroundColor: "#7658F2" }}>
-      <StatusBar backgroundColor="#7658F2" barStyle="light-content" />
-      <NavigationContainer linking={linking}>
-        <NavigationMenu />
-      </NavigationContainer>
-    </SafeAreaProvider>
+    // <SafeAreaProvider style={{ backgroundColor: "#7658F2" }}>
+    //   <StatusBar backgroundColor="#7658F2" barStyle="light-content" />
+    //   <NavigationContainer linking={linking}>
+    //     <NavigationMenu />
+    //   </NavigationContainer>
+    // </SafeAreaProvider>
+    <WelcomeBottomSheet />
   );
 }
 

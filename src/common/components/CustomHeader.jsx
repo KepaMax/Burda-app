@@ -38,23 +38,13 @@ const CustomHeader = ({ title, noBackBtn, share, url, bg }) => {
     <StyledView className={`w-full bg-[#7658F2]  items-center`}>
       <StyledView className="w-11/12 items-center justify-center flex-row relative">
         {noBackBtn ? null : (
-          <StyledTouchableOpacity onPress={()=>navigation.goBack()} className="absolute left-0">
+          <StyledTouchableOpacity hitSlop={{ top: 50, right: 50, bottom: 50, left: 50 }} onPress={()=>navigation.goBack()} className="absolute left-0">
             <ArrowLeftIcon />
           </StyledTouchableOpacity>
         )}
         <StyledText className="text-white font-poppi-medium text-lg pb-5 pt-6">
           {title}
         </StyledText>
-        {share && (
-          <StyledView className="absolute right-0 top-5 w-[36px] h-[36px] bg-white rounded-full items-center justify-center shadow shadow-zinc-300">
-            <TouchableOpacity
-              onPress={onShare}
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-            >
-              <ShareIcon />
-            </TouchableOpacity>
-          </StyledView>
-        )}
       </StyledView>
     </StyledView>
   );

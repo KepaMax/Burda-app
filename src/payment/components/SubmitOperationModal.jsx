@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import DocsIcon from "../../../assets/icons/docs-modal.svg"
 import { StyledText, StyledTouchableOpacity, StyledView } from "../../common/components/StyledComponents";
 
 const SubmitOperationModal = ({ setModalOpen, text }) => {
+    const {t} = useTranslation();
     return (
         <StyledView className="flex-1 items-center justify-center bg-black/20 absolute h-screen w-screen z-50">
             <StyledView
@@ -19,13 +21,13 @@ const SubmitOperationModal = ({ setModalOpen, text }) => {
                         }}
                         className="py-2 w-[64px] rounded-md">
                         <StyledText className="text-center text-lg font-serrat-medium text-[#757575]">
-                            No
+                            {t("attributes.submitNo")}
                         </StyledText>
                     </StyledTouchableOpacity>
                     <StyledTouchableOpacity
                         className="py-2 bg-[#7658F2] ml-12 w-[64px] rounded-md">
                         <StyledText className="text-center text-lg text-white font-serrat-medium">
-                            Yes
+                        {t("attributes.submitYes")}
                         </StyledText>
                     </StyledTouchableOpacity>
                 </StyledView>

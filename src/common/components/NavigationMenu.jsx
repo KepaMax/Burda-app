@@ -29,13 +29,12 @@ import Logo from "../../../assets/icons/logo-home.svg";
 import Animated, { FadeOut } from "react-native-reanimated";
 import { Platform, TouchableOpacity, Dimensions } from "react-native";
 import Languages from "../../settings/components/Languages";
-import ResetPassword from "../../resetPassword/ResetPassword";
-import Onboarding from "../../onboarding/Onboarding";
-import ParentProfile from "../../editProfile/EditProfile";
+import ResetPassword from "../../resetPassword/ResetPassword"
 import FAQ from "../../FAQ/FAQ";
+import Payments from "../../profile/MyCards";
 import SubscriptionHistory from "../../subscriptionHistory/SubscriptionHistory";
 import RequesRide from "../../requestRide/RequesRide";
-import UserIcon from "../../../assets/icons/user-menu.svg"
+import UserIcon from "../../../assets/icons/user-menu.svg";
 import HomeAddress from "../../requestRide/HomeAddress";
 import ChildrenSubscription from "../../subscriptionPlan/ChildrenSubscription";
 import SubscriptionPayment from "../../subscriptionPlan/SubscriptionPayment";
@@ -46,6 +45,8 @@ import RegisterSuccess from "./RegisterSuccces";
 import WelcomeBottomSheet from "../../startPage/WelcomeBottomSheet";
 import ChooseLanguageBottomSheet from "../../startPage/ChooseLanguageBottomSheet";
 import CustomHeader from "./CustomHeader";
+import CancelSubscription from "../../subscriptionPlan/CancelSubscription";
+import EditProfile from "../../editProfile/EditProfile";
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -108,7 +109,7 @@ const NavigationMenu = () => {
       <SubscriptionStack.Screen
         options={{
           header: () => (
-            <CustomHeader title={t("Subscription Plan")} />
+            <CustomHeader title={t("attributes.subscriptionPlan")} />
           ),
         }}
         name="ChildrenSubscription"
@@ -117,7 +118,16 @@ const NavigationMenu = () => {
       <SubscriptionStack.Screen
         options={{
           header: () => (
-            <CustomHeader title={t("Subscription Plan")} />
+            <CustomHeader title={t("attributes.subscriptionPlan")} />
+          ),
+        }}
+        name="CancelSubscription"
+        component={CancelSubscription}
+      />
+      <SubscriptionStack.Screen
+        options={{
+          header: () => (
+            <CustomHeader title={t("attributes.subscriptionPlan")} />
           ),
         }}
         name="SubscriptionPayment"
@@ -125,47 +135,39 @@ const NavigationMenu = () => {
       />
       <SubscriptionStack.Screen
         options={{
-          header: () => (
-            <CustomHeader title={t("Payment")} />
-          ),
+          header: () => <CustomHeader title={t("attributes.payments")} />,
         }}
         name="AddCard"
         component={AddCard}
       />
       <SubscriptionStack.Screen
         options={{
-          header: () => (
-            <CustomHeader title={t("Payment")} />
-          ),
+          header: () => <CustomHeader title={t("Payment")} />,
         }}
         name="ManageCards"
         component={ManageCards}
       />
     </SubscriptionStack.Navigator>
-  )
+  );
 
   const RequestRideStackScreen = () => (
     <RequestRideStack.Navigator>
       <RequestRideStack.Screen
         options={{
-          header: () => (
-            <CustomHeader title={t("Request Ride")} />
-          ),
+          header: () => <CustomHeader title={t("attributes.requestRide")} />,
         }}
         name="RequestRide"
         component={RequesRide}
       />
       <RequestRideStack.Screen
         options={{
-          header: () => (
-            <CustomHeader title={t("Home Address")} />
-          ),
+          header: () => <CustomHeader title={t("attributes.homeAddress")} />,
         }}
         name="HomeAddress"
         component={HomeAddress}
       />
     </RequestRideStack.Navigator>
-  )
+  );
 
   const HomeTabScreen = () => {
     return (
@@ -278,17 +280,27 @@ const NavigationMenu = () => {
         />
         <HomeStack.Screen
           options={{
-            headerShown: false
+            headerShown: false,
           }}
           name="RequestRide"
           component={RequestRideStackScreen}
         />
+
         <HomeStack.Screen
           options={{
-            headerShown: false
+            headerShown: false,
           }}
           name="Success"
           component={RegisterSuccess}
+        />
+        <HomeStack.Screen
+          options={{
+            header: () => (
+              <CustomHeader title={t("attributes.subscriptionPlan")} />
+            ),
+          }}
+          name="CancelSubscription"
+          component={CancelSubscription}
         />
       </HomeStack.Navigator>
     );
@@ -304,33 +316,41 @@ const NavigationMenu = () => {
         />
         <ProfileStack.Screen
           options={{
-            header: () => <CustomHeader title="Subscription History" />,
+            header: () => <CustomHeader title={t("attributes.payments")} />,
+          }}
+          name="Payment"
+          component={Payments}
+        />
+        <ProfileStack.Screen
+          options={{
+            header: () => (
+              <CustomHeader title={t("attributes.subscriptionHistory")} />
+            ),
           }}
           name="SubscriptionHistory"
           component={SubscriptionHistory}
         />
         <ProfileStack.Screen
           options={{
-            headerShown: false
+            headerShown: false,
           }}
-          name="SubscriptionPlan"
+          name="SubscriptionStack"
           component={SubscriptionStackScreen}
         />
         <ProfileStack.Screen
           options={{
-            header: () => <CustomHeader title="Profile" />,
-          }}
-          name="ParentProfile"
-          component={ParentProfile}
-        />
-        <ProfileStack.Screen
-          options={{
-            header: () => <CustomHeader title="Profile" />,
+            header: () => <CustomHeader title="FAQ" />,
           }}
           name="FAQ"
           component={FAQ}
         />
-        
+         <ProfileStack.Screen
+          options={{
+            header: () => <CustomHeader title={t("attributes.profile")} />,
+          }}
+          name="EditProfile"
+          component={EditProfile}
+        />
         <ProfileStack.Screen
           options={{
             header: () => (
@@ -342,9 +362,7 @@ const NavigationMenu = () => {
         />
         <ProfileStack.Screen
           options={{
-            header: () => (
-              <CustomHeader title={t("attributes.Settings")} />
-            ),
+            header: () => <CustomHeader title={t("attributes.Settings")} />,
           }}
           name="Languages"
           component={Languages}
@@ -398,91 +416,85 @@ const NavigationMenu = () => {
         component={Tracking}
       />
     </TrackingStack.Navigator>
-  )
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["right", "top", "left"]}>
       {renderCompleted ? (
         <>
           {connected === true ? (
-            !loggedInBefore ? (
-              <Onboarding />
-            ) : (
-              <MainStack.Navigator initialRouteName="MainstackTab">
-                <MainStack.Screen
-                  options={{ headerShown: false, animationEnabled: false }}
-                  name="MainstackTab"
-                  component={HomeTabScreen}
-                />
-                <MainStack.Screen
-                  options={{ headerShown: false, animationEnabled: false }}
-                  name="TrackingScreen"
-                  component={TrackingStackScreen}
-                />
-                <MainStack.Screen
-                  options={{
-                    header: () => <CustomHeader title={t("attributes.signIn")} />,
-                  }}
-                  name="SignIn"
-                  component={SignIn}
-                />
-                <MainStack.Screen
-                  options={{
-                    header: () => (
-                      <CustomHeader title={t("attributes.Settings")} />
-                    ),
-                  }}
-                  name="SettingsSignIn"
-                  component={Settings}
-                />
-                <MainStack.Screen
-                  options={{
-                    headerShown: false
-                  }}
-                  name="LanguagesSignIn"
-                  component={ChooseLanguageBottomSheet}
-                />
-                <MainStack.Screen
-                  options={{
-                    headerShown: false
-                  }}
-                  name="Welcome"
-                  component={WelcomeBottomSheet}
-                />
-                <MainStack.Screen
-                  options={{
-                    header: () => (
-                      <CustomHeader
-                        title={t("attributes.termsAndConditions")}
-                      />
-                    ),
-                  }}
-                  name="TermsAndConditionsSignup"
-                  component={TermsAndConditionsSignup}
-                />
-                <MainStack.Screen
-                  options={{
-                    header: () => (
-                      <CustomHeader title={t("attributes.privacyPolicy")} />
-                    ),
-                  }}
-                  name="PrivacyPolicySignup"
-                  component={PrivacyPolicySignup}
-                />
-                <MainStack.Screen
-                  options={{ headerShown: false }}
-                  name="ForgotPassword"
-                  component={ForgotPassword}
-                />
-                <MainStack.Screen
-                  options={{
-                    header: () => <CustomHeader title={t("attributes.singUp")} />,
-                  }}
-                  name="SignUp"
-                  component={SignUp}
-                />
-              </MainStack.Navigator>
-            )
+            <MainStack.Navigator initialRouteName="MainstackTab">
+              <MainStack.Screen
+                options={{ headerShown: false, animationEnabled: false }}
+                name="MainstackTab"
+                component={HomeTabScreen}
+              />
+              <MainStack.Screen
+                options={{ headerShown: false, animationEnabled: false }}
+                name="TrackingScreen"
+                component={TrackingStackScreen}
+              />
+              <MainStack.Screen
+                options={{
+                  header: () => <CustomHeader title={t("attributes.registerSignin")} />,
+                }}
+                name="SignIn"
+                component={SignIn}
+              />
+              <MainStack.Screen
+                options={{
+                  header: () => (
+                    <CustomHeader title={t("attributes.Settings")} />
+                  ),
+                }}
+                name="SettingsSignIn"
+                component={Settings}
+              />
+              <MainStack.Screen
+                options={{
+                  headerShown: false,
+                }}
+                name="LanguagesSignIn"
+                component={ChooseLanguageBottomSheet}
+              />
+              <MainStack.Screen
+                options={{
+                  headerShown: false,
+                }}
+                name="Welcome"
+                component={WelcomeBottomSheet}
+              />
+              <MainStack.Screen
+                options={{
+                  header: () => (
+                    <CustomHeader title={t("attributes.termsAndConditions")} />
+                  ),
+                }}
+                name="TermsAndConditionsSignup"
+                component={TermsAndConditionsSignup}
+              />
+              <MainStack.Screen
+                options={{
+                  header: () => (
+                    <CustomHeader title={t("attributes.privacyPolicy")} />
+                  ),
+                }}
+                name="PrivacyPolicySignup"
+                component={PrivacyPolicySignup}
+              />
+              <MainStack.Screen
+                options={{ headerShown: false }}
+                name="ForgotPassword"
+                component={ForgotPassword}
+              />
+              <MainStack.Screen
+                options={{
+                  header: () => <CustomHeader title={t("attributes.signUp")} />,
+                }}
+                name="SignUp"
+                component={SignUp}
+              />
+            </MainStack.Navigator>
           ) : connected === false ? (
             <NoInternet />
           ) : null}

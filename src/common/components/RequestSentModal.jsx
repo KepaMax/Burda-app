@@ -1,8 +1,10 @@
 import { StyledText, StyledTouchableOpacity, StyledView } from './StyledComponents';
 import AcceptedIcon from "../../../assets/icons/accepted-modal.svg"
 import CancelIcon from "../../../assets/icons/cancel-modal.svg"
+import { useTranslation } from 'react-i18next';
 
 const RequestSentModal = ({ setModalOpen, description }) => {
+    const {t} = useTranslation();
     return (
         <StyledView className="items-center justify-center bg-black/20 absolute top-0 h-full w-full z-50">
 
@@ -13,7 +15,7 @@ const RequestSentModal = ({ setModalOpen, description }) => {
                 </StyledTouchableOpacity>
                 <AcceptedIcon />
                 <StyledText className="text-center text-base font-poppi-semibold text-[#414141] my-4">
-                    Your request has been sent
+                    {t("attributes.requestSent")}
                 </StyledText>
                 <StyledText className="text-center text-sm font-serrat text-[#414141]">
                     {description}

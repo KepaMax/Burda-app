@@ -67,7 +67,7 @@ const Profile = () => {
             <StyledView hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
               <StyledView className="relative">
                 <StyledTouchableOpacity onPress={() => {
-                  navigation.navigate('ParentProfile', {
+                  navigation.navigate('EditProfile', {
                     triggerParent: triggerParent,
                     setTriggerParent: setTriggerParent,
                   });

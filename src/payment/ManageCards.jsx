@@ -1,17 +1,15 @@
 import { StyledText, StyledTouchableOpacity, StyledView } from '../common/components/StyledComponents'
 import VisaIcon from "../../assets/icons/visa-payment.svg"
 import MasterCardIcon from "../../assets/icons/mastercard-payment.svg"
-import DeleteCardIcon from "../../assets/icons/delete-card-payment.svg"
 import { FlatList } from 'react-native'
 import { useState } from 'react'
-import WarningModal from '../common/components/WarningModal'
 import { useNavigation } from '@react-navigation/native'
+import { useTranslation } from 'react-i18next'
 
 const ManageCards = () => {
     const navigation = useNavigation()
-
+    const { t } = useTranslation();
     const [selectedCard, setSelectedCard] = useState();
-    const [deleteCardOpen, setDeleteCardOpen] = useState(false);
 
     const cardData = [
         {
@@ -40,7 +38,7 @@ const ManageCards = () => {
         <>
             <StyledView className='flex-1 justify-between bg-white p-4'>
                 <StyledView className='gap-2'>
-                    <StyledText className='text-[#204F50] font-poppi-bold text-xl'>Payment details</StyledText>
+                    <StyledText className='text-[#204F50] font-poppi-bold text-xl'>{t("attributes.paymentDetails")}</StyledText>
                     <StyledText className='text-[#868782] font-poppi text-sm'>Amet minim mollit Amet minim mollit </StyledText>
                     <StyledView>
                         <FlatList
@@ -51,12 +49,12 @@ const ManageCards = () => {
                         />
                     </StyledView>
                     <StyledTouchableOpacity onPress={() => navigation.navigate("AddCard")}>
-                        <StyledText className='text-[#7658F2] mt-2 font-poppi-semibold text-base'>+ Add new card</StyledText>
+                        <StyledText className='text-[#7658F2] mt-2 font-poppi-semibold text-base'>+ {t("attributes.addNewCard")}</StyledText>
                     </StyledTouchableOpacity>
 
                 </StyledView>
                 <StyledTouchableOpacity onPress={() => navigation.goBack()} className='rounded-[18px] bg-[#76F5A4] p-[10px] items-center'>
-                    <StyledText className='text-base text-[#204F50] font-poppi-semibold'>Confirm</StyledText>
+                    <StyledText className='text-base text-[#204F50] font-poppi-semibold'>{t("attributes.mainCheckoutConfirm")}</StyledText>
                 </StyledTouchableOpacity>
             </StyledView>
         </>

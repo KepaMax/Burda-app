@@ -2,9 +2,11 @@ import { FlatList } from 'react-native'
 import { StyledText, StyledTouchableOpacity, StyledView } from '../common/components/StyledComponents'
 import ArrowRightIcon from "../../assets/icons/arrow-right-profile.svg"
 import { useNavigation } from '@react-navigation/native'
+import { useTranslation } from 'react-i18next'
 
 const ChildrenSubscription = () => {
     const navigation = useNavigation();
+    const { t } = useTranslation();
     const data = [
         { name: "Mikael", surname: "David" },
         { name: "Mikael", surname: "David" },
@@ -21,7 +23,7 @@ const ChildrenSubscription = () => {
 
     return (
         <StyledView className='flex-1 bg-white gap-4 p-4'>
-            <StyledText className='text-[#204F50] text-base font-poppi-semibold'>Students</StyledText>
+            <StyledText className='text-[#204F50] text-base font-poppi-semibold'>{t("attributes.students")}</StyledText>
             <FlatList
                 contentContainerStyle={{ gap: 16 }}
                 data={data}

@@ -52,8 +52,8 @@ const Languages = () => {
         </StyledTouchableOpacity>
 
         <StyledTouchableOpacity onPress={() => {
-          i18n.changeLanguage("rus");
-          setLanguage("rus");
+          i18n.changeLanguage("ru");
+          setLanguage("ru");
           navigation.goBack();
         }}>
           <StyledView className="items-center flex-row justify-between border-[1px] rounded-[18px] border-[#EDEFF3] w-full p-4 pr-6">
@@ -64,7 +64,7 @@ const Languages = () => {
                 Русский
               </StyledText>
             </StyledView>
-            {lang === 'rus' && <ActiveIcon />}
+            {lang === 'ru' && <ActiveIcon />}
           </StyledView>
         </StyledTouchableOpacity>
 

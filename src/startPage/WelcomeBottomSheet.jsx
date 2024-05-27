@@ -16,7 +16,7 @@ import LoginBg from "../assets/images/loginBg.png";
 const WelcomeBottomSheet = () => {
   const bottomSheetRef = useRef(null);
   const [registerType, setRegisterType] = useState("");
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
   const snapPoints = useMemo(() => ["45%", "60%"], []);
   const { t } = useTranslation();
 

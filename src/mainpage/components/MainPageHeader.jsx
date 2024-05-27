@@ -21,9 +21,9 @@ const MainPageHeader = () => {
 
   return (
     <StyledView className=" px-4 py-2 flex-row justify-between bg-[#7658F2]">
-      <StyledTouchableOpacity className="border-[1px] border-[#BABABA] w-[44px] h-[44px] items-center justify-center rounded-[10px]">
+      <StyledView className="border-[1px] border-[#BABABA] w-[44px] h-[44px] items-center justify-center rounded-[10px]">
         <LogoHomeIcon />
-      </StyledTouchableOpacity>
+      </StyledView>
 
       <StyledView className="flex-row gap-[16px]">
         <StyledTouchableOpacity onPress={() => navigation.navigate("Notifications")} className="border-[1px] bg-white border-[#EDEFF3] w-[40px] h-[40px] items-center justify-center rounded-full">

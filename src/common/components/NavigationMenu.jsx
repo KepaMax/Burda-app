@@ -47,6 +47,7 @@ import ChooseLanguageBottomSheet from "../../startPage/ChooseLanguageBottomSheet
 import CustomHeader from "./CustomHeader";
 import CancelSubscription from "../../subscriptionPlan/CancelSubscription";
 import EditProfile from "../../editProfile/EditProfile";
+import ChildProfile from "../../ChildProfile/ChildProfile";
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -270,6 +271,11 @@ const NavigationMenu = () => {
           options={{ headerShown: false }}
           name="Home Page"
           component={MainPage}
+        />
+         <HomeStack.Screen
+          options={{ headerShown: false }}
+          name="ChildProfile"
+          component={ChildProfile}
         />
         <HomeStack.Screen
           options={{

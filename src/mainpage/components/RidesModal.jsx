@@ -30,7 +30,7 @@ const RidesModal = ({ items, setModalOpen }) => {
     return (
         <StyledView className="items-center justify-center bg-black/20 px-4 absolute h-full w-full z-50">
             <StyledView className=' w-full h-[560px] bg-white rounded-[18px] relative border-[1px] border-[#EDEFF3] p-4'>
-                <StyledTouchableOpacity onPress={() => setModalOpen(false)} className='absolute right-6 z-50 top-6'>
+                <StyledTouchableOpacity onPress={() => setModalOpen(false)} hitSlop={{ right: 40, left: 40, top: 40, bottom: 40 }} className='absolute right-6 z-50 top-6'>
                     <CloseIcon />
                 </StyledTouchableOpacity>
                 <FlatList

@@ -52,15 +52,15 @@ const ChildProfile = () => {
                     </StyledTouchableOpacity>
                 </StyledView>
                 <StyledText className='text-[15px] font-poppi-medium text-[#C0C0BF]'>{t("attributes.profileEmail")}</StyledText>
-                <StyledText className='border-[1px] text-base font-poppi border-[#EDEFF3] rounded-[18px] px-4 py-2 my-1'>2school@gmail.com</StyledText>
+                <StyledText className='border-[1px] text-black text-base font-poppi border-[#EDEFF3] rounded-[18px] px-4 py-2 my-1'>2school@gmail.com</StyledText>
                 <StyledText className='text-[15px] font-poppi-medium text-[#C0C0BF]'>{t("attributes.profileBirthDate")}</StyledText>
-                <StyledText className='border-[1px] text-base font-poppi border-[#EDEFF3] rounded-[18px] px-4 py-2 my-1'>{format(new Date(), "dd/MM/yyyy")}</StyledText>
+                <StyledText className='border-[1px] text-black text-base font-poppi border-[#EDEFF3] rounded-[18px] px-4 py-2 my-1'>{format(new Date(), "dd/MM/yyyy")}</StyledText>
                 <StyledText className='text-[15px] font-poppi-medium text-[#C0C0BF]'>{t("attributes.homeAddress")}</StyledText>
-                <StyledText className='border-[1px] text-base font-poppi border-[#EDEFF3] rounded-[18px] px-4 py-2 my-1'>Uzeyir Hajibeyov 57</StyledText>
+                <StyledText className='border-[1px] text-black text-base font-poppi border-[#EDEFF3] rounded-[18px] px-4 py-2 my-1'>Uzeyir Hajibeyov 57</StyledText>
                 <StyledText className='text-[15px] font-poppi-medium text-[#C0C0BF]'>{t("attributes.profileSchool")}</StyledText>
-                <StyledText className='border-[1px] text-base font-poppi border-[#EDEFF3] rounded-[18px] px-4 py-2 my-1'>Gymnasium №27</StyledText>
+                <StyledText className='border-[1px] text-black text-base font-poppi border-[#EDEFF3] rounded-[18px] px-4 py-2 my-1'>Gymnasium №27</StyledText>
                 <StyledText className='text-[15px] font-poppi-medium text-[#C0C0BF]'>{t("attributes.profileSpecificComment")}</StyledText>
-                <StyledText className='border-[1px] text-base min-h-[125px] font-poppi border-[#EDEFF3] rounded-[18px] px-4 py-2 my-1'>lorem ipsum</StyledText>
+                <StyledText className='border-[1px] text-black text-base min-h-[125px] font-poppi border-[#EDEFF3] rounded-[18px] px-4 py-2 my-1'>lorem ipsum</StyledText>
             </ScrollView >
         </StyledView>
     )

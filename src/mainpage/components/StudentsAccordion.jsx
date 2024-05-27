@@ -5,14 +5,18 @@ import ArrowDownIcon from "../../../assets/icons/arrow-down-faq.svg"
 import AcceptIcon from "../../../assets/icons/accept-home.svg"
 import CancelIcon from "../../../assets/icons/cancel-home.svg"
 import PhoneIcon from "../../../assets/icons/phone-home.svg"
+import MessageIcon from "../../../assets/icons/message-student.svg"
 import { useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
 import { Linking } from "react-native";
 import { useTranslation } from "react-i18next";
+import { useNavigation } from "@react-navigation/native";
 
 const StudentsAccordion = ({ items }) => {
     const [activeIndex, setActiveIndex] = useState();
     const { t } = useTranslation();
+    const isNanny = false;
+    const navigation = useNavigation();
     const handlePress = (index) => {
         index === activeIndex ? setActiveIndex(null) : setActiveIndex(index)
     }
@@ -28,7 +32,7 @@ const StudentsAccordion = ({ items }) => {
                         />
                         <StyledView className="">
                             <StyledText className="font-poppi-medium text-base text-[#204F50]">{item.firstname} {item.lastname}</StyledText>
-                            <StyledTouchableOpacity>
+                            <StyledTouchableOpacity onPress={() => navigation.navigate("ChildProfile")}>
                                 <StyledText className="text-sm text-[#7658F2] font-poppi-semibold">{t("attributes.goToProfile")}</StyledText>
                             </StyledTouchableOpacity>
                         </StyledView>
@@ -38,15 +42,18 @@ const StudentsAccordion = ({ items }) => {
                 {index === activeIndex &&
                     <StyledView className=" mt-4">
                         <StyledView className="flex-row justify-center border-t-[1px] border-[#EFEFEF]">
-                            <StyledTouchableOpacity className="mx-10 mt-4">
+                            <StyledTouchableOpacity className={`${isNanny? "mx-4":"mx-8"} mt-4`}>
                                 <AcceptIcon />
                             </StyledTouchableOpacity >
-                            <StyledTouchableOpacity className="mx-10 mt-4">
+                            <StyledTouchableOpacity className={`${isNanny? "mx-4":"mx-8"} mt-4`}>
                                 <CancelIcon />
                             </StyledTouchableOpacity>
+                            {isNanny && <StyledTouchableOpacity className="mx-4 mt-4">
+                                <MessageIcon />
+                            </StyledTouchableOpacity>}
                             <StyledTouchableOpacity onPress={() => {
                                 Linking.openURL(item.phone)
-                            }} className="mx-10 mt-4">
+                            }} className={`${isNanny? "mx-4":"mx-8"} mt-4`}>
                                 <PhoneIcon />
                             </StyledTouchableOpacity>
                         </StyledView>

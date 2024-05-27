@@ -232,13 +232,12 @@ function App(): JSX.Element {
     { name: "Mikael", surname: "David" },
   ]
   return (
-    // <SafeAreaProvider style={{ backgroundColor: "#7658F2" }}>
-    //   <StatusBar backgroundColor="#7658F2" barStyle="light-content" />
-    //   <NavigationContainer linking={linking}>
-    //     <NavigationMenu />
-    //   </NavigationContainer>
-    // </SafeAreaProvider>
-    <WelcomeBottomSheet />
+    <SafeAreaProvider style={{ backgroundColor: "#7658F2" }}>
+      <StatusBar backgroundColor="#7658F2" barStyle="light-content" />
+      <NavigationContainer linking={linking}>
+        <NavigationMenu />
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
 

@@ -15,7 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 const StudentsAccordion = ({ items }) => {
     const [activeIndex, setActiveIndex] = useState();
     const { t } = useTranslation();
-    const isNanny = false;
+    const isNanny = true;
     const navigation = useNavigation();
     const handlePress = (index) => {
         index === activeIndex ? setActiveIndex(null) : setActiveIndex(index)

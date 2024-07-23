@@ -5,114 +5,110 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+// @ts-nocheck
+import 'react-native-gesture-handler';
+import Navigation from '@stacks/Navigation';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {useEffect} from 'react';
+import {StatusBar, PermissionsAndroid} from 'react-native';
+import {useTranslation} from 'react-i18next';
+import {storage} from './src/utils/MMKVStore';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+function App(): JSX.Element {
+  const {i18n} = useTranslation();
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+  useEffect(() => {
+    // const getLocationRequest = async () => {
+    //   try {
+    //     const granted = await PermissionsAndroid.request(
+    //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    //       {
+    //         title: '2School',
+    //         message: '2School access to your location ',
+    //       },
+    //     );
+    //   } catch (err) {
+    //     console.warn(err);
+    //   }
+    // };
+    // getLocationRequest();
+  }, []);
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
+  const linking = {
+    prefixes: ['treduapp://'],
+    config: {
+      initialRouteName: 'MainstackTab',
+      screens: {
+        MainstackTab: {
+          screens: {
+            Home: {
+              path: 'homepage/',
+              screens: {
+                CourseDetails: {
+                  path: 'courses/:id',
+                },
+                CourseClassDetails: {
+                  path: 'course-classes/:id',
+                },
+                InstructorDetails: {
+                  path: 'instructors/:id',
+                },
+                PartnerNetwork: {
+                  path: 'partner-networks/:id',
+                },
+                LastClasses: {
+                  path: 'limited-offers/',
+                },
+                Checkout: {
+                  path: 'checkout/:params',
+                },
+                PopularCourses: {
+                  path: 'popular-courses/:category?',
+                },
+                TopInstructors: {
+                  path: 'top-instructors/',
+                },
+                TopPartnerNetworks: {
+                  path: 'top-partner-networks/',
+                },
+              },
+            },
+            Activities: {
+              path: 'activities/',
+            },
+            QR: {
+              path: 'qr/',
+            },
+            Account: {
+              path: 'account/',
+            },
+            Search: {
+              path: 'search/',
+            },
           },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+        },
+      },
+    },
   };
 
+  useEffect(() => {
+    const refreshTokens = async () => {};
+
+    const currentLanguage = async () => {
+      const selectedLanguage = storage.getString('selectedLanguage');
+      if (selectedLanguage) {
+        i18n.changeLanguage(selectedLanguage);
+      }
+    };
+    currentLanguage();
+  }, []);
+
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <SafeAreaProvider style={{flex: 1, backgroundColor: '#7658F2'}}>
+      <StatusBar backgroundColor="#7658F2" barStyle="light-content" />
+      <Navigation />
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;

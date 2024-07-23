@@ -9,9 +9,50 @@
     "start": "react-native start",
     "test": "jest"
   },
+  "reactNativePermissionsIOS": [
+    "PhotoLibrary",
+    "LocationWhenInUse"
+  ],
   "dependencies": {
+    "@gorhom/bottom-sheet": "^4.6.1",
+    "@react-native-community/geolocation": "^3.2.1",
+    "@react-native-community/masked-view": "^0.1.11",
+    "@react-native-community/netinfo": "^9.5.0",
+    "@react-navigation/bottom-tabs": "^6.6.0",
+    "@react-navigation/native": "^6.1.17",
+    "@react-navigation/stack": "^6.4.0",
+    "date-fns": "^2.30.0",
+    "i18next": "^23.4.6",
+    "nativewind": "^2.0.11",
+    "pod-install": "^0.1.38",
     "react": "18.2.0",
-    "react-native": "0.74.3"
+    "react-i18next": "^13.2.0",
+    "react-native": "0.74.3",
+    "react-native-blob-util": "^0.19.1",
+    "react-native-calendars": "^1.1305.0",
+    "react-native-date-picker": "^5.0.2",
+    "react-native-debounce-input": "^1.0.5",
+    "react-native-email-link": "^1.14.8",
+    "react-native-fast-image": "^8.6.3",
+    "react-native-fs": "^2.20.0",
+    "react-native-geocoding": "^0.5.0",
+    "react-native-gesture-handler": "^2.14.0",
+    "react-native-google-places-autocomplete": "^2.5.6",
+    "react-native-image-picker": "^5.6.0",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-keychain": "^8.1.1",
+    "react-native-maps": "^1.15.6",
+    "react-native-maps-directions": "^1.9.0",
+    "react-native-mmkv": "^2.12.2",
+    "react-native-otp-entry": "^1.6.1",
+    "react-native-permissions": "3.6.1",
+    "react-native-reanimated": "^3.6.1",
+    "react-native-rename": "^3.2.13",
+    "react-native-safe-area-context": "^4.8.0",
+    "react-native-screens": "^3.29.0",
+    "react-native-svg": "^13.9.0",
+    "react-native-walkthrough-tooltip": "^1.6.0",
+    "react-native-webview": "^13.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
@@ -24,13 +65,20 @@
     "@types/react": "^18.2.6",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.6.3",
+    "babel-plugin-module-resolver": "^5.0.2",
     "eslint": "^8.19.0",
     "jest": "^29.6.3",
     "prettier": "2.8.8",
+    "react-native-dotenv": "^3.4.11",
+    "react-native-svg-transformer": "^1.0.0",
     "react-test-renderer": "18.2.0",
+    "tailwindcss": "3.3.2",
     "typescript": "5.0.4"
   },
   "engines": {
     "node": ">=18"
+  },
+  "resolutions": {
+    "react-native-permissions": "^3.8.4"
   }
 }

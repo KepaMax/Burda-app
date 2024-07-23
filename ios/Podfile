@@ -17,11 +17,27 @@ end
 target 'twoschoolDriver' do
   config = use_native_modules!
 
+  pre_install do |installer|
+    Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
+  
+    installer.pod_targets.each do |pod|
+      if pod.name.eql?('RNPermissions') || pod.name.start_with?('Permission-')
+        def pod.build_type;
+          Pod::BuildType.static_library
+        end
+      end
+    end
+  end
+
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
+
+    # Add the permissions pods here
+    permissions_path = '../node_modules/react-native-permissions/ios'
+    pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
 
   target 'twoschoolDriverTests' do
     inherit! :complete

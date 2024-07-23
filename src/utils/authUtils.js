@@ -1,5 +1,6 @@
 import {API_URL} from '@env';
 import {storage} from '@utils/MMKVStore';
+import { jwtDecode } from 'jwt-decode';
 import {Alert} from 'react-native';
 
 export const refreshTokens = async () => {
@@ -123,7 +124,8 @@ export const createAccount = async (registerType, formData, setLoading) => {
 
 export const deleteAccount = async () => {
   const accessToken = storage.getString('accessToken');
-  const response = await fetch(`${API_URL}/drivers/profile/`, {
+  const userType = jwtDecode(accessToken).user_type;
+  const response = await fetch(`${API_URL}/${userType == "nanny" ? "nannies" : "drivers"}/profile/`, {
     method: 'DELETE',
     headers: {
       authorization: `Bearer ${accessToken}`,

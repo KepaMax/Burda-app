@@ -106,6 +106,8 @@ const SignUp = () => {
     handleInputChange('mobile', `+994${selectedPrefix?.value}${value}`);
   };
 
+  
+
   const transformData = data => {
     const form = new FormData();
     Object.keys(formData).forEach(key => {

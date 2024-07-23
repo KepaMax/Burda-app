@@ -3,7 +3,7 @@ import HomePage from '@screens/home/homepage/HomePage';
 import CustomHeader from '@common/CustomHeader';
 import '@locales/index';
 import {useTranslation} from 'react-i18next';
-import ChildProfile from '@screens/profile/childProfile/ChildProfile';
+import ChildProfile from '../screens/profile/ChildProfile/ChildProfile';
 
 const Stack = createStackNavigator();
 

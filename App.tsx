@@ -8,14 +8,14 @@
 // @ts-nocheck
 import 'react-native-gesture-handler';
 import Navigation from '@stacks/Navigation';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {useEffect} from 'react';
-import {StatusBar, PermissionsAndroid} from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {storage} from './src/utils/MMKVStore';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useEffect } from 'react';
+import { StatusBar, PermissionsAndroid } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { storage } from './src/utils/MMKVStore';
 
 function App(): JSX.Element {
-  const {i18n} = useTranslation();
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     // const getLocationRequest = async () => {
@@ -32,67 +32,39 @@ function App(): JSX.Element {
     //   }
     // };
     // getLocationRequest();
+
   }, []);
 
-  const linking = {
-    prefixes: ['treduapp://'],
-    config: {
-      initialRouteName: 'MainstackTab',
-      screens: {
-        MainstackTab: {
-          screens: {
-            Home: {
-              path: 'homepage/',
-              screens: {
-                CourseDetails: {
-                  path: 'courses/:id',
-                },
-                CourseClassDetails: {
-                  path: 'course-classes/:id',
-                },
-                InstructorDetails: {
-                  path: 'instructors/:id',
-                },
-                PartnerNetwork: {
-                  path: 'partner-networks/:id',
-                },
-                LastClasses: {
-                  path: 'limited-offers/',
-                },
-                Checkout: {
-                  path: 'checkout/:params',
-                },
-                PopularCourses: {
-                  path: 'popular-courses/:category?',
-                },
-                TopInstructors: {
-                  path: 'top-instructors/',
-                },
-                TopPartnerNetworks: {
-                  path: 'top-partner-networks/',
-                },
-              },
-            },
-            Activities: {
-              path: 'activities/',
-            },
-            QR: {
-              path: 'qr/',
-            },
-            Account: {
-              path: 'account/',
-            },
-            Search: {
-              path: 'search/',
-            },
+  useEffect(() => {
+    const requestImagePermission = async () => {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+          {
+            title: 'Cool Photo App Camera Permission',
+            message:
+              'Cool Photo App needs access to your camera ' +
+              'so you can take awesome pictures.',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
           },
-        },
-      },
-    },
-  };
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('You can use the camera');
+        } else {
+          console.log('Camera permission denied');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    };
+
+    requestImagePermission();
+  }, [])
 
   useEffect(() => {
-    const refreshTokens = async () => {};
+    const refreshTokens = async () => { };
 
     const currentLanguage = async () => {
       const selectedLanguage = storage.getString('selectedLanguage');
@@ -104,7 +76,7 @@ function App(): JSX.Element {
   }, []);
 
   return (
-    <SafeAreaProvider style={{flex: 1, backgroundColor: '#7658F2'}}>
+    <SafeAreaProvider style={{ flex: 1, backgroundColor: '#7658F2' }}>
       <StatusBar backgroundColor="#7658F2" barStyle="light-content" />
       <Navigation />
     </SafeAreaProvider>

@@ -1,20 +1,21 @@
-import {Alert} from 'react-native';
-import {useState} from 'react';
+import { Alert } from 'react-native';
+import { useState } from 'react';
 import {
   StyledView,
   StyledText,
   StyledTouchableOpacity,
 } from '@common/StyledComponents';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import '@locales/index';
-import {useNavigation} from '@react-navigation/native';
-import {API_URL} from '@env';
+import { useNavigation } from '@react-navigation/native';
+import { API_URL } from '@env';
 import PasswordInput from '@screens/auth/components/PasswordInput';
-import {storage} from '@utils/MMKVStore';
+import { storage } from '@utils/MMKVStore';
+import { jwtDecode } from 'jwt-decode';
 
 const ChangePassword = () => {
   const navigation = useNavigation();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     old_password: '',
     new_password: '',
@@ -29,7 +30,7 @@ const ChangePassword = () => {
   });
 
   const handleInputChange = (name, value) => {
-    setFormData(prevValue => ({...prevValue, [name]: value}));
+    setFormData(prevValue => ({ ...prevValue, [name]: value }));
   };
 
   const validate = () => {
@@ -65,7 +66,8 @@ const ChangePassword = () => {
     if (formData.new_password === formData.new_password_confirm) {
       try {
         const accessToken = storage.getString('accessToken');
-        const url = `${API_URL}/drivers/change-password/`;
+        const userType = jwtDecode(accessToken).user_type;
+        const url = `${API_URL}/${userType == "nanny" ? "nannies" : "drivers"}/change-password/`;
 
         const response = await fetch(url, {
           method: 'POST',
@@ -82,7 +84,7 @@ const ChangePassword = () => {
           Alert.alert(
             t('attributes.success'),
             t('attributes.passwordChangedSuccessfully'),
-            [{text: 'OK', onPress: () => navigation.goBack()}],
+            [{ text: 'OK', onPress: () => navigation.goBack() }],
           );
         } else {
           console.log(response);

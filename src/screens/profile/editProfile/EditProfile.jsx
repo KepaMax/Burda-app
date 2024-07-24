@@ -64,7 +64,7 @@ const EditProfile = () => {
               }
             },
           )
-        : Alert.alert(
+        : alert(
             t('attributes.error'),
             t('attributes.galleryErrorMessage'),
           );
@@ -112,10 +112,10 @@ const EditProfile = () => {
       });
 
       if (response.ok) {
-        Alert.alert(t('attributes.success'));
+        alert(t('attributes.success'));
         navigation.goBack();
       } else {
-        Alert.alert(t('attributes.errorOccurred'));
+        alert(t("attributes.error"),t('attributes.errorOccurred'));
       }
     } catch (error) {
       console.error('Error:', error);

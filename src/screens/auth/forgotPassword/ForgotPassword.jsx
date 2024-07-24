@@ -1,23 +1,23 @@
-import {ImageBackground, Alert} from 'react-native';
-import {useState} from 'react';
+import { ImageBackground, Alert } from 'react-native';
+import { useState } from 'react';
 import LockIcon from '@icons/lock-forgot-password.svg';
 import '@locales/index';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import Background from '@images/background.png';
-import {openInbox} from 'react-native-email-link';
-import {API_URL} from '@env';
+import { openInbox } from 'react-native-email-link';
+import { API_URL } from '@env';
 import {
   StyledTouchableOpacity,
   StyledTextInput,
   StyledText,
   StyledView,
 } from '@common/StyledComponents';
-import {storage} from '../../../utils/MMKVStore';
+import { storage } from '../../../utils/MMKVStore';
 
 const ForgotPassword = () => {
   const [stage, setStage] = useState(1);
   const [email, setEmail] = useState('');
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const selectedLanguage = storage.getString('selectedLanguage');
 
   const resetPassword = async () => {
@@ -39,18 +39,18 @@ const ForgotPassword = () => {
         if (response.ok) {
           setStage(2);
         } else {
-          Alert.alert(t('attributes.errorOccurred'));
+          alert(t('attributes.errorOccurred'), t("attributes.tryAgain"));
         }
       } catch (error) {
         console.error(error);
       }
     } else {
-      Alert.alert(t('attributes.enterEmail'));
+      alert(t("attributes.warning"),t('attributes.enterEmail'));
     }
   };
 
   return (
-    <ImageBackground source={Background} style={{flex: 1}}>
+    <ImageBackground source={Background} style={{ flex: 1 }}>
       {stage === 1 ? (
         <StyledView className="flex-1 p-4 bg-white">
           <StyledView className="w-full items-center mt-14 mb-[24px]">

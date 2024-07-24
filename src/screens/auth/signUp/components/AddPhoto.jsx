@@ -31,7 +31,7 @@ const AddPhoto = ({ data, setData, error }) => {
   };
 
   const handlePermissionDenied = () => {
-    Alert.alert(
+    alert(
       'Camera Permission Denied',
       'This app needs camera access to take photos. Please enable it in the app settings.',
       [

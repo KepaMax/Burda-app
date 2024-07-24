@@ -31,9 +31,9 @@ const Profile = () => {
   const handleAccountDelete = () => {
     const status = deleteAccount();
     if (status) {
-      Alert.alert(t('attributes.userSuccessfullyDeleted'));
+      alert(t('attributes.userSuccessfullyDeleted'));
     } else {
-      Alert.alert(t('attributes.errorOccurred'));
+      alert(t('attributes.errorOccurred'));
     }
   };
 

@@ -60,8 +60,8 @@ const SignUp = () => {
   const checkConditions = async () => {
     try {
       if (!accepted) {
-        Alert.alert(t('attributes.readTermsConditionsAlert'));
-        throw new Error(t('attributes.readTermsConditionsAlert'));
+        alert(t('attributes.warning'),t('attributes.readTermsConditionsAlert'));
+        return;
       }
 
       if (!selectedPrefix) {

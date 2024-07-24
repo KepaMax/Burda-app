@@ -15,7 +15,6 @@
   ],
   "dependencies": {
     "@gorhom/bottom-sheet": "^4.6.1",
-    "@react-native-community/geolocation": "^3.2.1",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-community/netinfo": "^9.5.0",
     "@react-navigation/bottom-tabs": "^6.6.0",
@@ -32,7 +31,6 @@
     "react-native-blob-util": "^0.19.1",
     "react-native-calendars": "^1.1305.0",
     "react-native-date-picker": "^5.0.2",
-    "react-native-debounce-input": "^1.0.5",
     "react-native-email-link": "^1.14.8",
     "react-native-fast-image": "^8.6.3",
     "react-native-fs": "^2.20.0",
@@ -51,6 +49,7 @@
     "react-native-rename": "^3.2.13",
     "react-native-safe-area-context": "^4.8.0",
     "react-native-screens": "^3.29.0",
+    "react-native-super-alert": "^0.1.0",
     "react-native-svg": "^13.9.0",
     "react-native-walkthrough-tooltip": "^1.6.0",
     "react-native-webview": "^13.4.0"

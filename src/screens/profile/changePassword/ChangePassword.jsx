@@ -81,21 +81,21 @@ const ChangePassword = () => {
         const jsonData = await response?.json();
 
         if (response.ok) {
-          Alert.alert(
+          alert(
             t('attributes.success'),
             t('attributes.passwordChangedSuccessfully'),
-            [{ text: 'OK', onPress: () => navigation.goBack() }],
+            { onConfirm: () => navigation.goBack() },
           );
         } else {
           console.log(response);
 
-          Alert.alert(t('attributes.error'), jsonData?.error[0]);
+          alert(t('attributes.error'), jsonData?.error[0]);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     } else {
-      Alert.alert(t('attributes.passwordNoMatch'));
+      alert(t("attributes.error"), t('attributes.passwordNoMatch'));
     }
   };
 

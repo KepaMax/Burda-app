@@ -1,7 +1,6 @@
-import {API_URL} from '@env';
-import {storage} from '@utils/MMKVStore';
+import { API_URL } from '@env';
+import { storage } from '@utils/MMKVStore';
 import { jwtDecode } from 'jwt-decode';
-import {Alert} from 'react-native';
 
 export const refreshTokens = async () => {
   const url = `${API_URL}jwt/refresh/`;
@@ -38,19 +37,16 @@ export const refreshTokens = async () => {
         );
         setIsLoggedIn(true);
       } else {
-        Alert.alert(
+        alert(
           t('attributes.error'),
           t('attributes.sessionExpired'),
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                logOut();
-                setTrigger(!trigger);
-              },
+          {
+            textConfirm: 'OK',
+            onConfirm: () => {
+              logOut();
+              setTrigger(!trigger);
             },
-          ],
-          {cancelable: false},
+          }
         );
         setIsLoggedIn(false);
       }
@@ -62,9 +58,8 @@ export const refreshTokens = async () => {
 };
 
 export const login = async (loginType, formData, setLoading) => {
-  const url = `${API_URL}/${
-    loginType === 'driver' ? 'drivers' : 'nannies'
-  }/login/`;
+  const url = `${API_URL}/${loginType === 'driver' ? 'drivers' : 'nannies'
+    }/login/`;
 
   try {
     setLoading(true);
@@ -84,7 +79,7 @@ export const login = async (loginType, formData, setLoading) => {
       storage.set('refreshToken', data.token.refresh);
     }
 
-    return {status: response.ok, data: data};
+    return { status: response.ok, data: data };
   } catch (error) {
     console.error('Error:', error);
   } finally {
@@ -93,9 +88,8 @@ export const login = async (loginType, formData, setLoading) => {
 };
 
 export const createAccount = async (registerType, formData, setLoading) => {
-  const url = `${API_URL}/${
-    registerType === 'driver' ? 'drivers' : 'nannies'
-  }/register/`;
+  const url = `${API_URL}/${registerType === 'driver' ? 'drivers' : 'nannies'
+    }/register/`;
 
   try {
     setLoading(true);
@@ -114,7 +108,7 @@ export const createAccount = async (registerType, formData, setLoading) => {
       storage.set('refreshToken', data.token.refresh);
     }
 
-    return {status: response.ok, data: data};
+    return { status: response.ok, data: data };
   } catch (error) {
     console.error('Error:', error);
   } finally {

@@ -13,6 +13,7 @@ import { useEffect } from 'react';
 import { StatusBar, PermissionsAndroid } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { storage } from './src/utils/MMKVStore';
+import { refreshTokens } from './src/utils/authUtils';
 
 function App(): JSX.Element {
   const { i18n } = useTranslation();
@@ -64,7 +65,7 @@ function App(): JSX.Element {
   }, [])
 
   useEffect(() => {
-    const refreshTokens = async () => { };
+    refreshTokens();
 
     const currentLanguage = async () => {
       const selectedLanguage = storage.getString('selectedLanguage');

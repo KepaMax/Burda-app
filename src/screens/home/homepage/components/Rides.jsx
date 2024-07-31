@@ -15,10 +15,10 @@ const Rides = ({items, setModalOpen}) => {
       <StyledView className="w-full p-4">
         <StyledView className="flex-row items-center gap-2">
           <StyledView className="w-[2%] justify-center items-center">
-            {item.completed ? <CompletedIcon /> : <IncompletedIcon />}
+            {item.status ==="completed" ? <CompletedIcon /> : <IncompletedIcon />}
           </StyledView>
           <StyledText className="text-[#000000B2] text-xs font-poppi">
-            {item.fullname}
+            {item.child.name} {item.child.surname}
           </StyledText>
         </StyledView>
         <StyledView className="flex-row items-center gap-2">

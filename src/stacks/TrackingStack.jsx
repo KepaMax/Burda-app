@@ -10,7 +10,7 @@ const TrackingStack = () => (
   <Stack.Navigator>
     <Stack.Screen
       options={{headerShown: false}}
-      name="Tracking"
+      name="TrackingPage"
       component={Tracking}
     />
   </Stack.Navigator>

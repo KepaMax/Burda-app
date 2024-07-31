@@ -1,61 +1,45 @@
 import { API_URL } from '@env';
-import { storage } from '@utils/MMKVStore';
 import { jwtDecode } from 'jwt-decode';
+import { storage } from './MMKVStore';
 
 export const refreshTokens = async () => {
-  const url = `${API_URL}jwt/refresh/`;
-  const accessToken = await getAccessTokenFromMemory();
-  const refreshT = await getInternetCredentials('refresh_token');
-  const refreshToken = refreshT.password;
+  if (storage.contains("refreshToken")) {
+    const refreshToken = storage.getString("refreshToken");
+    const decode = jwtDecode(refreshToken);
+    const type = decode.user_type === "driver" ? "drivers" : "nannies";
+    console.log(decode)
 
-  const postData = {
-    refresh: refreshToken,
-  };
+    const url = `${API_URL}/${type}/token/refresh/`;
+    const body = JSON.stringify({ refresh: refreshToken })
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    }
 
-  if (accessToken) {
     try {
       const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-      });
+        method: "POST",
+        headers: headers,
+        body: body
+      })
 
-      const data = await response.json();
-      if (data.type !== 'client_error') {
-        await setInternetCredentials(
-          'access_token',
-          'access_token',
-          data.access,
-        );
-        await setInternetCredentials(
-          'refresh_token',
-          'refresh_token',
-          data.refresh,
-        );
-        setIsLoggedIn(true);
-      } else {
-        alert(
-          t('attributes.error'),
-          t('attributes.sessionExpired'),
-          {
-            textConfirm: 'OK',
-            onConfirm: () => {
-              logOut();
-              setTrigger(!trigger);
-            },
-          }
-        );
-        setIsLoggedIn(false);
+
+      if (response.ok) {
+        const access = await response.json();
+        storage.set("accessToken", access.access);
+        return true;
       }
+
+      console.log(response);
+      return false;
     } catch (error) {
-      console.error(error);
-      setIsLoggedIn(false);
+      console.error(error)
+      return false;
     }
   }
-};
+  return false;
+}
+
 
 export const login = async (loginType, formData, setLoading) => {
   const url = `${API_URL}/${loginType === 'driver' ? 'drivers' : 'nannies'

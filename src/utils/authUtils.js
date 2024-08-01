@@ -7,7 +7,6 @@ export const refreshTokens = async () => {
     const refreshToken = storage.getString("refreshToken");
     const decode = jwtDecode(refreshToken);
     const type = decode.user_type === "driver" ? "drivers" : "nannies";
-    console.log(decode)
 
     const url = `${API_URL}/${type}/token/refresh/`;
     const body = JSON.stringify({ refresh: refreshToken })

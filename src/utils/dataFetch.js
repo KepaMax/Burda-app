@@ -15,7 +15,6 @@ export const fetchData = async (url, headers, method = "GET", body = null, getDa
                 method: method
             })
         const status = response.status;
-        console.log(response)
         const data = getData ? await response.json() : null;
 
         if (response.ok) {

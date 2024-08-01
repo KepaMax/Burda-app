@@ -20,106 +20,15 @@ const HomePage = () => {
   const [children, setChidlren] = useState(null);
   const { t } = useTranslation();
 
-  const rides = [
-    {
-      fullname: 'Aytac Samadova',
-      address: 'Uzeyir Hajibayov 57',
-      completed: true,
-    },
-    {
-      fullname: 'Aytac Samadova',
-      address: 'Uzeyir Hajibayov 57',
-      completed: true,
-    },
-    {
-      fullname: 'Aytac Samadova',
-      address: 'Uzeyir Hajibayov 57',
-      completed: true,
-    },
-    {
-      fullname: 'Aytac Samadova',
-      address: 'Uzeyir Hajibayov 57',
-      completed: true,
-    },
-    {
-      fullname: 'Aytac Samadova',
-      address: 'Uzeyir Hajibayov 57',
-      completed: true,
-    },
-    {
-      fullname: 'Aytac Samadova',
-      address: 'Uzeyir Hajibayov 57',
-      completed: false,
-    },
-    {
-      fullname: 'Aytac Samadova',
-      address: 'Uzeyir Hajibayov 57',
-      completed: false,
-    },
-    {
-      fullname: 'Aytac Samadova',
-      address: 'Uzeyir Hajibayov 57',
-      completed: false,
-    },
-  ];
-
-  const students = [
-    {
-      firstname: 'Aytac',
-      lastname: 'Samadova',
-      phone: 'tel:7777777777',
-    },
-    {
-      firstname: 'Aytac',
-      lastname: 'Samadova',
-      phone: 'tel:7777777777',
-    },
-    {
-      firstname: 'Aytac',
-      lastname: 'Samadova',
-      phone: 'tel:7777777777',
-    },
-    {
-      firstname: 'Aytac',
-      lastname: 'Samadova',
-      phone: 'tel:7777777777',
-    },
-    {
-      firstname: 'Aytac',
-      lastname: 'Samadova',
-      phone: 'tel:7777777777',
-    },
-    {
-      firstname: 'Aytac',
-      lastname: 'Samadova',
-      phone: 'tel:7777777777',
-    },
-    {
-      firstname: 'Aytac',
-      lastname: 'Samadova',
-      phone: 'tel:7777777777',
-    },
-    {
-      firstname: 'Aytac',
-      lastname: 'Samadova',
-      phone: 'tel:7777777777',
-    },
-    {
-      firstname: 'Aytac',
-      lastname: 'Samadova',
-      phone: 'tel:7777777777',
-    },
-  ];
-
   useEffect(() => {
     const dataFetch = async () => {
       // const url = `${API_URL}/rides/upcomings/`;
       const url = `${API_URL}/rides/upcomings/`;
       const token = storage.getString("accessToken");
       const lang = storage.getString("selectedLanguage");
-      console.log(token)
       const headers = {
-        "Authorization": `Bearer ${token}`
+        "Authorization": `Bearer ${token}`,
+        "Accept-Language": lang
       }
 
       const result = await fetchData(url, headers);
@@ -131,10 +40,8 @@ const HomePage = () => {
         acc[childId].push(current);
         return acc;
       }, {});
-      console.log(groupedData)
 
       const newArray = Object.values(groupedData).map((group) => {
-        console.log(group)
         return group[0];
       });
       // console.log(new Date(result.data[0].pickup_time));

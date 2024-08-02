@@ -32,7 +32,6 @@ const HomePage = () => {
       }
 
       const result = await fetchData(url, headers);
-      console.log(result.data)
 
       const groupedData = result.data.reduce((acc, current) => {
         const childId = current.child.id;

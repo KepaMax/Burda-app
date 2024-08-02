@@ -149,8 +149,7 @@ const Tracking = () => {
           latitude: parseFloat(item.lat),
           longitude: parseFloat(item.long)
         }));
-        setRidesArray([...transformedPaths, { name: realData.school.name, surname: "", lat: realData.school.lat, long: realData.school.long }])
-        console.log(ridesArray)
+        setRidesArray(realData.transfer === "pickup" ? [...transformedPaths, { name: realData.school.name, surname: "", lat: realData.school.lat, long: realData.school.long }] : [{ name: realData.school.name, surname: "", lat: realData.school.lat, long: realData.school.long }, ...transformedPaths])
         setWaypoints(transformedData);
         setloading(false)
       }
@@ -238,9 +237,9 @@ const Tracking = () => {
           }}
         >
           <MapViewDirections
-            origin={{ latitude: parseFloat(data.paths[0].lat), longitude: parseFloat(data.paths[0].long) }}
+            origin={data.transfer === "pickup" ? { latitude: parseFloat(data.paths[0].lat), longitude: parseFloat(data.paths[0].long) } : { latitude: parseFloat(data.school.lat), longitude: parseFloat(data.school.long) }}
             waypoints={waypoints}
-            destination={{ latitude: parseFloat(data.school.lat), longitude: parseFloat(data.school.long) }}
+            destination={data.transfer === "pickup" ? { latitude: parseFloat(data.school.lat), longitude: parseFloat(data.school.long) } : { latitude: parseFloat(data.paths[0].lat), longitude: parseFloat(data.paths[0].long) }}
             apikey={API_KEY}
             strokeColor={'#6A5ACD'}
             strokeWidth={6}

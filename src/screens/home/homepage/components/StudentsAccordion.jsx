@@ -9,53 +9,60 @@ import ArrowDownIcon from '@icons/arrow-down-faq.svg';
 import AcceptIcon from '@icons/accept-home.svg';
 import CancelIcon from '@icons/cancel-home.svg';
 import PhoneIcon from '@icons/phone-home.svg';
-import MessageIcon from '@icons/message-student.svg';
-import { API_URL } from "@env";
-import { useEffect, useState } from 'react';
-import { FlatList } from 'react-native-gesture-handler';
-import { Linking } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import { useNavigation } from '@react-navigation/native';
-import { storage } from '../../../../utils/MMKVStore';
-import { fetchData } from '../../../../utils/dataFetch';
+import {API_URL} from '@env';
+import {useState} from 'react';
+import {FlatList} from 'react-native-gesture-handler';
+import {Linking} from 'react-native';
+import {useTranslation} from 'react-i18next';
+import {useNavigation} from '@react-navigation/native';
+import storage from '@utils/MMKVStore';
+import {fetchData} from '@utils/fetchData';
 
-const StudentsAccordion = ({ items }) => {
+const StudentsAccordion = ({items}) => {
   const [activeIndex, setActiveIndex] = useState();
-  const { t } = useTranslation();
-  const isNanny = true;
+  const {t} = useTranslation();
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
   const handlePress = index => {
     index === activeIndex ? setActiveIndex(null) : setActiveIndex(index);
   };
 
-  const handleOnWay = async (id) => {
-    const url = `${API_URL}/rides/${id}/onway/`
-    const token = storage.getString("accessToken");
-    const lang = storage.getString("selectedLanguage");
-    const headers = {
-      "Authorization": `Bearer ${token}`,
-      "Accept-Language": lang
-    }
+  const handleOnWay = async id => {
+    const response = await fetchData({
+      url: `${API_URL}/rides/${id}/onway/`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept-Language': storage.getString('selectedLanguage'),
+        Authorization: `Bearer ${storage.getString('accessToken')}`,
+      },
+      method: 'POST',
+      setLoading,
+    });
 
-    const result = await fetchData(url, headers, "POST", null, false);
-    console.log(result);
-  }
+    response.success
+      ? alert(t('attributes.success'))
+      : response.success && alert(t('attributes.errorOccurred'));
+  };
 
-  const handleCancel = async (id) => {
-    const url = `${API_URL}/rides/${id}/cancel/`
-    const token = storage.getString("accessToken");
-    const lang = storage.getString("selectedLanguage");
-    const headers = {
-      "Authorization": `Bearer ${token}`,
-      "Accept-Language": lang
-    }
+  const handleCancel = async id => {
+    const response = await fetchData({
+      url: `${API_URL}/rides/${id}/cancel/`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept-Language': storage.getString('selectedLanguage'),
+        Authorization: `Bearer ${storage.getString('accessToken')}`,
+      },
+      method: 'POST',
+      setLoading,
+    });
 
-    const result = await fetchData(url, headers, "POST", null);
-    console.log(result);
-  }
+    response.success
+      ? alert(t('attributes.success'))
+      : response.success && alert(t('attributes.errorOccurred'));
+  };
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({item, index}) => {
     return (
       <StyledTouchableOpacity
         onPress={() => handlePress(index)}
@@ -63,15 +70,24 @@ const StudentsAccordion = ({ items }) => {
         <StyledView className="flex-row justify-between items-center ">
           <StyledView className="flex-row gap-4">
             <FastImage
-              style={{ width: 50, height: 50, borderRadius: 100 }}
-              source={{ uri: item.child.photo }}
+              style={{width: 50, height: 50, borderRadius: 100}}
+              source={{
+                uri: item.child.photo
+                  ? item.child.photo
+                  : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg',
+              }}
             />
             <StyledView className="">
               <StyledText className="font-poppi-medium text-base text-[#204F50]">
                 {item.child.name} {item.child.surname}
               </StyledText>
               <StyledTouchableOpacity
-                onPress={() => navigation.navigate('ChildProfile', { data: item.child, address: item.location.home_address })}>
+                onPress={() =>
+                  navigation.navigate('ChildProfile', {
+                    data: item.child,
+                    address: item.location.home_address,
+                  })
+                }>
                 <StyledText className="text-sm text-[#7658F2] font-poppi-semibold">
                   {t('attributes.goToProfile')}
                 </StyledText>
@@ -80,6 +96,7 @@ const StudentsAccordion = ({ items }) => {
           </StyledView>
           {index === activeIndex ? <ArrowUpIcon /> : <ArrowDownIcon />}
         </StyledView>
+
         {index === activeIndex && (
           <StyledView className=" mt-4">
             <StyledView className="flex-row justify-center border-t-[1px] border-[#EFEFEF]">
@@ -89,7 +106,6 @@ const StudentsAccordion = ({ items }) => {
                 <AcceptIcon />
               </StyledTouchableOpacity>
               <StyledTouchableOpacity
-
                 onPress={() => handleCancel(item.id)}
                 className={`${'mx-8'} mt-4`}>
                 <CancelIcon />
@@ -114,12 +130,17 @@ const StudentsAccordion = ({ items }) => {
   };
 
   return (
-    <FlatList
-      scrollEnabled={true}
-      contentContainerStyle={{ gap: 12, paddingBottom: 60 }}
-      data={items}
-      renderItem={renderItem}
-    />
+    <>
+      <StyledText className="text-lg my-4 text-[#204F50] font-poppi-semibold">
+        {t('attributes.studentList')}
+      </StyledText>
+      <FlatList
+        scrollEnabled={false}
+        contentContainerStyle={{gap: 12, paddingBottom: 60}}
+        data={items}
+        renderItem={renderItem}
+      />
+    </>
   );
 };
 

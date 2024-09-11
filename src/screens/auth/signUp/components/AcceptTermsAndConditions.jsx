@@ -6,99 +6,94 @@ import {
 import TermsConditions from '@icons/termsConditions.svg';
 import TermsConditionsFill from '@icons/termsConditionsFill.svg';
 import '@locales/index';
-import { useTranslation } from 'react-i18next';
-import { storage } from '../../../../utils/MMKVStore';
+import {useTranslation} from 'react-i18next';
+import storage from '@utils/MMKVStore';
+import {useNavigation} from '@react-navigation/native';
 
-const AcceptTermsAndConditions = ({ accepted, setAccepted }) => {
-  const { t } = useTranslation();
-  const lang = storage.getString("selectedLanguage")
+const AcceptTermsAndConditions = ({accepted, setAccepted}) => {
+  const {t} = useTranslation();
+  const selectedLanguage = storage.getString('selectedLanguage');
+  const navigation = useNavigation();
 
   return (
     <StyledView className="w-auto flex-row px-1 mb-3">
-      {lang === "az" ? <>
-        <StyledTouchableOpacity
-          onPress={() => {
-            setAccepted(!accepted);
-          }}>
-          {accepted ? <TermsConditionsFill /> : <TermsConditions />}
-        </StyledTouchableOpacity>
+      <StyledTouchableOpacity
+        onPress={() => {
+          setAccepted(!accepted);
+        }}>
+        {accepted ? <TermsConditionsFill /> : <TermsConditions />}
+      </StyledTouchableOpacity>
 
-        <StyledView className="flex-row px-2 items-center flex-wrap w-full">
-
-
+      {selectedLanguage === 'az' ? (
+        <StyledView className="flex-row px-2 items-center w-full">
           <StyledTouchableOpacity
             onPress={() => {
-              navigation.navigate('TermsAndConditions');
+              navigation.navigate('WebViewScreen', {
+                url: 'http://2school.app/open/az/terms_and_conditions/',
+                title: 'İstifadəçi qaydaları və şərtləri',
+              });
             }}>
-            <StyledText className="font-poppi text-sm text-[#204F50] mr-1">
+            <StyledText className="font-poppi text-xs text-[#204F50] mr-1">
               {t('attributes.termsOfUse')}
             </StyledText>
           </StyledTouchableOpacity>
 
-          <StyledText className="font-poppi text-sm text-[#91919F]">
+          <StyledText className="font-poppi text-xs text-[#91919F]">
             {t('attributes.and')}
           </StyledText>
 
           <StyledTouchableOpacity
             onPress={() => {
-              navigation.navigate('PrivacyPolicy');
+              navigation.navigate('WebViewScreen', {
+                url: 'https://2school.app/open/az/privacy_policy/',
+                title: 'Məxfilik Siyasəti',
+              });
             }}>
-            <StyledText className="font-poppi  text-sm text-[#204F50]">
-              {' '}{t('attributes.privacyPolicySignUp')}
+            <StyledText className="font-poppi text-xs text-[#204F50]">
+              {' '}
+              {t('attributes.privacyPolicySignUp')}{' '}
             </StyledText>
           </StyledTouchableOpacity>
 
-          <StyledTouchableOpacity
-            onPress={() => {
-              navigation.navigate('TermsAndConditionsSignup');
-            }}></StyledTouchableOpacity>
-
-          <StyledText className="font-poppi text-sm text-[#91919F]">
+          <StyledText className="font-poppi text-xs text-[#91919F]">
             {t('attributes.readAndAgreed')}
           </StyledText>
         </StyledView>
-      </> :
-        <>
+      ) : (
+        <StyledView className="flex-row px-2 items-center flex-wrap w-full">
+          <StyledText className="font-poppi text-xs text-[#91919F]">
+            {t('attributes.readAndAgreed')}
+          </StyledText>
+
           <StyledTouchableOpacity
             onPress={() => {
-              setAccepted(!accepted);
+              navigation.navigate('WebViewScreen', {
+                url: 'http://2school.app/open/en/terms_and_conditions/',
+                title: 'Terms of use',
+              });
             }}>
-            {accepted ? <TermsConditionsFill /> : <TermsConditions />}
+            <StyledText className="font-poppi text-xs text-[#204F50] mr-1">
+              {t('attributes.termsOfUse')}
+            </StyledText>
           </StyledTouchableOpacity>
 
-          <StyledView className="flex-row px-2 items-center flex-wrap w-full">
-            <StyledText className="font-poppi text-sm text-[#91919F]">
-              {t('attributes.readAndAgreed')}
+          <StyledText className="font-poppi text-xs text-[#91919F]">
+            {t('attributes.and')}
+          </StyledText>
+
+          <StyledTouchableOpacity
+            onPress={() => {
+              navigation.navigate('WebViewScreen', {
+                url: 'https://2school.app/open/en/privacy_policy/',
+                title: 'Privacy Policy',
+              });
+            }}>
+            <StyledText className="font-poppi text-xs text-[#204F50]">
+              {t('attributes.privacyPolicySignUp')}
             </StyledText>
-
-            <StyledTouchableOpacity
-              onPress={() => {
-                navigation.navigate('TermsAndConditions');
-              }}>
-              <StyledText className="font-poppi text-sm text-[#204F50] mr-1">
-                {t('attributes.termsOfUse')}
-              </StyledText>
-            </StyledTouchableOpacity>
-
-            <StyledText className="font-poppi text-sm text-[#91919F]">
-              {t('attributes.and')}
-            </StyledText>
-
-            <StyledTouchableOpacity
-              onPress={() => {
-                navigation.navigate('PrivacyPolicy');
-              }}>
-              <StyledText className="font-poppi  text-sm text-[#204F50]">
-                {t('attributes.privacyPolicySignUp')}
-              </StyledText>
-            </StyledTouchableOpacity>
-
-            <StyledTouchableOpacity
-              onPress={() => {
-                navigation.navigate('TermsAndConditionsSignup');
-              }}></StyledTouchableOpacity>
-          </StyledView>
-        </>}
+          </StyledTouchableOpacity>
+        </StyledView>
+      )}
     </StyledView>
   );
 };

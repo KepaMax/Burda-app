@@ -1,6 +1,6 @@
-import {TextInput, ActivityIndicator, Alert} from 'react-native';
-import {useState, useEffect} from 'react';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {TextInput, ActivityIndicator} from 'react-native';
+import {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import InfoIcon from '@icons/info.svg';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import '@locales/index';
@@ -14,12 +14,15 @@ import CustomSelect from '@common/CustomSelect';
 import Input from '../components/Input';
 import PasswordInput from '../components/PasswordInput';
 import {createAccount} from '@utils/authUtils';
-import {prefixData} from '../utils/prefixData';
+import {prefixData} from '@utils/staticData';
 import AddPhoto from './components/AddPhoto';
 import AcceptTermsAndConditions from './components/AcceptTermsAndConditions';
+import storage from '@utils/MMKVStore';
 
 const SignUp = () => {
-  const registerType = useRoute().params.registerType;
+  const userType = storage.getString('userType');
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const [errors, setErrors] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -32,11 +35,10 @@ const SignUp = () => {
     work_experience: '',
     reference_detail: '',
   });
-  const [transformedData, setTransformedData] = useState(null);
-  const [accepted, setAccepted] = useState(false);
+  const [termsConditionsAccepted, setTermsConditionsAccepted] = useState(false);
   const navigation = useNavigation();
   const [selectedPrefix, setSelectedPrefix] = useState(null);
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(false);
   const {t} = useTranslation();
   const [phoneNumValue, setPhoneNumValue] = useState();
 
@@ -58,46 +60,16 @@ const SignUp = () => {
   };
 
   const checkConditions = async () => {
-    try {
-      if (!accepted) {
-        alert(t('attributes.warning'),t('attributes.readTermsConditionsAlert'));
-        return;
-      }
+    const result = await createAccount({
+      formData: formData,
+      setLoading: setLoading,
+      setErrors: setErrors,
+      termsConditionsAccepted: termsConditionsAccepted,
+      selectedPrefix: selectedPrefix,
+    });
 
-      if (!selectedPrefix) {
-        setErrors(prevState => ({
-          ...prevState,
-          prefix: t('attributes.mustChoosePrefix'),
-        }));
-        throw new Error(t('attributes.mustChoosePrefix'));
-      }
-
-      if (
-        formData.password &&
-        formData.password_confirm !== formData.password
-      ) {
-        setErrors({
-          ...errors,
-          password_confirm: t('attributes.passwordNoMatch'),
-        });
-        setPasswordVisible(true);
-        throw new Error(t('attributes.passwordNoMatch'));
-      }
-
-      const accountInfo = await createAccount(
-        registerType,
-        transformedData,
-        setLoading,
-      );
-
-      if (!accountInfo?.status) {
-        setErrors(accountInfo?.data);
-      } else {
-        setErrors(null);
-        navigation.navigate('HomePage');
-      }
-    } catch (error) {
-      console.error(error);
+    if (result?.success) {
+      navigation.navigate('HomePage');
     }
   };
 
@@ -105,33 +77,6 @@ const SignUp = () => {
     setPhoneNumValue(value);
     handleInputChange('mobile', `+994${selectedPrefix?.value}${value}`);
   };
-
-  
-
-  const transformData = data => {
-    const form = new FormData();
-    Object.keys(formData).forEach(key => {
-      if (Array.isArray(formData[key])) {
-        formData[key].forEach(value => {
-          form.append(key, value);
-        });
-      } else if (formData[key] instanceof Object && formData[key].uri) {
-        // Handle file upload
-        form.append(key, {
-          uri: data[key].uri,
-          name: data[key].fileName,
-          type: data[key].type,
-        });
-      } else {
-        form.append(key, data[key]);
-      }
-    });
-    setTransformedData(form);
-  };
-
-  useEffect(() => {
-    transformData(formData);
-  }, [formData]);
 
   return (
     <StyledView className="flex-1 bg-white">
@@ -255,7 +200,7 @@ const SignUp = () => {
 
         <StyledTouchableOpacity
           onPress={() => {
-            navigation.navigate('SignIn');
+            navigation.navigate('SignIn', {userType: userType});
           }}>
           <StyledText className="font-poppi text-sm text-[#204F50] ml-1 mb-4">
             {t('attributes.registerSignIn')}
@@ -263,8 +208,8 @@ const SignUp = () => {
         </StyledTouchableOpacity>
 
         <AcceptTermsAndConditions
-          accepted={accepted}
-          setAccepted={setAccepted}
+          accepted={termsConditionsAccepted}
+          setAccepted={setTermsConditionsAccepted}
         />
 
         <StyledTouchableOpacity

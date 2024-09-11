@@ -1,56 +1,54 @@
-import { ImageBackground, Alert } from 'react-native';
-import { useState } from 'react';
+import {ImageBackground} from 'react-native';
+import {useState} from 'react';
 import LockIcon from '@icons/lock-forgot-password.svg';
 import '@locales/index';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import Background from '@images/background.png';
-import { openInbox } from 'react-native-email-link';
-import { API_URL } from '@env';
+import {openInbox} from 'react-native-email-link';
+import {API_URL} from '@env';
 import {
   StyledTouchableOpacity,
   StyledTextInput,
   StyledText,
   StyledView,
 } from '@common/StyledComponents';
-import { storage } from '../../../utils/MMKVStore';
+import storage from '@utils/MMKVStore';
+import {fetchData} from '@utils/fetchData';
+import Input from '../components/Input';
 
 const ForgotPassword = () => {
+  const userType = storage.getString('userType');
   const [stage, setStage] = useState(1);
   const [email, setEmail] = useState('');
-  const { t } = useTranslation();
-  const selectedLanguage = storage.getString('selectedLanguage');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const {t} = useTranslation();
+
+  const handleInputChange = (name, value) => {
+    setEmail(value);
+  };
 
   const resetPassword = async () => {
     if (email) {
-      const postData = {
-        email: email.toLowerCase(),
-      };
+      const result = await fetchData({
+        url: `${API_URL}/${userType}/reset/`,
+        headers: {
+          'Accept-Language': storage.getString('selectedLanguage'),
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: {email: email},
+        setLoading,
+      });
 
-      try {
-        const response = await fetch(`${API_URL}/drivers/reset/`, {
-          method: 'POST',
-          headers: {
-            'Accept-Language': selectedLanguage,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(postData),
-        });
-
-        if (response.ok) {
-          setStage(2);
-        } else {
-          alert(t('attributes.errorOccurred'), t("attributes.tryAgain"));
-        }
-      } catch (error) {
-        console.error(error);
-      }
+      result?.success ? setStage(2) : alert(result.error);
     } else {
-      alert(t("attributes.warning"),t('attributes.enterEmail'));
+      alert(t('attributes.warning'), t('attributes.enterEmail'));
     }
   };
 
   return (
-    <ImageBackground source={Background} style={{ flex: 1 }}>
+    <ImageBackground source={Background} style={{flex: 1}}>
       {stage === 1 ? (
         <StyledView className="flex-1 p-4 bg-white">
           <StyledView className="w-full items-center mt-14 mb-[24px]">
@@ -61,17 +59,20 @@ const ForgotPassword = () => {
               {t('attributes.signinForgotPassword')}
             </StyledText>
           </StyledView>
-          <StyledText className="text-base text-center text-[#585858] font-poppi-medium">
+          <StyledText className="text-base text-center text-[#585858] font-poppi-medium mb-3">
             {t('attributes.forgotPasswordDescr')}
           </StyledText>
-          <StyledTextInput
-            onChangeText={value => setEmail(value)}
-            className="bg-white p-[10px] text-black border-[1px] focus:bg-[#F3F7FF] border-[#EDEFF3] focus:border-[#7658F2] placeholder:text-base my-4 rounded-[18px]"
+
+          <Input
+            inputName="email"
+            inputValue={email}
+            handleInputChange={handleInputChange}
             placeholder={t('attributes.forgotPasswordEmail')}
-            placeholderTextColor="#868782"
+            error={error}
           />
+
           <StyledTouchableOpacity
-            className="rounded-[18px] p-[10px] bg-[#76F5A4]"
+            className="rounded-[18px] p-[10px] bg-[#76F5A4] mt-2"
             onPress={() => {
               resetPassword();
             }}>

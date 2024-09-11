@@ -6,7 +6,7 @@ import ProfileIcon from '@icons/user-menu.svg';
 import ProfileActiveIcon from '@icons/user-active-menu.svg';
 import '@locales/index';
 import {useTranslation} from 'react-i18next';
-import {Dimensions} from 'react-native';
+import {Dimensions, Vibration} from 'react-native';
 import {
   StyledView,
   StyledTouchableOpacity,
@@ -19,7 +19,7 @@ const TabBar = ({state, descriptors, navigation}) => {
 
   return (
     <StyledView
-      className={`flex-row bg-white justify-between items-center px-[30px] py-[5px] ${
+      className={`border-t-[1px] border-zinc-100 flex-row bg-white justify-between items-center px-[30px] py-[5px] ${
         Platform.OS === 'ios' && width > 375 ? 'pb-[25px]' : ''
       }`}>
       {state.routes.map((route, index) => {

@@ -6,6 +6,7 @@ import {
   StyledText,
   StyledTouchableOpacity,
 } from '@common/StyledComponents';
+import {deleteAccount} from '@utils/authUtils';
 
 const DeleteAccount = ({setDeleteAccountOpen}) => {
   const {t} = useTranslation();
@@ -34,7 +35,7 @@ const DeleteAccount = ({setDeleteAccountOpen}) => {
             </StyledText>
           </StyledTouchableOpacity>
           <StyledTouchableOpacity
-            onPress={() => {}}
+            onPress={deleteAccount}
             className="py-2 bg-[#FF3115] w-1/2 rounded-md">
             <StyledText className="text-center text-lg text-white font-serrat-medium">
               {t('attributes.profileDeleteYes')}

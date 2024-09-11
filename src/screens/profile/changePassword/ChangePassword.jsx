@@ -1,21 +1,19 @@
-import { Alert } from 'react-native';
-import { useState } from 'react';
+import {useState} from 'react';
 import {
   StyledView,
   StyledText,
   StyledTouchableOpacity,
 } from '@common/StyledComponents';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import '@locales/index';
-import { useNavigation } from '@react-navigation/native';
-import { API_URL } from '@env';
+import {useNavigation} from '@react-navigation/native';
+import {API_URL} from '@env';
 import PasswordInput from '@screens/auth/components/PasswordInput';
-import { storage } from '@utils/MMKVStore';
-import { jwtDecode } from 'jwt-decode';
+import storage from '@utils/MMKVStore';
 
 const ChangePassword = () => {
   const navigation = useNavigation();
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const [formData, setFormData] = useState({
     old_password: '',
     new_password: '',
@@ -30,7 +28,7 @@ const ChangePassword = () => {
   });
 
   const handleInputChange = (name, value) => {
-    setFormData(prevValue => ({ ...prevValue, [name]: value }));
+    setFormData(prevValue => ({...prevValue, [name]: value}));
   };
 
   const validate = () => {
@@ -63,11 +61,12 @@ const ChangePassword = () => {
   };
 
   const changePassword = async () => {
+    const userType = storage.getString('userType');
     if (formData.new_password === formData.new_password_confirm) {
       try {
         const accessToken = storage.getString('accessToken');
-        const userType = jwtDecode(accessToken).user_type;
-        const url = `${API_URL}/${userType == "nanny" ? "nannies" : "drivers"}/change-password/`;
+
+        const url = `${API_URL}/${userType}/change-password/`;
 
         const response = await fetch(url, {
           method: 'POST',
@@ -84,18 +83,16 @@ const ChangePassword = () => {
           alert(
             t('attributes.success'),
             t('attributes.passwordChangedSuccessfully'),
-            { onConfirm: () => navigation.goBack() },
+            {onConfirm: () => navigation.goBack()},
           );
         } else {
-          console.log(response);
-
           alert(t('attributes.error'), jsonData?.error[0]);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     } else {
-      alert(t("attributes.error"), t('attributes.passwordNoMatch'));
+      alert(t('attributes.error'), t('attributes.passwordNoMatch'));
     }
   };
 

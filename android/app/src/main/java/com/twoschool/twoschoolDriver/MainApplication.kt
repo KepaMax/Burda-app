@@ -1,4 +1,4 @@
-package com.twoschooldriver
+package com.twoschool.twoschoolDriver
 
 import android.app.Application
 import com.facebook.react.PackageList

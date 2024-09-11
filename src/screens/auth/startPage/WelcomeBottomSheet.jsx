@@ -1,4 +1,3 @@
-import {useState} from 'react';
 import BottomSheet from '@gorhom/bottom-sheet';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {
@@ -12,9 +11,10 @@ import DriverIcon from '@icons/driver-icon.svg';
 import NannyIcon from '@icons/nanny-icon.svg';
 import {useNavigation} from '@react-navigation/native';
 import LoginBg from '@images/loginBg.png';
+import {useMMKVString} from 'react-native-mmkv';
 
 const WelcomeBottomSheet = () => {
-  const [registerType, setRegisterType] = useState('');
+  const [userType, setUserType] = useMMKVString('userType');
   const navigation = useNavigation();
   const {t} = useTranslation();
 
@@ -23,7 +23,7 @@ const WelcomeBottomSheet = () => {
       <StyledView className="bg-black/20 absolute h-full w-screen z-50">
         <GestureHandlerRootView style={{flex: 1}}>
           <BottomSheet
-            snapPoints={registerType ? ['55%'] : ['40%']}
+            snapPoints={userType ? ['55%'] : ['40%']}
             handleIndicatorStyle={{backgroundColor: '#BEBFC0'}}
             backgroundStyle={{backgroundColor: '#fff'}}>
             <StyledView className="p-6  items-center  w-max h-full">
@@ -37,14 +37,14 @@ const WelcomeBottomSheet = () => {
               <StyledView className="flex-row justify-center gap-6 w-full">
                 <StyledTouchableOpacity
                   onPress={() => {
-                    registerType === 'driver'
-                      ? setRegisterType('')
-                      : setRegisterType('driver');
+                    if (userType === 'drivers') {
+                      setUserType('');
+                    } else {
+                      setUserType('drivers');
+                    }
                   }}
                   className={`${
-                    registerType === 'driver'
-                      ? 'bg-[#76F5A433]'
-                      : 'bg-transparent'
+                    userType === 'drivers' ? 'bg-[#76F5A433]' : 'bg-transparent'
                   } rounded-[18px] w-[140px] border-[1px] border-[#EDEFF3] px-5 py-3`}>
                   <DriverIcon />
                   <StyledText className="font-poppi-bold text-[#204F50] text-xl text-center">
@@ -53,14 +53,14 @@ const WelcomeBottomSheet = () => {
                 </StyledTouchableOpacity>
                 <StyledTouchableOpacity
                   onPress={() => {
-                    registerType === 'nanny'
-                      ? setRegisterType('')
-                      : setRegisterType('nanny');
+                    if (userType === 'nannies') {
+                      setUserType('');
+                    } else {
+                      setUserType('nannies');
+                    }
                   }}
                   className={`${
-                    registerType === 'nanny'
-                      ? 'bg-[#76F5A433]'
-                      : 'bg-transparent'
+                    userType === 'nannies' ? 'bg-[#76F5A433]' : 'bg-transparent'
                   } rounded-[18px] w-[140px] border-[1px] border-[#EDEFF3] px-5 py-3`}>
                   <NannyIcon />
                   <StyledText className="font-poppi-bold text-[#204F50] text-xl text-center">
@@ -68,25 +68,17 @@ const WelcomeBottomSheet = () => {
                   </StyledText>
                 </StyledTouchableOpacity>
               </StyledView>
-              {registerType !== '' && (
+              {userType && (
                 <StyledView className="w-full mt-4">
                   <StyledTouchableOpacity
-                    onPress={() =>
-                      navigation.navigate('SignUp', {
-                        registerType: registerType,
-                      })
-                    }
+                    onPress={() => navigation.navigate('SignUp')}
                     className="rounded-[18px] w-full items-center  bg-[#76F5A4] p-[10px]">
                     <StyledText className="font-poppi-semibold text-base text-[#204F50]">
                       {t('attributes.getStarted')}
                     </StyledText>
                   </StyledTouchableOpacity>
                   <StyledTouchableOpacity
-                    onPress={() =>
-                      navigation.navigate('SignIn', {
-                        loginType: registerType,
-                      })
-                    }
+                    onPress={() => navigation.navigate('SignIn')}
                     className="rounded-[18px] mt-3 w-full items-center bg-[#EDEFF3] p-[10px]">
                     <StyledText className="font-poppi-semibold text-base text-[#204F50]">
                       {t('attributes.alreadyHasAccount')}

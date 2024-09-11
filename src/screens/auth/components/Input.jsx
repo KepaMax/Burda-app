@@ -10,8 +10,8 @@ const Input = ({
   handleInputChange,
   placeholder,
   error,
-  icon,
-  multiline,
+  icon = null,
+  multiline = false,
   height,
 }) => (
   <StyledView className="w-auto relative mb-3">
@@ -22,7 +22,12 @@ const Input = ({
       placeholder={placeholder}
       name={inputName}
       placeholderTextColor={error ? '#FF3115' : '#868782'}
-      onChangeText={value => handleInputChange(inputName, value)}
+      onChangeText={value =>
+        handleInputChange(
+          inputName,
+          inputName === 'email' ? value.toLowerCase() : value,
+        )
+      }
       className={`border-[1px] text-black font-poppi text-base placeholder:font-poppi ${
         error
           ? 'border-red-400 bg-red-50'

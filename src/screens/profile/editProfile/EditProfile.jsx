@@ -3,33 +3,35 @@ import {
   StyledTextInput,
   StyledTouchableOpacity,
   StyledView,
+  StyledImage,
 } from '@common/StyledComponents';
-import FastImage from 'react-native-fast-image';
 import EditProfileIcon from '@icons/edit-profile.svg';
 import {useEffect, useState} from 'react';
 import CustomSelect from '@common/CustomSelect';
 import {useTranslation} from 'react-i18next';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {API_URL} from '@env';
-import {Alert} from 'react-native';
 import Input from '@screens/auth/components/Input';
 import {prefixData} from '@screens/auth/utils/prefixData';
 import InfoIcon from '@icons/info.svg';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {request, PERMISSIONS} from 'react-native-permissions';
-import {launchImageLibrary} from 'react-native-image-picker';
-import {storage} from '@utils/MMKVStore';
+import {handlePhotoSelect} from '@utils/photoUtils';
+import storage from '@utils/MMKVStore';
+import {ActivityIndicator} from 'react-native';
+import {fetchData} from '@utils/fetchData';
 
 const EditProfile = () => {
   const router = useRoute();
   const navigation = useNavigation();
-  const {profileData, userType} = router.params;
+  const {profileData} = router.params;
   const {t} = useTranslation();
   const [selectedPrefix, setSelectedPrefix] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const [phoneNumValue, setPhoneNumValue] = useState();
   const [formData, setFormData] = useState({});
-  const [transformedData, setTransformedData] = useState(null);
   const [errors, setErrors] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (name, value) => {
     setFormData(prevFormData => ({
@@ -38,87 +40,32 @@ const EditProfile = () => {
     }));
   };
 
-  const handleNumberChange = value => {
-    setPhoneNumValue(value);
-    handleInputChange('mobile', `+994${selectedPrefix?.value}${value}`);
-  };
-
-  const handlePhotoSelect = () => {
-    request(
-      Platform.OS === 'ios'
-        ? PERMISSIONS.IOS.PHOTO_LIBRARY
-        : PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
-    ).then(result => {
-      result === 'granted'
-        ? launchImageLibrary(
-            {
-              mediaType: 'photo',
-            },
-            response => {
-              if (!response.didCancel && !response.error) {
-                const imgData = response.assets[0];
-                setFormData(prevValue => ({
-                  ...prevValue,
-                  photo: imgData,
-                }));
-              }
-            },
-          )
-        : alert(
-            t('attributes.error'),
-            t('attributes.galleryErrorMessage'),
-          );
-    });
-  };
-
-  const transformData = data => {
-    console.log('transformData', data);
-    const form = new FormData();
-    Object.keys(formData).forEach(key => {
-      if (Array.isArray(formData[key])) {
-        formData[key].forEach(value => {
-          form.append(key, value);
-        });
-      } else if (formData[key] instanceof Object && formData[key].uri) {
-        // Handle file upload
-        form.append(key, {
-          uri: data[key].uri,
-          name: data[key].fileName,
-          type: data[key].type,
-        });
-      } else if (key !== 'photo') {
-        form.append(key, data[key]);
-      }
-    });
-
-    setTransformedData(form);
-  };
-
   const updateAccount = async () => {
-    const url = `${API_URL}/${
-      userType === 'driver' ? 'drivers' : 'nannies'
-    }/profile/`;
-    const accessToken = storage.getString('accessToken');
+    const userType = storage.getString('userType');
 
-    try {
-      console.log(transformedData);
-      const response = await fetch(url, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: transformedData,
-      });
+    delete formData.photo;
 
-      if (response.ok) {
-        alert(t('attributes.success'));
-        navigation.goBack();
-      } else {
-        alert(t("attributes.error"),t('attributes.errorOccurred'));
-      }
-    } catch (error) {
-      console.error('Error:', error);
+    const result = await fetchData({
+      url: `${API_URL}/${userType}/profile/`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept-Language': storage.getString('selectedLanguage'),
+        Authorization: `Bearer ${storage.getString('accessToken')}`,
+      },
+      method: 'PATCH',
+      body: {
+        ...formData,
+        mobile: `+994${selectedPrefix.value}${phoneNumValue}`,
+        ...(selectedImage
+          ? {photo: `data:image/jpeg;base64,${selectedImage}`}
+          : {}),
+      },
+      setLoading,
+    });
+
+    if (result?.success) {
+      alert(t('attributes.success'));
+      navigation.goBack();
     }
   };
 
@@ -131,29 +78,28 @@ const EditProfile = () => {
     });
   }, []);
 
-  useEffect(() => {
-    handleInputChange('mobile', `+994${selectedPrefix?.value}${phoneNumValue}`);
-  }, [selectedPrefix]);
-
-  useEffect(() => {
-    transformData(formData);
-  }, [formData]);
-
   return (
     <StyledView className="flex-1 justify-between bg-white">
       <KeyboardAwareScrollView contentContainerStyle={{padding: 16}}>
         <StyledView className="w-full relative justify-center items-center">
           <StyledView>
-            <FastImage
-              style={{width: 120, height: 120, borderRadius: 9999}}
-              source={{
-                uri: formData?.photo,
-                priority: FastImage.priority.normal,
-              }}
+            <StyledImage
+              style={{width: 120, height: 120, borderRadius: 100}}
+              source={
+                selectedImageUrl !== null
+                  ? {uri: selectedImageUrl}
+                  : profileData.photo !== null
+                  ? {uri: profileData.photo}
+                  : {
+                      uri: 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',
+                    }
+              }
             />
 
             <StyledTouchableOpacity
-              onPress={handlePhotoSelect}
+              onPress={() => {
+                handlePhotoSelect(setSelectedImage, setSelectedImageUrl);
+              }}
               className="absolute border-[1px] border-[#EDEFF3] rounded-full right-1 bottom-0 z-50">
               <EditProfileIcon />
             </StyledTouchableOpacity>
@@ -163,7 +109,7 @@ const EditProfile = () => {
         <StyledView className="gap-4">
           <StyledView>
             <StyledText className="text-[15px] mb-2 text-[#C0C0BF] font-poppi-medium">
-              First name
+              {t('attributes.registerParentName')}
             </StyledText>
             <Input
               inputName="name"
@@ -176,7 +122,7 @@ const EditProfile = () => {
 
           <StyledView>
             <StyledText className="text-[15px] mb-2 text-[#C0C0BF] font-poppi-medium">
-              Last name
+              {t('attributes.registerParentSurname')}
             </StyledText>
             <Input
               inputName="surname"
@@ -189,7 +135,7 @@ const EditProfile = () => {
 
           <StyledView>
             <StyledText className="text-[15px] mb-2 text-[#C0C0BF] font-poppi-medium">
-              Email
+              {t('attributes.registerParentEmail')}
             </StyledText>
             <Input
               inputName="email"
@@ -202,7 +148,7 @@ const EditProfile = () => {
 
           <StyledView>
             <StyledText className="text-[15px] mb-2 text-[#C0C0BF] font-poppi-medium">
-              Phone number
+              {t('attributes.registerParentNumber')}
             </StyledText>
             <StyledView className="flex-row w-max">
               <CustomSelect
@@ -215,7 +161,7 @@ const EditProfile = () => {
 
               <StyledView className="w-[70%]">
                 <StyledTextInput
-                  onChangeText={value => handleNumberChange(value)}
+                  onChangeText={value => setPhoneNumValue(value)}
                   value={phoneNumValue}
                   maxLength={7}
                   keyboardType="numeric"
@@ -230,7 +176,7 @@ const EditProfile = () => {
 
           <StyledView>
             <StyledText className="text-[15px] mb-2 text-[#C0C0BF] font-poppi-medium">
-              Work experience
+              {t('attributes.workExperienceTitle')}
             </StyledText>
             <Input
               inputName="work_experience"
@@ -246,7 +192,7 @@ const EditProfile = () => {
 
           <StyledView>
             <StyledText className="text-[15px] mb-2 text-[#C0C0BF] font-poppi-medium">
-              Reference person
+              {t('attributes.referenceTitle')}
             </StyledText>
             <Input
               inputName="reference_detail"
@@ -269,6 +215,12 @@ const EditProfile = () => {
           Save
         </StyledText>
       </StyledTouchableOpacity>
+
+      {loading && (
+        <StyledView className="bg-black/20 h-screen z-50 w-screen absolute items-center justify-center pb-32">
+          <ActivityIndicator size="large" color="#7658F2" />
+        </StyledView>
+      )}
     </StyledView>
   );
 };

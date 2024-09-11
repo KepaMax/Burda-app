@@ -5,14 +5,14 @@ import az from './az.json';
 import ru from './ru.json';
 
 const resources = {
+  az: {
+    translation: az,
+  },
   en: {
     translation: en,
   },
   ru: {
     translation: ru,
-  },
-  az: {
-    translation: az,
   },
 };
 

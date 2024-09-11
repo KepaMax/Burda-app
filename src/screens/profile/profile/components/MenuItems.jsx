@@ -12,23 +12,44 @@ import {
   StyledText,
   StyledTouchableOpacity,
 } from '@common/StyledComponents';
+import {useMMKVString} from 'react-native-mmkv';
 
 const MenuItems = ({setDeleteAccountOpen, setLogoutModalOpen}) => {
   const navigation = useNavigation();
   const {t} = useTranslation();
+  const [selectedLanguage, setSelectedLanguage] =
+    useMMKVString('selectedLanguage');
 
   const menuItems = [
     {
       logo: <DocsIcon />,
       title: t('attributes.termsAndConditions'),
-      route: 'WebView',
-      url: 'https://docs.google.com/gview?embedded=true&url=https://tredu-storage-bucket.s3.us-east-2.amazonaws.com/Tredu_Tos_Parents.docx.pdf',
+      route: 'WebViewScreen',
+      payload:
+        selectedLanguage === 'az' || selectedLanguage === 'ru'
+          ? {
+              url: 'http://2school.app/open/az/terms_and_conditions/',
+              title: 'İstifadəçi qaydaları və şərtləri',
+            }
+          : {
+              url: 'http://2school.app/open/en/terms_and_conditions/',
+              title: 'Terms and conditions',
+            },
     },
     {
       logo: <LockIcon />,
       title: t('attributes.privacyPolicy'),
-      route: 'WebView',
-      url: 'https://docs.google.com/gview?embedded=true&url=https://tredu-storage-bucket.s3.us-east-2.amazonaws.com/Privacy+policy.pdf',
+      route: 'WebViewScreen',
+      payload:
+        selectedLanguage === 'az' || selectedLanguage === 'ru'
+          ? {
+              url: 'https://2school.app/open/az/privacy_policy/',
+              title: 'Məxfilik siyasəti',
+            }
+          : {
+              url: 'https://2school.app/open/en/privacy_policy/',
+              title: 'Privacy policy',
+            },
     },
 
     {
@@ -48,8 +69,10 @@ const MenuItems = ({setDeleteAccountOpen, setLogoutModalOpen}) => {
       className={` border-[1px] border-[#EDEFF3] my-[6px] bg-white rounded-[18px]`}>
       <StyledTouchableOpacity
         onPress={async () => {
-          if (item.route) {
-            navigation.navigate(item.route, {url: item.url, title: item.title});
+          if (item.route && item.payload) {
+            navigation.navigate(item.route, item.payload);
+          } else if (item.route) {
+            navigation.navigate(item.route);
           } else {
             setDeleteAccountOpen(true);
           }

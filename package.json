@@ -1,5 +1,5 @@
 {
-  "name": "twoschoolDriver",
+  "name": "twoschooldriver",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -28,7 +28,7 @@
     "react": "18.2.0",
     "react-i18next": "^13.2.0",
     "react-native": "0.74.3",
-    "react-native-blob-util": "^0.19.1",
+    "react-native-blob-util": "^0.19.11",
     "react-native-calendars": "^1.1305.0",
     "react-native-date-picker": "^5.0.2",
     "react-native-email-link": "^1.14.8",
@@ -44,6 +44,7 @@
     "react-native-maps-directions": "^1.9.0",
     "react-native-mmkv": "^2.12.2",
     "react-native-otp-entry": "^1.6.1",
+    "react-native-pdf": "^6.7.5",
     "react-native-permissions": "3.6.1",
     "react-native-reanimated": "^3.6.1",
     "react-native-rename": "^3.2.13",

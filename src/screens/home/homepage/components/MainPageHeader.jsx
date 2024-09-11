@@ -13,13 +13,13 @@ const MainPageHeader = () => {
         <LogoHomeIcon />
       </StyledView>
 
-      <StyledView className="flex-row gap-[16px]">
+      {/* <StyledView className="flex-row gap-[16px]">
         <StyledTouchableOpacity
           onPress={() => navigation.navigate('Notifications')}
           className="border-[1px] bg-white border-[#EDEFF3] w-[40px] h-[40px] items-center justify-center rounded-full">
           <RingbellHomeIcon />
         </StyledTouchableOpacity>
-      </StyledView>
+      </StyledView> */}
     </StyledView>
   );
 };

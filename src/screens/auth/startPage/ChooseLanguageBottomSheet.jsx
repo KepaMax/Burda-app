@@ -14,6 +14,7 @@ import {useTranslation} from 'react-i18next';
 import LoginBg from '@images/loginBg.png';
 import {useMMKVString} from 'react-native-mmkv';
 import {useNavigation} from '@react-navigation/native';
+import {useEffect} from 'react';
 
 const ChooseLanguageBottomSheet = () => {
   const {t, i18n} = useTranslation();
@@ -38,6 +39,10 @@ const ChooseLanguageBottomSheet = () => {
       icon: <EnFlagIcon />,
     },
   ];
+
+  useEffect(() => {
+    setSelectedLanguage(i18n.language);
+  }, []);
 
   return (
     <StyledImageBackground className="flex-1 bg-[#7658F2]" source={LoginBg}>

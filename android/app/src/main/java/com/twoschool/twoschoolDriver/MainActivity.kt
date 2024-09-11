@@ -1,4 +1,4 @@
-package com.twoschooldriver
+package com.twoschool.twoschoolDriver
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

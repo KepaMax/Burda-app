@@ -8,17 +8,17 @@ import {
 } from '@common/StyledComponents';
 import PhoneIcon from '@icons/child-profile-phone.svg';
 import MessageIcon from '@icons/child-profile-message.svg';
-import { Linking } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import { format } from 'date-fns';
-import { useRoute } from '@react-navigation/native';
+import {Linking} from 'react-native';
+import {useTranslation} from 'react-i18next';
+import {format} from 'date-fns';
+import {useRoute} from '@react-navigation/native';
 
 const ChildProfile = () => {
   const route = useRoute();
-  const { data, address } = route.params
-  const { t } = useTranslation();
+  const {data, address} = route.params;
+  const {t} = useTranslation();
 
-  const InfoInput = ({ title, value }) => (
+  const InfoInput = ({title, value}) => (
     <StyledView className="w-full">
       <StyledText className="text-[15px] font-poppi-medium text-[#C0C0BF]">
         {title}
@@ -46,17 +46,22 @@ const ChildProfile = () => {
           marginVertical: 16,
         }}
         source={{
-          uri: data.photo,
+          uri: data.photo
+            ? data.photo
+            : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg',
         }}
       />
 
-      <StyledView className="w-full flex-row justify-between items-center p-[10px] px-4 border-[1px] border-[#EDEFF3] rounded-[18px]">
+      <StyledView className="w-full flex-row justify-between items-center p-[10px] px-4 border-[1px] border-[#EDEFF3] rounded-[18px] mb-3">
         <StyledView>
           <StyledText className="text-base text-black font-poppi-bold">
             {data.name} {data.surname}
           </StyledText>
           <StyledText className="text-base font-poppi text-[#868782]">
-            {data.mobile.replace(/(\d{3})(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5')}
+            {data.mobile.replace(
+              /(\d{3})(\d{2})(\d{3})(\d{2})(\d{2})/,
+              '$1 $2 $3 $4 $5',
+            )}
           </StyledText>
         </StyledView>
         <StyledTouchableOpacity
@@ -86,25 +91,30 @@ const ChildProfile = () => {
         </StyledView>
       </StyledView> */}
 
-      <StyledView>
-        <StyledText className="text-base font-poppi-semibold text-[#7658F2]">
-          {t('attributes.profileEmergencyContact')}
-        </StyledText>
-        <StyledView className="w-full flex-row my-2 justify-between items-center p-[10px] px-4 border-[1px] border-[#EDEFF3] rounded-[18px]">
-          <StyledView>
-            <StyledText className="text-base text-black font-poppi-bold">
-              {data.emergency_fullname}
-            </StyledText>
-            <StyledText className="text-base font-poppi text-[#868782]">
-              {data.emergency_mobile.replace(/(\d{3})(\d{2})(\d{3})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5')}
-            </StyledText>
+      {Boolean(data.emergency_fullname && data.emergency_mobile) && (
+        <StyledView>
+          <StyledText className="text-base font-poppi-semibold text-[#7658F2]">
+            {t('attributes.profileEmergencyContact')}
+          </StyledText>
+          <StyledView className="w-full flex-row my-2 justify-between items-center p-[10px] px-4 border-[1px] border-[#EDEFF3] rounded-[18px]">
+            <StyledView>
+              <StyledText className="text-base text-black font-poppi-bold">
+                {data.emergency_fullname}
+              </StyledText>
+              <StyledText className="text-base font-poppi text-[#868782]">
+                {data.emergency_mobile.replace(
+                  /(\d{3})(\d{2})(\d{3})(\d{2})(\d{2})/,
+                  '$1 $2 $3 $4 $5',
+                )}
+              </StyledText>
+            </StyledView>
+            <StyledTouchableOpacity
+              onPress={() => Linking.openURL(`tel:${data.emergency_mobile}`)}>
+              <PhoneIcon />
+            </StyledTouchableOpacity>
           </StyledView>
-          <StyledTouchableOpacity
-            onPress={() => Linking.openURL(`tel:${data.emergency_mobile}`)}>
-            <PhoneIcon />
-          </StyledTouchableOpacity>
         </StyledView>
-      </StyledView>
+      )}
 
       {/* <InfoInput
         title={t('attributes.profileEmail')}
@@ -116,20 +126,19 @@ const ChildProfile = () => {
         value={format(new Date(data.birthday), 'dd/MM/yyyy')}
       />
 
-      <InfoInput
-        title={t('attributes.homeAddress')}
-        value={address}
-      />
+      <InfoInput title={t('attributes.homeAddress')} value={address} />
 
       <InfoInput
         title={t('attributes.profileSchool')}
         value={data.school.name}
       />
 
-      <InfoInput
-        title={t('attributes.profileSpecificComment')}
-        value={data.comment}
-      />
+      {Boolean(data.comment) && (
+        <InfoInput
+          title={t('attributes.profileSpecificComment')}
+          value={data.comment}
+        />
+      )}
     </StyledScrollView>
   );
 };

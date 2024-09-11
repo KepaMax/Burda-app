@@ -7,7 +7,7 @@ import '@locales/index';
 import {useTranslation} from 'react-i18next';
 import ChangePassword from '@screens/profile/changePassword/ChangePassword';
 import ChangeLanguage from '@screens/profile/settings/ChangeLanguage';
-import WebViewGeneral from '@common/WebViewGeneral';
+import WebViewScreen from '@common/WebViewScreen';
 import EditProfile from '@screens/profile/editProfile/EditProfile';
 
 const Stack = createStackNavigator();
@@ -42,8 +42,8 @@ const ProfileStack = () => {
       />
       <Stack.Screen
         options={{headerShown: false}}
-        name="WebView"
-        component={WebViewGeneral}
+        name="WebViewScreen"
+        component={WebViewScreen}
       />
       <Stack.Screen
         options={{
@@ -63,9 +63,7 @@ const ProfileStack = () => {
       />
       <Stack.Screen
         options={{
-          header: () => (
-            <CustomHeader title={t('attributes.resetPasswordTitle')} />
-          ),
+          header: () => <CustomHeader title={t('attributes.editProfile')} />,
         }}
         name="EditProfile"
         component={EditProfile}

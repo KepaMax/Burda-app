@@ -225,13 +225,13 @@
     "todaysRideToSchool": "Сегодняшняя поездка (в школу)",
     "goToProfile": "Перейти к профилю",
     "openInWaze": "Открыть в Waze",
-    "endRide":"Завершить поездку",
+    "endRide": "Завершить поездку",
     "noNotifications": "Нет уведомлений",
     "confirmPassword": "Подтвердите пароль",
     "notificationsErrorMessage": "Пожалуйста, измените настройки разрешений вашего телефона, чтобы разрешить уведомления.",
     "openEmail": "Откройте свою электронную почту",
     "forgotPasswordHelp": "Не получили письмо? Проверьте спам или",
-    "arrived":"Прибыл",
+    "arrived": "Прибыл",
     "contactNumber": "свяжитесь с нами по телефону *7788",
     "warning": "Внимание",
     "enterEmail": "Пожалуйста, сначала введите действительный адрес электронной почты",
@@ -239,6 +239,13 @@
     "changeLanguage": "Изменить язык",
     "chooseLanguage": "Выберите язык:",
     "driver": "Водитель",
-    "noNotificationPermission": "Сначала дайте разрешение на уведомление приложению Tredu."
+    "noNotificationPermission": "Сначала дайте разрешение на уведомление приложению Tredu.",
+    "reference": "Имя и номер референтного лица",
+    "referenceTitle": "Pеферентного лица",
+    "workExperience": "Опыт работы (год, должность, компания)",
+    "workExperienceTitle": "Опыт работы",
+    "oldPassword": "Старый пароль",
+    "logoutDesc": "Вы действительно хотите выйти?",
+    "errorOccurred": "Произошла ошибка"
   }
 }

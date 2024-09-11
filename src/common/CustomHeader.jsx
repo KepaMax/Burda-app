@@ -6,16 +6,20 @@ import {
   StyledTouchableOpacity,
 } from '@common/StyledComponents';
 
-const CustomHeader = ({title, noBackBtn}) => {
+const CustomHeader = ({title, noBackBtn, navigationScreen = null}) => {
   const navigation = useNavigation();
 
   return (
     <StyledView className={`w-full bg-[#7658F2] items-center`}>
       <StyledView className="w-11/12 items-center justify-center flex-row relative">
-        {noBackBtn ? null : (
+        {!Boolean(noBackBtn) && (
           <StyledTouchableOpacity
             hitSlop={{top: 50, right: 50, bottom: 50, left: 50}}
-            onPress={() => navigation.goBack()}
+            onPress={() =>
+              navigationScreen !== null
+                ? navigation.navigate(navigationScreen)
+                : navigation.goBack()
+            }
             className="absolute left-0">
             <ArrowLeftIcon />
           </StyledTouchableOpacity>

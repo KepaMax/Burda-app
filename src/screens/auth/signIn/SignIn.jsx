@@ -1,6 +1,6 @@
 import {ActivityIndicator} from 'react-native';
 import {useState} from 'react';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import '@locales/index';
 import {useTranslation} from 'react-i18next';
@@ -11,7 +11,7 @@ import {
 } from '@common/StyledComponents';
 import Input from '../components/Input';
 import PasswordInput from '../components/PasswordInput';
-import {login} from '../../../utils/authUtils';
+import {login} from '@utils/authUtils';
 
 const SignIn = () => {
   const [errors, setErrors] = useState(null);
@@ -22,7 +22,6 @@ const SignIn = () => {
     email: '',
     password: '',
   });
-  const loginType = useRoute().params.loginType;
 
   const handleInputChange = (name, value) => {
     setFormData(prevFormData => ({
@@ -65,7 +64,7 @@ const SignIn = () => {
 
         <StyledTouchableOpacity
           onPress={() => {
-            login(loginType, formData, setLoading);
+            login(formData, setLoading, setErrors);
           }}>
           <StyledView className=" p-[10px] bg-[#76F5A4] rounded-[18px]">
             <StyledText className="text-center text-[#204F50] text-base font-poppi-semibold">
@@ -73,15 +72,16 @@ const SignIn = () => {
             </StyledText>
           </StyledView>
         </StyledTouchableOpacity>
+
         <StyledView className="w-full mt-10 flex-row items-center justify-center">
-          <StyledText className="font-poppi text-base text-[#91919F]">
+          <StyledText className="font-poppi text-xs text-[#91919F]">
             {t('attributes.registerSignup')}
           </StyledText>
           <StyledTouchableOpacity
             onPress={() => {
-              navigation.navigate('SignUp', {registerType: loginType});
+              navigation.navigate('SignUp');
             }}>
-            <StyledText className="font-poppi-semibold ml-2 text-base text-[#204F50]">
+            <StyledText className="font-poppi-semibold ml-2 text-xs text-[#204F50]">
               {t('attributes.signUp')}
             </StyledText>
           </StyledTouchableOpacity>

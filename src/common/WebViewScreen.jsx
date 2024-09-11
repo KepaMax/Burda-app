@@ -3,7 +3,7 @@ import {useRoute} from '@react-navigation/native';
 import {StyledView} from './StyledComponents';
 import CustomHeader from './CustomHeader';
 
-const WebViewGeneral = () => {
+const WebViewScreen = () => {
   const route = useRoute();
   const {url, title} = route.params;
 
@@ -15,4 +15,4 @@ const WebViewGeneral = () => {
   );
 };
 
-export default WebViewGeneral;
+export default WebViewScreen;

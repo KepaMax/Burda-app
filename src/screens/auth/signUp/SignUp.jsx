@@ -1,226 +1,99 @@
-import {TextInput, ActivityIndicator} from 'react-native';
+import Styled from '@common/StyledComponents';
+import Images from '@images/images.js';
+import CustomComponents from '@common/CustomComponents';
 import {useState} from 'react';
+import {Dimensions} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import InfoIcon from '@icons/info.svg';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import '@locales/index';
-import {useTranslation} from 'react-i18next';
-import {
-  StyledText,
-  StyledView,
-  StyledTouchableOpacity,
-} from '@common/StyledComponents';
-import CustomSelect from '@common/CustomSelect';
-import Input from '../components/Input';
-import PasswordInput from '../components/PasswordInput';
-import {createAccount} from '@utils/authUtils';
-import {prefixData} from '@utils/staticData';
-import AddPhoto from './components/AddPhoto';
-import AcceptTermsAndConditions from './components/AcceptTermsAndConditions';
-import storage from '@utils/MMKVStore';
 
 const SignUp = () => {
-  const userType = storage.getString('userType');
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedImageUrl, setSelectedImageUrl] = useState(null);
-  const [errors, setErrors] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    surname: '',
-    email: '',
-    mobile: '',
-    password: '',
-    password_confirm: '',
-    photo: null,
-    work_experience: '',
-    reference_detail: '',
-  });
-  const [termsConditionsAccepted, setTermsConditionsAccepted] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
   const navigation = useNavigation();
-  const [selectedPrefix, setSelectedPrefix] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const {t} = useTranslation();
-  const [phoneNumValue, setPhoneNumValue] = useState();
+  const screenWidth = Dimensions.get('screen').width;
 
   const handleInputChange = (name, value) => {
-    // Check if the name is first_name or last_name
-    if (name === 'name' || name === 'surname') {
-      // Check if the value contains any numbers
-      if (/\d/.test(value)) {
-        // If the value contains numbers, do not update the state
-        return;
-      }
-    }
-
-    // Update the state only if the conditions are met
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  };
-
-  const checkConditions = async () => {
-    const result = await createAccount({
-      formData: formData,
-      setLoading: setLoading,
-      setErrors: setErrors,
-      termsConditionsAccepted: termsConditionsAccepted,
-      selectedPrefix: selectedPrefix,
-    });
-
-    if (result?.success) {
-      navigation.navigate('HomePage');
-    }
-  };
-
-  const handleNumberChange = value => {
-    setPhoneNumValue(value);
-    handleInputChange('mobile', `+994${selectedPrefix?.value}${value}`);
+    setFormData(prevState => ({...prevState, [name]: value}));
   };
 
   return (
-    <StyledView className="flex-1 bg-white">
-      <StyledView
-        className={`${
-          loading ? 'block pb-40' : 'hidden'
-        } w-screen h-screen bg-black/20 z-50 absolute items-center justify-center`}>
-        <ActivityIndicator size="large" color="#0079E9" />
-      </StyledView>
-      <KeyboardAwareScrollView
-        style={{
-          padding: 16,
-        }}>
-        <StyledText className="font-poppi-medium text-base text-[#C0C0BF] mb-3">
-          {t('attributes.registerInfoParentTitle')}
-        </StyledText>
+    <KeyboardAwareScrollView style={{backgroundColor: '#FAFAFA'}}>
+      <CustomComponents.Header overlay={true} />
+      <Styled.Image
+        style={{width: screenWidth}}
+        className="h-[316px]"
+        source={Images.SignInHeader}
+      />
+      <Styled.View className="px-5">
+        <Styled.Text className="text-[#184639] text-[32px] font-semibold mb-4">
+          Sign up
+        </Styled.Text>
 
-        <Input
-          inputName="name"
-          inputValue={formData.name}
-          handleInputChange={handleInputChange}
-          placeholder={t('attributes.profileFirstname')}
-          error={errors?.name}
-        />
+        <Styled.View className="flex-row justify-between items-center">
+          <CustomComponents.Input
+            width="w-[49%]"
+            inputName="firstname"
+            inputValue={formData?.firstname}
+            handleInputChange={handleInputChange}
+            placeholder="First name"
+            error={errors?.firstname}
+          />
 
-        <Input
-          inputName="surname"
-          inputValue={formData.surname}
-          handleInputChange={handleInputChange}
-          placeholder={t('attributes.profileLastname')}
-          error={errors?.surname}
-        />
+          <CustomComponents.Input
+            width="w-[49%]"
+            inputName="lastname"
+            inputValue={formData?.lastname}
+            handleInputChange={handleInputChange}
+            placeholder="Last name"
+            error={errors?.lastname}
+          />
+        </Styled.View>
 
-        <StyledView className="w-auto mb-3">
-          <StyledView className="flex-row">
-            <CustomSelect
-              items={prefixData}
-              selectedItem={selectedPrefix}
-              setSelectedItem={setSelectedPrefix}
-              placeholder={t('attributes.profileSelect')}
-              disabled={false}
-              error={errors?.prefix}
-            />
-            <StyledView className="w-[70%]">
-              <TextInput
-                maxLength={7}
-                keyboardType="numeric"
-                value={phoneNumValue}
-                placeholder={t('attributes.profileNumber')}
-                name="mobile"
-                placeholderTextColor={errors?.mobile ? '#FF3115' : '#757575'}
-                onChangeText={value => handleNumberChange(value)}
-                className={`border-[1px] h-[50px] text-black py-[8px] font-poppi text-base placeholder:font-poppi ${
-                  errors?.mobile
-                    ? 'border-red-400 bg-red-50'
-                    : 'border-[#EDEFF3] bg-white focus:border-[#7658F2] focus:bg-[#F3F7FF]'
-                } h-[45px]  rounded-[18px] rounded-l-none px-4`}
-              />
-            </StyledView>
-          </StyledView>
-
-          <StyledText
-            className={`text-red-400 text-xs font-serrat mt-1 ${
-              errors?.mobile || errors?.prefix ? 'block' : 'hidden'
-            }`}>
-            {errors?.mobile || errors?.prefix}
-          </StyledText>
-        </StyledView>
-
-        <Input
+        <CustomComponents.Input
           inputName="email"
-          inputValue={formData.email}
+          inputValue={formData?.email}
           handleInputChange={handleInputChange}
-          placeholder={t('attributes.registerParentEmail')}
+          placeholder="Email"
           error={errors?.email}
         />
 
-        <PasswordInput
+        <CustomComponents.PasswordInput
           inputName="password"
-          inputValue={formData.password}
+          inputValue={formData?.password}
           handleInputChange={handleInputChange}
-          placeholder={t('attributes.registerParentPassword')}
+          placeholder="Password"
           error={errors?.password}
         />
 
-        <PasswordInput
-          inputName="password_confirm"
-          inputValue={formData.password_confirm}
+        <CustomComponents.PasswordInput
+          inputName="repeat_password"
+          inputValue={formData?.repeat_password}
           handleInputChange={handleInputChange}
-          placeholder={t('attributes.confirmPassword')}
-          error={errors?.password_confirm}
+          placeholder="Repeat password"
+          error={errors?.repeat_password}
         />
 
-        <AddPhoto
-          data={formData.photo}
-          setData={setFormData}
-          error={errors?.photo}
+        <CustomComponents.Link
+          title="Already have an account?"
+          margin="mb-4"
+          textColor="text-[#184639]"
+          fontWeight="font-regular"
+          linkAction={() => {
+            navigation.navigate('SignIn');
+          }}
         />
 
-        <Input
-          inputName="work_experience"
-          inputValue={formData.work_experience}
-          handleInputChange={handleInputChange}
-          placeholder={t('attributes.workExperience')}
-          error={errors?.work_experience}
-          icon={<InfoIcon />}
-          multiline={true}
-          height={120}
+        <CustomComponents.Button
+          borderRadius="rounded-[24px]"
+          padding="p-2.5"
+          bgColor="bg-[#66B600]"
+          textSize="text-lg"
+          title="Sign up"
+
+          // buttonAction={() => {}}
         />
-
-        <Input
-          inputName="reference_detail"
-          inputValue={formData.reference_detail}
-          handleInputChange={handleInputChange}
-          placeholder={t('attributes.reference')}
-          error={errors?.reference_detail}
-          icon={<InfoIcon />}
-          multiline={true}
-          height={75}
-        />
-
-        <StyledTouchableOpacity
-          onPress={() => {
-            navigation.navigate('SignIn', {userType: userType});
-          }}>
-          <StyledText className="font-poppi text-sm text-[#204F50] ml-1 mb-4">
-            {t('attributes.registerSignIn')}
-          </StyledText>
-        </StyledTouchableOpacity>
-
-        <AcceptTermsAndConditions
-          accepted={termsConditionsAccepted}
-          setAccepted={setTermsConditionsAccepted}
-        />
-
-        <StyledTouchableOpacity
-          className="bg-[#76F5A4] rounded-[18px] p-[10px] mt-5 mb-20"
-          onPress={checkConditions}>
-          <StyledText className="text-center text-[#204F50] text-base font-poppi-semibold">
-            {t('attributes.verify')}
-          </StyledText>
-        </StyledTouchableOpacity>
-      </KeyboardAwareScrollView>
-    </StyledView>
+      </Styled.View>
+    </KeyboardAwareScrollView>
   );
 };
 

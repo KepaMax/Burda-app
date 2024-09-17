@@ -10,11 +10,15 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 
-export const StyledView = styled(View);
-export const StyledScrollView = styled(ScrollView);
-export const StyledText = styled(Text);
-export const StyledTouchableOpacity = styled(TouchableOpacity);
-export const StyledImageBackground = styled(ImageBackground);
-export const StyledImage = styled(Image);
-export const StyledTextInput = styled(TextInput);
-export const StyledTouchableWithoutFeedback = styled(TouchableWithoutFeedback);
+const Styled = {
+  View: styled(View),
+  ScrollView: styled(ScrollView),
+  Text: styled(Text),
+  TouchableOpacity: styled(TouchableOpacity),
+  ImageBackground: styled(ImageBackground),
+  Image: styled(Image),
+  TextInput: styled(TextInput),
+  TouchableWithoutFeedback: styled(TouchableWithoutFeedback),
+};
+
+export default Styled;

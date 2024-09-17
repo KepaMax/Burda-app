@@ -1,4 +1,5 @@
 import {refreshTokens} from './authUtils.js';
+import {API_URL} from '@env';
 
 export const fetchData = async ({
   url,
@@ -17,8 +18,8 @@ export const fetchData = async ({
       ...(body && {body: JSON.stringify(body)}),
     };
 
-    const response = await fetch(url, options);
-    // console.log(response)
+    const response = await fetch(`${API_URL}${url}`, options);
+    // console.log(response);
     const data = returnsData ? await response?.json() : null;
 
     if (response.ok) {
@@ -31,7 +32,14 @@ export const fetchData = async ({
       const tokensRefreshed = await refreshTokens();
 
       if (tokensRefreshed) {
-        return await fetchData(url, headers, method, body, setData, setLoading);
+        return await fetchData(
+          url,
+          headers,
+          (method = 'GET'),
+          (body = null),
+          setLoading,
+          (returnsData = true),
+        );
       }
     } else {
       console.error(`Fetch error: ${response.status} ${response.statusText}`);

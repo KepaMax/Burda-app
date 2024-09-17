@@ -74,9 +74,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.twoschool.twoschoolDriver"
+    namespace "com.myburda.burda"
     defaultConfig {
-        applicationId "com.twoschool.twoschoolDriver"
+        applicationId "com.myburda.burda"
         minSdkVersion 23
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

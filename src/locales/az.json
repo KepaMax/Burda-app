@@ -100,7 +100,7 @@
     "requestRideClient": "{name} {surname} üçün səyahət sifarişi",
     "profileEmail": "Elektron poçt ünvanı",
     "profileNumber": "Mobil nömrə",
-    "profileDeleteTitle": "Hesab silinsin?",
+    "profileDeleteTitle": "Hesab silinsin",
     "profileDeleteDescr": "Hesabınız silindikdən sonra məlumatlarınızı artıq bərpa edə bilməyəcəyik.",
     "studentDeleteDescr": "Şagird hesabı silindikdən sonra məlumatları artıq bərpa edə bilməyəcəyik.",
     "profileDeleteYes": "Sil",

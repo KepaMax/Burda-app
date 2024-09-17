@@ -1,108 +1,126 @@
-import MenuItems from './components/MenuItems';
-import EditProfileIcon from '@icons/edit-profile.svg';
-import {
-  StyledText,
-  StyledTouchableOpacity,
-  StyledView,
-  StyledScrollView,
-  StyledImage,
-} from '@common/StyledComponents';
-import {useState, useEffect} from 'react';
-import Modal from '@common/Modal';
-import {useNavigation, useIsFocused} from '@react-navigation/native';
+import {SectionList} from 'react-native';
+import Icons from '@icons/icons.js';
+import {useNavigation} from '@react-navigation/native';
 import '@locales/index';
 import {useTranslation} from 'react-i18next';
-import {deleteAccount} from '@utils/authUtils';
-import {API_URL} from '@env';
-import storage from '@utils/MMKVStore';
-import {logout} from '@utils/authUtils';
-import {fetchData} from '@utils/fetchData';
+import Styled from '@common/StyledComponents';
+import {useMMKVString} from 'react-native-mmkv';
+import LogOutButton from './components/LogOutButton';
+import {useState} from 'react';
 
 const Profile = () => {
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
-  const [deleteAccountModalOpen, setDeleteAccountModalOpen] = useState(false);
-  const [logOutModalOpen, setLogoutModalOpen] = useState(false);
-  const [data, setData] = useState(null);
   const {t} = useTranslation();
-  const [loading, setLoading] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] =
+    useMMKVString('selectedLanguage');
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
 
-  useEffect(() => {
-    const getProfileData = async () => {
-      const userType = storage.getString('userType');
-      const result = await fetchData({
-        url: `${API_URL}/${userType}/profile/`,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept-Language': storage.getString('selectedLanguage'),
-          Authorization: `Bearer ${storage.getString('accessToken')}`,
+  const sections = [
+    {
+      title: 'Profile',
+      data: [
+        {
+          logo: <Icons.PersonalInformation />,
+          title: t('attributes.personalInformation'),
+          route: 'EditProfile',
         },
-        setLoading,
-      });
+      ],
+    },
+    {
+      title: 'Options',
+      data: [
+        {
+          logo: <Icons.TermsConditions />,
+          title: t('attributes.termsAndConditions'),
+          route: 'WebViewScreen',
+          payload:
+            selectedLanguage === 'az' || selectedLanguage === 'ru'
+              ? {
+                  url: 'http://2school.app/open/az/terms_and_conditions/',
+                  title: 'İstifadəçi qaydaları və şərtləri',
+                }
+              : {
+                  url: 'http://2school.app/open/en/terms_and_conditions/',
+                  title: 'Terms and conditions',
+                },
+        },
+        {
+          logo: <Icons.PrivacyPolicy />,
+          title: t('attributes.privacyPolicy'),
+          route: 'WebViewScreen',
+          payload:
+            selectedLanguage === 'az' || selectedLanguage === 'ru'
+              ? {
+                  url: 'https://2school.app/open/az/privacy_policy/',
+                  title: 'Məxfilik siyasəti',
+                }
+              : {
+                  url: 'https://2school.app/open/en/privacy_policy/',
+                  title: 'Privacy policy',
+                },
+        },
+        {
+          logo: <Icons.Settings />,
+          title: t('attributes.Settings'),
+          route: 'Settings',
+        },
+        {
+          logo: <Icons.DeleteAccount />,
+          title: t('attributes.profileDeleteTitle'),
+          route: '',
+        },
+      ],
+    },
+  ];
 
-      setData(result.data);
-    };
+  const handleRoute = () => {
+    if (item.route && item.payload) {
+      navigation.navigate(item.route, item.payload);
+    } else if (item.route) {
+      navigation.navigate(item.route);
+    } else {
+      setDeleteAccountOpen(true);
+    }
+  };
 
-    getProfileData();
-  }, [isFocused]);
+  const ListItem = ({item}) => {
+    return (
+      <Styled.TouchableOpacity
+        className={`flex-row items-center justify-between shadow shadow-zinc-300 my-[8px] mx-5 px-6 py-5 bg-[#F6F8FA] rounded-[8px]`}
+        onPress={handleRoute}>
+        <Styled.View className="flex-row items-center">
+          <Styled.View className="bg-white h-[40px] w-[40px] items-center justify-center rounded-full">
+            {item.logo}
+          </Styled.View>
+
+          <Styled.Text
+            className={`text-[#292B2D] text-base font-poppi-medium ml-2`}>
+            {item.title}
+          </Styled.Text>
+        </Styled.View>
+        {item.route !== '' && <Icons.ChevronRightBlack />}
+      </Styled.TouchableOpacity>
+    );
+  };
 
   return (
-    <>
-      <StyledScrollView className="flex-1 bg-white px-4 pt-[20px]">
-        <StyledView className="items-center justify-center">
-          <StyledView className="relative">
-            <StyledTouchableOpacity
-              onPress={() => {
-                navigation.navigate('EditProfile', {
-                  profileData: data,
-                });
-              }}
-              className="absolute right-1 bottom-0 z-50 border-[1px] border-[#EDEFF3] bg-white rounded-full overflow-hidden">
-              <EditProfileIcon />
-            </StyledTouchableOpacity>
-            <StyledImage
-              style={{width: 120, height: 120, borderRadius: 100}}
-              source={{
-                uri: data?.photo,
-              }}
-            />
-          </StyledView>
+    <Styled.ScrollView className="bg-white h-full pb-[28px]">
+      <SectionList
+        contentContainerStyle={{paddingBottom: 54}}
+        scrollEnabled={false}
+        sections={sections}
+        renderItem={({item}) => <ListItem item={item} />}
+        renderSectionHeader={({section: {title}}) => (
+          <Styled.View className="mx-5 pt-4 pb-3">
+            <Styled.Text className="text-[#184639] text-[20px] font-semibold">
+              {title}
+            </Styled.Text>
+          </Styled.View>
+        )}
+      />
 
-          <StyledText className="mt-5 text-black text-[24px] font-poppi-semibold">
-            {data?.name} {data?.surname}
-          </StyledText>
-        </StyledView>
-        <MenuItems
-          setLogoutModalOpen={setLogoutModalOpen}
-          setDeleteAccountOpen={setDeleteAccountModalOpen}
-        />
-      </StyledScrollView>
-
-      {deleteAccountModalOpen && (
-        <Modal
-          modalType="delete"
-          title={t('attributes.profileDeleteTitle')}
-          description={t('attributes.profileDeleteDescr')}
-          yesButtonAction={deleteAccount}
-          yesButtonTitle={t('attributes.mainCheckoutConfirm')}
-          noButtonAction={null}
-          noButtonTitle={t('attributes.submitNo')}
-          setModalOpen={setDeleteAccountModalOpen}
-        />
-      )}
-      {logOutModalOpen && (
-        <Modal
-          modalType="info"
-          setModalOpen={setLogoutModalOpen}
-          title={t('attributes.logout')}
-          description={t('attributes.logoutDesc')}
-          yesButtonAction={logout}
-          yesButtonTitle={t('attributes.submitYes')}
-          noButtonAction={null}
-          noButtonTitle={t('attributes.submitNo')}
-        />
-      )}
-    </>
+      <LogOutButton setLogoutModalOpen={setLogoutModalOpen} />
+    </Styled.ScrollView>
   );
 };
 

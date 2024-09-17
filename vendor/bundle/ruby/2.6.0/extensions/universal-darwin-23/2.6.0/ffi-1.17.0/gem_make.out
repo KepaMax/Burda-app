@@ -1,4 +1,4 @@
-current directory: /Users/ilkinibadov/Desktop/twoschoolDriver/vendor/bundle/ruby/2.6.0/gems/ffi-1.17.0/ext/ffi_c
+current directory: /Users/ilkinibadov/Desktop/burda/vendor/bundle/ruby/2.6.0/gems/ffi-1.17.0/ext/ffi_c
 /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/bin/ruby -I /System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0 -r ./siteconf20240712-59918-gj8wz7.rb extconf.rb
 checking for ffi_prep_closure_loc() in -lffi... yes
 checking for ffi_prep_cif_var()... yes
@@ -9,10 +9,10 @@ checking for whether -pthread is accepted as LDFLAGS... yes
 creating extconf.h
 creating Makefile
 
-current directory: /Users/ilkinibadov/Desktop/twoschoolDriver/vendor/bundle/ruby/2.6.0/gems/ffi-1.17.0/ext/ffi_c
+current directory: /Users/ilkinibadov/Desktop/burda/vendor/bundle/ruby/2.6.0/gems/ffi-1.17.0/ext/ffi_c
 make "DESTDIR=" clean
 
-current directory: /Users/ilkinibadov/Desktop/twoschoolDriver/vendor/bundle/ruby/2.6.0/gems/ffi-1.17.0/ext/ffi_c
+current directory: /Users/ilkinibadov/Desktop/burda/vendor/bundle/ruby/2.6.0/gems/ffi-1.17.0/ext/ffi_c
 make "DESTDIR="
 compiling AbstractMemory.c
 AbstractMemory.c:1125:17: warning: '(' and '{' tokens introducing statement expression appear in different macro expansion contexts [-Wcompound-token-split-by-macro]
@@ -4130,6 +4130,6 @@ linking shared-object ffi_c.bundle
 ld: warning: ignoring duplicate libraries: '-lffi'
 ld: warning: search path '/AppleInternal/Library/BuildRoots/91a344b1-f985-11ee-b563-fe8bc7981bff/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.Internal.sdk/usr/local/lib' not found
 
-current directory: /Users/ilkinibadov/Desktop/twoschoolDriver/vendor/bundle/ruby/2.6.0/gems/ffi-1.17.0/ext/ffi_c
+current directory: /Users/ilkinibadov/Desktop/burda/vendor/bundle/ruby/2.6.0/gems/ffi-1.17.0/ext/ffi_c
 make "DESTDIR=" install
 /usr/bin/install -c -m 0755 ffi_c.bundle ./.gem.20240712-59918-lwfgk7

@@ -1,18 +1,15 @@
-import {useEffect, useState} from 'react';
-import NetInfo from '@react-native-community/netinfo';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import NoInternet from '@common/NoInternet';
 import {NavigationContainer} from '@react-navigation/native';
 import TabStack from '@stacks/TabStack';
 import AuthStack from '@stacks/AuthStack';
 import {useMMKVString} from 'react-native-mmkv';
+import Layout from '../common/Layout';
 
 const Navigation = () => {
-  const [connected, setConnected] = useState();
-  const [accessToken, setAccessToken] = useMMKVString('accessToken');
+  // const [accessToken, setAccessToken] = useMMKVString('accessToken');
+  const accessToken = true;
 
   const linking = {
-    prefixes: ['twoschooldriver://'],
+    prefixes: ['burda://'],
     config: {
       initialRouteName: 'ResetPasswordSignIn',
       screens: {
@@ -35,26 +32,10 @@ const Navigation = () => {
     },
   };
 
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
-      setConnected(state.isConnected);
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
   return (
-    <SafeAreaView style={{flex: 1}} edges={['right', 'top', 'left']}>
-      {connected === true ? (
-        <NavigationContainer linking={linking}>
-          {accessToken ? <TabStack /> : <AuthStack />}
-        </NavigationContainer>
-      ) : connected === false ? (
-        <NoInternet />
-      ) : null}
-    </SafeAreaView>
+    <NavigationContainer linking={linking}>
+      <Layout>{accessToken ? <TabStack /> : <AuthStack />}</Layout>
+    </NavigationContainer>
   );
 };
 

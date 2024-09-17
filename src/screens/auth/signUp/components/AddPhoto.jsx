@@ -1,9 +1,5 @@
-import {
-  StyledTouchableOpacity,
-  StyledView,
-  StyledText,
-} from '@common/StyledComponents';
-import PhotoIcon from '@icons/add-image.svg';
+import Styled from '@common/StyledComponents';
+import Icons from '@icons/icons.js';
 import {request, PERMISSIONS} from 'react-native-permissions';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {Linking, Platform} from 'react-native';
@@ -56,34 +52,34 @@ const AddPhoto = ({setData, error}) => {
   };
 
   return (
-    <StyledView className="w-auto mb-3">
-      <StyledTouchableOpacity
+    <Styled.View className="w-auto mb-3">
+      <Styled.TouchableOpacity
         onPress={handlePhotoSelect}
         className={`w-auto border-[1px] py-[10px] ${
           error
             ? 'border-red-400 bg-red-50'
             : 'border-[#EDEFF3] bg-white focus:border-[#7658F2]'
         } focus:bg-[#F3F7FF] h-[45px] rounded-[18px] px-4`}>
-        <StyledText
+        <Styled.Text
           className={`text-base font-poppi  ${
             error ? 'text-[#FF3115]' : 'text-[#757575]'
           }`}>
           {fileName
             ? `${fileName.slice(0, 20)}...`
             : t('attributes.profileAddPhoto')}
-        </StyledText>
-        <StyledView className={`absolute top-[12px] right-[12px]`}>
-          <PhotoIcon />
-        </StyledView>
-      </StyledTouchableOpacity>
+        </Styled.Text>
+        <Styled.View className={`absolute top-[12px] right-[12px]`}>
+          <Icons.PhotoIcon />
+        </Styled.View>
+      </Styled.TouchableOpacity>
 
-      <StyledText
+      <Styled.Text
         className={`text-red-400 text-xs font-serrat mt-1 ${
           error ? 'block' : 'hidden'
         }`}>
         {error}
-      </StyledText>
-    </StyledView>
+      </Styled.Text>
+    </Styled.View>
   );
 };
 

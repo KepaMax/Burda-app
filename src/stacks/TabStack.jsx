@@ -1,18 +1,17 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeStack from '@stacks/HomeStack';
-import TrackingStack from '@stacks/TrackingStack';
 import ProfileStack from '@stacks/ProfileStack';
 import '@locales/index';
-import {useTranslation} from 'react-i18next';
 import TabBar from './components/TabBar';
+import SubscriptionStack from '@stacks/SubscriptionStack';
+import ScanStack from '@stacks/ScanStack';
 
 const Tab = createBottomTabNavigator();
 
 const TabStack = () => {
-  const {t} = useTranslation();
-
   return (
     <Tab.Navigator
+      screenOptions={{headerShown: false}}
       tabBar={({state, descriptors, navigation}) => (
         <TabBar
           state={state}
@@ -20,24 +19,10 @@ const TabStack = () => {
           navigation={navigation}
         />
       )}>
-      <Tab.Screen
-        options={{headerShown: false, title: t('attributes.menuHome')}}
-        name="Home"
-        component={HomeStack}
-      />
-      <Tab.Screen
-        options={{headerShown: false, title: t('attributes.menuTracking')}}
-        name="Tracking"
-        component={TrackingStack}
-      />
-      <Tab.Screen
-        options={{
-          headerShown: false,
-          title: t('attributes.menuProfile'),
-        }}
-        name="Profile"
-        component={ProfileStack}
-      />
+      <Tab.Screen name="Home" component={HomeStack} />
+      <Tab.Screen name="Subscription" component={SubscriptionStack} />
+      <Tab.Screen name="Scan" component={ScanStack} />
+      <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>
   );
 };

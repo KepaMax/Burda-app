@@ -1,4 +1,3 @@
 <resources>
-    <string name="app_name">twoschoolDriver</string>
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBDNOlhCJSD3i_TyI8nieRLseCSpap7mFs</string>
+    <string name="app_name">Burda</string>
 </resources>

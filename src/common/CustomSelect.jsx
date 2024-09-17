@@ -1,12 +1,6 @@
 import {useState} from 'react';
-import {
-  StyledText,
-  StyledTouchableOpacity,
-  StyledView,
-} from './StyledComponents';
-import ArrowDownIcon from '@icons/arrow-down-select.svg';
-import ArrowUpIcon from '@icons/arrow-up-select.svg';
-import {ScrollView} from 'react-native';
+import Styled from './StyledComponents';
+import Icons from '@icons/icons.js';
 
 const CustomSelect = ({
   disabled,
@@ -20,14 +14,14 @@ const CustomSelect = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
-    <StyledTouchableOpacity
+    <Styled.TouchableOpacity
       disabled={disabled}
       onPress={() => {
         setDropdownOpen(!dropdownOpen);
       }}
       className={`${type === 'full' ? 'w-full' : 'w-[30%]'}`}>
       {!dropdownOpen ? (
-        <StyledView
+        <Styled.View
           className={`border-[1px] px-4 h-[45px]  flex-row items-center  ${
             type === 'full'
               ? 'rounded-[18px] justify-between'
@@ -37,32 +31,32 @@ const CustomSelect = ({
               ? 'border-red-400 bg-red-50'
               : 'border-[#EDEFF3] bg-white focus:border-[#7658F2]'
           } `}>
-          <StyledText className="text-[#868782] text-base font-poppi mr-2">
+          <Styled.Text className="text-[#868782] text-base font-poppi mr-2">
             {selectedItem ? selectedItem.label : placeholder}
-          </StyledText>
-          <ArrowDownIcon />
-        </StyledView>
+          </Styled.Text>
+          <Icons.ArrowUpIconArrowDownIcon />
+        </Styled.View>
       ) : (
         <>
-          <StyledView
+          <Styled.View
             className={`border-[1px] h-[45px] px-4 py-[12px] flex-row items-center ${
               type === 'full'
                 ? 'rounded-t-[18px] justify-between'
                 : 'rounded-tl-[18px] justify-center border-r-0'
             }  border-[#EDEFF3]`}>
-            <StyledText className="text-[#868782] text-base font-poppi mr-2">
+            <Styled.Text className="text-[#868782] text-base font-poppi mr-2">
               {selectedItem ? selectedItem.label : placeholder}
-            </StyledText>
-            <ArrowUpIcon />
-          </StyledView>
-          <ScrollView
+            </Styled.Text>
+            <Icons.ArrowUpIcon />
+          </Styled.View>
+          <Styled.ScrollView
             nestedScrollEnabled
             style={{height: 150, borderTopWidth: 0}}
             scrollEnabled={true}>
-            <StyledView className="bg-white rounded-b-[18px] border-t-0 border-[1px] border-[#EDEFF3]">
+            <Styled.View className="bg-white rounded-b-[18px] border-t-0 border-[1px] border-[#EDEFF3]">
               {items.map((item, index) => {
                 return (
-                  <StyledTouchableOpacity
+                  <Styled.TouchableOpacity
                     className={`${
                       index == items.length - 1
                         ? 'rounded-b-[18px]'
@@ -77,17 +71,17 @@ const CustomSelect = ({
                       setSelectedItem(item);
                       setDropdownOpen(false);
                     }}>
-                    <StyledText className="text-[#868782] text-base font-poppi px-4 py-[10px]">
+                    <Styled.Text className="text-[#868782] text-base font-poppi px-4 py-[10px]">
                       {item.label}
-                    </StyledText>
-                  </StyledTouchableOpacity>
+                    </Styled.Text>
+                  </Styled.TouchableOpacity>
                 );
               })}
-            </StyledView>
-          </ScrollView>
+            </Styled.View>
+          </Styled.ScrollView>
         </>
       )}
-    </StyledTouchableOpacity>
+    </Styled.TouchableOpacity>
   );
 };
 

@@ -1,24 +1,14 @@
-import HomeIcon from '@icons/home-menu.svg';
-import HomeActiveIcon from '@icons/home-active-menu.svg';
-import TrackingIcon from '@icons/tracking-menu.svg';
-import TrackingActiveIcon from '@icons/tracking-active-menu.svg';
-import ProfileIcon from '@icons/user-menu.svg';
-import ProfileActiveIcon from '@icons/user-active-menu.svg';
-import '@locales/index';
+import Icons from '@icons/icons.js';
 import {useTranslation} from 'react-i18next';
-import {Dimensions, Vibration} from 'react-native';
-import {
-  StyledView,
-  StyledTouchableOpacity,
-  StyledText,
-} from '@common/StyledComponents';
+import {Dimensions} from 'react-native';
+import Styled from '@common/StyledComponents';
 
 const TabBar = ({state, descriptors, navigation}) => {
   const {t} = useTranslation();
   const width = Dimensions.get('screen').width;
 
   return (
-    <StyledView
+    <Styled.View
       className={`border-t-[1px] border-zinc-100 flex-row bg-white justify-between items-center px-[30px] py-[5px] ${
         Platform.OS === 'ios' && width > 375 ? 'pb-[25px]' : ''
       }`}>
@@ -35,12 +25,18 @@ const TabBar = ({state, descriptors, navigation}) => {
 
         let icon;
 
-        if (label === t('attributes.menuHome')) {
-          icon = isFocused ? <HomeActiveIcon /> : <HomeIcon />;
-        } else if (label === t('attributes.menuTracking')) {
-          icon = isFocused ? <TrackingActiveIcon /> : <TrackingIcon />;
-        } else if (label === t('attributes.menuProfile')) {
-          icon = isFocused ? <ProfileActiveIcon /> : <ProfileIcon />;
+        if (label === 'Home') {
+          icon = isFocused ? <Icons.TabHomeActive /> : <Icons.TabHome />;
+        } else if (label === 'Subscription') {
+          icon = isFocused ? (
+            <Icons.TabSubscriptionActive />
+          ) : (
+            <Icons.TabSubscription />
+          );
+        } else if (label === 'Profile') {
+          icon = isFocused ? <Icons.TabProfileActive /> : <Icons.TabProfile />;
+        } else if (label === 'Scan') {
+          icon = isFocused ? <Icons.TabScanActive /> : <Icons.TabScan />;
         }
 
         const onPress = () => {
@@ -62,27 +58,28 @@ const TabBar = ({state, descriptors, navigation}) => {
         };
 
         return (
-          <StyledTouchableOpacity
+          <Styled.TouchableOpacity
             key={index}
             accessibilityRole="button"
             accessibilityStates={isFocused ? ['selected'] : []}
             accessibilityLabel={options.tabBarAccessibilityLabel}
             testID={options.tabBarTestID}
             onPress={onPress}
-            onLongPress={onLongPress}>
-            <StyledView className="items-center">
+            onLongPress={onLongPress}
+            disabled={label === 'Subscription'}>
+            <Styled.View className="items-center">
               {icon}
-              <StyledText
+              <Styled.Text
                 className={`${
-                  isFocused ? 'text-[#204F50]' : 'text-[#204F504D]'
+                  isFocused ? 'text-[#66B600]' : 'text-[#757575]'
                 } mt-1 text-xs font-serrat-medium`}>
                 {label}
-              </StyledText>
-            </StyledView>
-          </StyledTouchableOpacity>
+              </Styled.Text>
+            </Styled.View>
+          </Styled.TouchableOpacity>
         );
       })}
-    </StyledView>
+    </Styled.View>
   );
 };
 

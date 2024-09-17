@@ -4,6 +4,6 @@
 
 import {AppRegistry} from 'react-native';
 import {name as appName} from './app.json';
-import AppContextWrapper from './AppContextWrapper';
+import App from './App';
 
-AppRegistry.registerComponent(appName, () => AppContextWrapper);
+AppRegistry.registerComponent(appName, () => App);

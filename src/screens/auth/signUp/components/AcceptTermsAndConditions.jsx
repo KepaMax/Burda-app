@@ -1,10 +1,5 @@
-import {
-  StyledView,
-  StyledText,
-  StyledTouchableOpacity,
-} from '@common/StyledComponents';
-import TermsConditions from '@icons/termsConditions.svg';
-import TermsConditionsFill from '@icons/termsConditionsFill.svg';
+import Styled from '@common/StyledComponents';
+import Icons from '@icons/icons.js';
 import '@locales/index';
 import {useTranslation} from 'react-i18next';
 import storage from '@utils/MMKVStore';
@@ -16,85 +11,85 @@ const AcceptTermsAndConditions = ({accepted, setAccepted}) => {
   const navigation = useNavigation();
 
   return (
-    <StyledView className="w-auto flex-row px-1 mb-3">
-      <StyledTouchableOpacity
+    <Styled.View className="w-auto flex-row px-1 mb-3">
+      <Styled.TouchableOpacity
         onPress={() => {
           setAccepted(!accepted);
         }}>
-        {accepted ? <TermsConditionsFill /> : <TermsConditions />}
-      </StyledTouchableOpacity>
+        {accepted ? <Icons.TermsConditionsFill /> : <Icons.TermsConditions />}
+      </Styled.TouchableOpacity>
 
       {selectedLanguage === 'az' ? (
-        <StyledView className="flex-row px-2 items-center w-full">
-          <StyledTouchableOpacity
+        <Styled.View className="flex-row px-2 items-center w-full">
+          <Styled.TouchableOpacity
             onPress={() => {
               navigation.navigate('WebViewScreen', {
                 url: 'http://2school.app/open/az/terms_and_conditions/',
                 title: 'İstifadəçi qaydaları və şərtləri',
               });
             }}>
-            <StyledText className="font-poppi text-xs text-[#204F50] mr-1">
+            <Styled.Text className="font-poppi text-xs text-[#204F50] mr-1">
               {t('attributes.termsOfUse')}
-            </StyledText>
-          </StyledTouchableOpacity>
+            </Styled.Text>
+          </Styled.TouchableOpacity>
 
-          <StyledText className="font-poppi text-xs text-[#91919F]">
+          <Styled.Text className="font-poppi text-xs text-[#91919F]">
             {t('attributes.and')}
-          </StyledText>
+          </Styled.Text>
 
-          <StyledTouchableOpacity
+          <Styled.TouchableOpacity
             onPress={() => {
               navigation.navigate('WebViewScreen', {
                 url: 'https://2school.app/open/az/privacy_policy/',
                 title: 'Məxfilik Siyasəti',
               });
             }}>
-            <StyledText className="font-poppi text-xs text-[#204F50]">
+            <Styled.Text className="font-poppi text-xs text-[#204F50]">
               {' '}
               {t('attributes.privacyPolicySignUp')}{' '}
-            </StyledText>
-          </StyledTouchableOpacity>
+            </Styled.Text>
+          </Styled.TouchableOpacity>
 
-          <StyledText className="font-poppi text-xs text-[#91919F]">
+          <Styled.Text className="font-poppi text-xs text-[#91919F]">
             {t('attributes.readAndAgreed')}
-          </StyledText>
-        </StyledView>
+          </Styled.Text>
+        </Styled.View>
       ) : (
-        <StyledView className="flex-row px-2 items-center flex-wrap w-full">
-          <StyledText className="font-poppi text-xs text-[#91919F]">
+        <Styled.View className="flex-row px-2 items-center flex-wrap w-full">
+          <Styled.Text className="font-poppi text-xs text-[#91919F]">
             {t('attributes.readAndAgreed')}
-          </StyledText>
+          </Styled.Text>
 
-          <StyledTouchableOpacity
+          <Styled.TouchableOpacity
             onPress={() => {
               navigation.navigate('WebViewScreen', {
                 url: 'http://2school.app/open/en/terms_and_conditions/',
                 title: 'Terms of use',
               });
             }}>
-            <StyledText className="font-poppi text-xs text-[#204F50] mr-1">
+            <Styled.Text className="font-poppi text-xs text-[#204F50] mr-1">
               {t('attributes.termsOfUse')}
-            </StyledText>
-          </StyledTouchableOpacity>
+            </Styled.Text>
+          </Styled.TouchableOpacity>
 
-          <StyledText className="font-poppi text-xs text-[#91919F]">
+          <Styled.Text className="font-poppi text-xs text-[#91919F]">
             {t('attributes.and')}
-          </StyledText>
+          </Styled.Text>
 
-          <StyledTouchableOpacity
+          <Styled.TouchableOpacity
             onPress={() => {
               navigation.navigate('WebViewScreen', {
                 url: 'https://2school.app/open/en/privacy_policy/',
                 title: 'Privacy Policy',
               });
             }}>
-            <StyledText className="font-poppi text-xs text-[#204F50]">
+            <Styled.Text className="font-poppi text-xs text-[#204F50]">
               {t('attributes.privacyPolicySignUp')}
-            </StyledText>
-          </StyledTouchableOpacity>
-        </StyledView>
+            </Styled.Text>
+          </Styled.TouchableOpacity>
+        </Styled.View>
       )}
-    </StyledView>
+    </Styled.View>
   );
 };
 

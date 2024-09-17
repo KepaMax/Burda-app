@@ -14,10 +14,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'twoschoolDriver' do
-  # React Native Maps dependencies
-  rn_maps_path = '../node_modules/react-native-maps'
-  pod 'react-native-google-maps', :path => rn_maps_path
+target 'burda' do
 
   config = use_native_modules!
 
@@ -43,7 +40,7 @@ target 'twoschoolDriver' do
     permissions_path = '../node_modules/react-native-permissions/ios'
     pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
 
-  target 'twoschoolDriverTests' do
+  target 'burdaTests' do
     inherit! :complete
     # Pods for testing
   end

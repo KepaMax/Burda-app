@@ -1,0 +1,55 @@
+import AddLocations from './addLocations.svg';
+import DeleteAccount from './deleteAccount.svg';
+import EyeClosed from './eyeClosed.svg';
+import EyeOpen from './eyeOpen.svg';
+import Help from './help.svg';
+import Invoices from './invoices.svg';
+import LogOut from './logOut.svg';
+import Payments from './payments.svg';
+import PersonalInformation from './personalInformation.svg';
+import ResetPassword from './resetPassword.svg';
+import Settings from './settings.svg';
+import TabHome from './tabHome.svg';
+import TabHomeActive from './tabHomeActive.svg';
+import TabProfile from './tabProfile.svg';
+import TabProfileActive from './tabProfileActive.svg';
+import TabScan from './tabScan.svg';
+import TabScanActive from './tabScanActive.svg';
+import TabSubscription from './tabSubscription.svg';
+import TabSubscriptionActive from './tabSubscriptionActive.svg';
+import TermsConditions from './termsConditions.svg';
+import ArrowBlack from './arrowBlack.svg';
+import ArrowWhite from './arrowWhite.svg';
+import ChevronRightBlack from './chevronRightBlack.svg';
+import PrivacyPolicy from './privacyPolicy.svg';
+import HomeHeaderLogo from './homeHeaderLogo.svg';
+
+const Icons = {
+  AddLocations,
+  DeleteAccount,
+  EyeClosed,
+  EyeOpen,
+  Help,
+  Invoices,
+  LogOut,
+  Payments,
+  PersonalInformation,
+  ResetPassword,
+  Settings,
+  TabHome,
+  TabHomeActive,
+  TabProfile,
+  TabProfileActive,
+  TabScan,
+  TabScanActive,
+  TabSubscription,
+  TabSubscriptionActive,
+  TermsConditions,
+  ArrowBlack,
+  ArrowWhite,
+  ChevronRightBlack,
+  PrivacyPolicy,
+  HomeHeaderLogo,
+};
+
+export default Icons;

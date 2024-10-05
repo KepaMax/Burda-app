@@ -6,7 +6,7 @@ export const refreshTokens = async () => {
   const refreshToken = storage.getString('refreshToken');
 
   if (refreshToken) {
-    const url = `${API_URL}/jwt/refresh/`;
+    const url = `https://api.myburda.com/api/v1/jwt/refresh/`;
     const body = JSON.stringify({refresh: refreshToken});
 
     const headers = {
@@ -20,9 +20,9 @@ export const refreshTokens = async () => {
         headers: headers,
         body: body,
       });
+      const data = await response.json();
 
       if (response.ok) {
-        const data = await response.json();
         storage.set('accessToken', data.access);
         return true;
       } else {
@@ -37,7 +37,7 @@ export const refreshTokens = async () => {
         storage.clearAll();
       }
     } catch (error) {
-      console.error('Error on refreshTokens', error);
+      // console.error('Error on refreshTokens', error);
     }
   }
 };

@@ -50,11 +50,7 @@ const FoodMenu = () => {
 
   const getFoodData = async () => {
     const result = await fetchData({
-      url: `https://api.myburda.com/api/v1/menu-items/?date=${fullDate}`,
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-      },
+      url: `https://api.myburda.com/api/v1/menu-items/?date=${fullDate}&page_size=100`,
     });
 
     const restructureData = items => {
@@ -106,6 +102,7 @@ const FoodMenu = () => {
 
       {categories?.length ? (
         <Styled.ScrollView
+          showsHorizontalScrollIndicator={false}
           className="bg-white"
           horizontal
           contentContainerStyle={{
@@ -121,7 +118,7 @@ const FoodMenu = () => {
               fontWeight="font-poppins-medium"
               textColor={
                 category === selectedCategory
-                  ? 'text-[#66B600] underline'
+                  ? 'text-[#66B600] border-b-[2px] border-[#66B600]'
                   : 'text-[#B7B7B7]'
               }
               linkAction={() => {

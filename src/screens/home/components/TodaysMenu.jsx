@@ -20,11 +20,7 @@ const TodaysMenu = () => {
 
   const getMenuItems = async () => {
     const result = await fetchData({
-      url: `https://api.myburda.com/api/v1/menu-items/?date=${date}`,
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-      },
+      url: `https://api.myburda.com/api/v1/menu-items/?date=${date}&page_size=100`,
     });
 
     const getUniqueByCategoryId = items => {

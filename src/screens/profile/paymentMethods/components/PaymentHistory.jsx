@@ -42,9 +42,7 @@ const PaymentHistory = () => {
   const getPaymentHistory = async () => {
     const result = await fetchData({
       url: 'https://api.myburda.com/api/v4/transactions/',
-      headers: {
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-      },
+      tokenRequired: true,
     });
 
     result?.success && setPaymentHistory(result.data.results);

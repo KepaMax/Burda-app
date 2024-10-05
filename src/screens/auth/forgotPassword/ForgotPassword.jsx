@@ -23,10 +23,7 @@ const ForgotPassword = () => {
       url: 'https://api.myburda.com/api/v1/users/reset-password/',
       body: formData,
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      tokenRequired: true,
       returnsData: false,
     });
 

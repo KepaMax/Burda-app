@@ -18,11 +18,7 @@ const TopSales = () => {
 
   const getTopSales = async () => {
     const result = await fetchData({
-      url: `https://api.myburda.com/api/v1/meals/?top=true`,
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-      },
+      url: `https://api.myburda.com/api/v1/meals/?top=true&page_size=100`,
       setLoading,
     });
 

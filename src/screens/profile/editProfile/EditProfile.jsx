@@ -3,7 +3,6 @@ import CustomComponents from '@common/CustomComponents';
 import {useState, useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 import {fetchData} from '@utils/fetchData';
-import storage from '@utils/MMKVStore';
 
 const EditProfile = () => {
   const [formData, setFormData] = useState({});
@@ -17,10 +16,7 @@ const EditProfile = () => {
   const getUserData = async () => {
     const result = await fetchData({
       url: 'https://api.myburda.com/api/v1/users/me/',
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-      },
+      tokenRequired: true,
     });
 
     if (result?.success) {
@@ -38,11 +34,7 @@ const EditProfile = () => {
   const editProfile = async () => {
     const result = await fetchData({
       url: `https://api.myburda.com/api/v1/users/${userId}/`,
-      headers: {
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      tokenRequired: true,
       method: 'PUT',
       body: formData,
     });

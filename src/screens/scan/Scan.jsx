@@ -47,10 +47,6 @@ const Scan = () => {
   const getMealId = async barcode => {
     const result = await fetchData({
       url: `https://api.myburda.com/api/v1/meals/${barcode}/`,
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-      },
     });
 
     result?.success && navigation.navigate('Basket', {mealId: result.data.id});

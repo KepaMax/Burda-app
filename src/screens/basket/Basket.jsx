@@ -7,7 +7,6 @@ import BasketItem from './components/BasketItem';
 import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
 import Styled from '@common/StyledComponents';
 import {fetchData} from '@utils/fetchData';
-import storage from '@utils/MMKVStore';
 
 const Basket = () => {
   const isFocused = useIsFocused();
@@ -21,10 +20,7 @@ const Basket = () => {
   const getBasketItems = async () => {
     const result = await fetchData({
       url: 'https://api.myburda.com/api/v1/basket-items/',
-      headers: {
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-        Accept: 'application/json',
-      },
+      tokenRequired: true,
     });
 
     if (result?.success) {
@@ -36,11 +32,7 @@ const Basket = () => {
   const setBasketItem = async () => {
     const result = await fetchData({
       url: `https://api.myburda.com/api/v1/basket-items/`,
-      headers: {
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      tokenRequired: true,
       method: 'POST',
       body: {meal: mealId},
     });
@@ -53,11 +45,7 @@ const Basket = () => {
   const incrementBasketItemCount = async ({basketItemId, itemQuantity}) => {
     const result = await fetchData({
       url: `https://api.myburda.com/api/v1/basket-items/${basketItemId}/`,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-      },
+      tokenRequired: true,
       method: 'PUT',
       body: {
         quantity: itemQuantity + 1,
@@ -94,11 +82,7 @@ const Basket = () => {
   const decrementBasketItemCount = async ({basketItemId, itemQuantity}) => {
     const result = await fetchData({
       url: `https://api.myburda.com/api/v1/basket-items/${basketItemId}/`,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-      },
+      tokenRequired: true,
       method: 'PUT',
       body: {
         quantity: itemQuantity - 1,
@@ -121,11 +105,7 @@ const Basket = () => {
     const result = await fetchData({
       url: 'https://api.myburda.com/api/v4/orders/',
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      tokenRequired: true,
       body: {
         items: transformedData,
       },

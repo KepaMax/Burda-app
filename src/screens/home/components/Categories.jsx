@@ -15,11 +15,6 @@ const Categories = () => {
   const getCategoriesData = async () => {
     const result = await fetchData({
       url: 'https://api.myburda.com/api/v1/categories/',
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-      },
-      setLoading,
     });
 
     result?.success && setCategories(result?.data.results);
@@ -27,11 +22,7 @@ const Categories = () => {
 
   const getMealsByCategory = async (categoryId, categoryName) => {
     const result = await fetchData({
-      url: `https://api.myburda.com/api/v1/meals/?category=${categoryId}`,
-      headers: {
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-        Accept: 'application/json',
-      },
+      url: `https://api.myburda.com/api/v1/meals/?category=${categoryId}&page_size=100`,
     });
 
     result?.success &&

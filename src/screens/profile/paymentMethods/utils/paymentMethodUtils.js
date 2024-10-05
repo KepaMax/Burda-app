@@ -1,13 +1,9 @@
 import {fetchData} from '@utils/fetchData';
-import storage from '@utils/MMKVStore';
 
 export const getPaymentMethods = async ({setPaymentMethods}) => {
   const result = await fetchData({
     url: 'https://api.myburda.com/api/v4/payment-methods/',
-    headers: {
-      Authorization: `Bearer ${storage.getString('accessToken')}`,
-      Accept: 'application/json',
-    },
+    tokenRequired: true,
   });
 
   result?.success && setPaymentMethods(result.data.results);
@@ -16,9 +12,7 @@ export const getPaymentMethods = async ({setPaymentMethods}) => {
 export const addNewPaymentMethod = async ({t, navigation}) => {
   const result = await fetchData({
     url: 'https://api.myburda.com/api/v4/payment-methods/',
-    headers: {
-      Authorization: `Bearer ${storage.getString('accessToken')}`,
-    },
+    tokenRequired: true,
     method: 'POST',
   });
 
@@ -36,10 +30,7 @@ export const deletePaymentMethod = async ({
 }) => {
   const result = await fetchData({
     url: `https://api.myburda.com/api/v4/payment-methods/${paymentMethodId}/`,
-    headers: {
-      Authorization: `Bearer ${storage.getString('accessToken')}`,
-      Accept: 'application/json',
-    },
+    tokenRequired: true,
     method: 'DELETE',
     returnsData: false,
   });

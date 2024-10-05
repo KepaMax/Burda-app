@@ -3,7 +3,6 @@ import CustomComponents from '@common/CustomComponents';
 import {useTranslation} from 'react-i18next';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {fetchData} from '@utils/fetchData';
-import storage from '@utils/MMKVStore';
 
 const AddNewCard = () => {
   const {t} = useTranslation();
@@ -11,10 +10,7 @@ const AddNewCard = () => {
   const addNewCard = async () => {
     const result = await fetchData({
       url: 'https://api.myburda.com/api/v4/payment-methods/',
-      headers: {
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-        Accept: '*/*; version=v3',
-      },
+      tokenRequired: true,
       method: 'POST',
     });
   };

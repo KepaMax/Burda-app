@@ -5,7 +5,6 @@ import NoCardAdded from './components/NoCardAdded';
 import PaymentHistory from './components/PaymentHistory';
 import {fetchData} from '@utils/fetchData';
 import {useEffect, useState} from 'react';
-import storage from '@utils/MMKVStore';
 import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
 import {FlatList} from 'react-native';
 import Icons from '@icons/icons';
@@ -29,11 +28,7 @@ const PaymentMethods = () => {
       const result = await fetchData({
         url: `https://api.myburda.com/api/v4/orders/${orderId}/pay/`,
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${storage.getString('accessToken')}`,
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+        tokenRequired: true,
         body: {
           payment_method: selectPaymentMethod,
         },
@@ -127,9 +122,6 @@ const PaymentMethods = () => {
             borderRadius="rounded-[24px]"
             buttonAction={handlePayment}
           />
-          // <Styled.TouchableOpacity onPress={handlePayment}>
-          //   <Styled.Text>{t('confirm')}</Styled.Text>
-          // </Styled.TouchableOpacity>
         )}
       </Styled.ScrollView>
     </>

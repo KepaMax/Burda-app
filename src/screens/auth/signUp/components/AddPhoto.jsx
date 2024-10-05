@@ -40,12 +40,12 @@ const AddPhoto = ({setData, error}) => {
 
   const handlePermissionDenied = () => {
     alert(
-      t('attributes.error'),
-      t('attributes.galleryErrorMessage'),
+      t('error'),
+      t('galleryErrorMessage'),
 
       {
-        textConfirm: t('attributes.Settings'),
-        textCancel: t('attributes.profileDeleteNo'),
+        textConfirm: t('Settings'),
+        textCancel: t('profileDeleteNo'),
         onConfirm: () => Linking.openSettings(),
       },
     );
@@ -61,12 +61,10 @@ const AddPhoto = ({setData, error}) => {
             : 'border-[#EDEFF3] bg-white focus:border-[#7658F2]'
         } focus:bg-[#F3F7FF] h-[45px] rounded-[18px] px-4`}>
         <Styled.Text
-          className={`text-base font-poppi  ${
+          className={`text-base font-poppins  ${
             error ? 'text-[#FF3115]' : 'text-[#757575]'
           }`}>
-          {fileName
-            ? `${fileName.slice(0, 20)}...`
-            : t('attributes.profileAddPhoto')}
+          {fileName ? `${fileName.slice(0, 20)}...` : t('profileAddPhoto')}
         </Styled.Text>
         <Styled.View className={`absolute top-[12px] right-[12px]`}>
           <Icons.PhotoIcon />
@@ -74,7 +72,7 @@ const AddPhoto = ({setData, error}) => {
       </Styled.TouchableOpacity>
 
       <Styled.Text
-        className={`text-red-400 text-xs font-serrat mt-1 ${
+        className={`text-red-400 text-xs font-poppins mt-1 ${
           error ? 'block' : 'hidden'
         }`}>
         {error}

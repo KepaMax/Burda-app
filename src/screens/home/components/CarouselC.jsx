@@ -2,11 +2,12 @@ import Carousel from 'react-native-reanimated-carousel';
 import {Dimensions} from 'react-native';
 import Styled from '@common/StyledComponents';
 import {useState} from 'react';
+import Images from '@images/images';
 
 const CarouselC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const width = Dimensions.get('screen').width;
-  const arr = [...new Array(3).keys()];
+  const arr = [Images.Banner1, Images.Banner2];
 
   return (
     <Carousel
@@ -18,11 +19,13 @@ const CarouselC = () => {
       data={arr}
       scrollAnimationDuration={2000}
       onSnapToItem={index => setActiveIndex(index)}
-      renderItem={({index}) => (
-        <Styled.View className="flex-1 mx-4 mt-4 border border-zinc-400 rounded-[18px]">
-          <Styled.Text style={{textAlign: 'center', fontSize: 30}}>
-            {index}
-          </Styled.Text>
+      renderItem={({item, index}) => (
+        <Styled.View className="flex-1 mx-4 mt-4 rounded-[18px]">
+          <Styled.Image
+            style={{width: width - 34}}
+            className="h-[170px] rounded-[18px]"
+            source={item}
+          />
           <Styled.View className="w-full absolute bottom-3 items-center">
             <Styled.View className="flex-row gap-2">
               {arr.map((item, index) => (

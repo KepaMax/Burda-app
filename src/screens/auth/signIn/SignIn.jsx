@@ -5,9 +5,14 @@ import {useState} from 'react';
 import {Dimensions} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {useTranslation} from 'react-i18next';
+import {login} from '@utils/authUtils';
+import {useMMKVBoolean} from 'react-native-mmkv';
 
 const SignIn = () => {
+  const {t} = useTranslation();
   const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useMMKVBoolean('loading');
   const [errors, setErrors] = useState({});
   const navigation = useNavigation();
   const screenWidth = Dimensions.get('screen').width;
@@ -24,15 +29,15 @@ const SignIn = () => {
         source={Images.SignInHeader}
       />
       <Styled.View className="px-5">
-        <Styled.Text className="text-[#184639] text-[32px] font-semibold mb-4">
-          Sign in
+        <Styled.Text className="text-[#184639] text-[32px] font-poppins-semibold mb-4">
+          {t('signIn')}
         </Styled.Text>
 
         <CustomComponents.Input
           inputName="email"
           inputValue={formData?.email}
           handleInputChange={handleInputChange}
-          placeholder="Email"
+          placeholder={t('email')}
           error={errors?.email}
         />
 
@@ -40,12 +45,12 @@ const SignIn = () => {
           inputName="password"
           inputValue={formData?.password}
           handleInputChange={handleInputChange}
-          placeholder="Password"
+          placeholder={t('password')}
           error={errors?.password}
         />
 
         <CustomComponents.Link
-          title="Forgot password?"
+          title={t('forgotPassword')}
           margin="mb-4"
           textColor="text-[#184639]"
           fontWeight="font-regular"
@@ -59,13 +64,19 @@ const SignIn = () => {
           padding="p-2.5"
           bgColor="bg-[#66B600]"
           textSize="text-lg"
-          title="Sign in"
-          // buttonAction={() => {}}
+          title={t('enter')}
+          buttonAction={() => {
+            login({
+              formData,
+              setErrors,
+              setLoading,
+            });
+          }}
         />
 
         <CustomComponents.Link
           textAlign="text-center"
-          title="Don't have an account?"
+          title={t('noAccount')}
           margin="mb-4 mt-6"
           textColor="text-[#184639]"
           fontWeight="font-regular"

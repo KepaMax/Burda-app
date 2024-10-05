@@ -5,12 +5,12 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        poppi: 'Poppins-Regular',
-        'poppi-italic': 'Poppins-Italic',
-        'poppi-semibold': 'Poppins-SemiBold',
-        'poppi-bold': 'Poppins-Bold',
-        'poppi-medium': 'Poppins-Medium',
-        'poppi-light': 'Poppins-Light',
+        poppins: 'Poppins-Regular',
+        'poppins-italic': 'Poppins-Italic',
+        'poppins-semibold': 'Poppins-SemiBold',
+        'poppins-bold': 'Poppins-Bold',
+        'poppins-medium': 'Poppins-Medium',
+        'poppins-light': 'Poppins-Light',
       },
     },
   },

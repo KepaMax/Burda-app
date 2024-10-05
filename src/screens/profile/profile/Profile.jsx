@@ -1,43 +1,42 @@
 import {SectionList} from 'react-native';
 import Icons from '@icons/icons.js';
 import {useNavigation} from '@react-navigation/native';
-import '@locales/index';
 import {useTranslation} from 'react-i18next';
 import Styled from '@common/StyledComponents';
 import {useMMKVString} from 'react-native-mmkv';
 import LogOutButton from './components/LogOutButton';
-import {useState} from 'react';
+import {deleteAccount} from '@utils/authUtils';
 
 const Profile = () => {
   const navigation = useNavigation();
   const {t} = useTranslation();
   const [selectedLanguage, setSelectedLanguage] =
     useMMKVString('selectedLanguage');
-  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [buttonType, setButtonType] = useMMKVString('buttonType');
 
   const sections = [
     {
-      title: 'Profile',
+      title: t('profile'),
       data: [
         {
           logo: <Icons.PersonalInformation />,
-          title: t('attributes.personalInformation'),
+          title: t('personalInformation'),
           route: 'EditProfile',
         },
       ],
     },
     {
-      title: 'Options',
+      title: t('options'),
       data: [
         {
           logo: <Icons.TermsConditions />,
-          title: t('attributes.termsAndConditions'),
+          title: t('termsAndConditions'),
           route: 'WebViewScreen',
           payload:
             selectedLanguage === 'az' || selectedLanguage === 'ru'
               ? {
                   url: 'http://2school.app/open/az/terms_and_conditions/',
-                  title: 'İstifadəçi qaydaları və şərtləri',
+                  title: 'Qayda və şərtlər',
                 }
               : {
                   url: 'http://2school.app/open/en/terms_and_conditions/',
@@ -46,7 +45,7 @@ const Profile = () => {
         },
         {
           logo: <Icons.PrivacyPolicy />,
-          title: t('attributes.privacyPolicy'),
+          title: t('privacyPolicy'),
           route: 'WebViewScreen',
           payload:
             selectedLanguage === 'az' || selectedLanguage === 'ru'
@@ -60,41 +59,60 @@ const Profile = () => {
                 },
         },
         {
+          logo: <Icons.Payments />,
+          title: t('paymentMethods'),
+          route: 'PaymentMethods',
+        },
+        {
           logo: <Icons.Settings />,
-          title: t('attributes.Settings'),
+          title: t('settings'),
           route: 'Settings',
         },
         {
           logo: <Icons.DeleteAccount />,
-          title: t('attributes.profileDeleteTitle'),
-          route: '',
+          title: t('profileDeleteTitle'),
+          route: 'DeleteAccount',
         },
       ],
     },
   ];
 
-  const handleRoute = () => {
-    if (item.route && item.payload) {
-      navigation.navigate(item.route, item.payload);
-    } else if (item.route) {
-      navigation.navigate(item.route);
+  const handleRoute = item => {
+    if (item?.payload) {
+      navigation.navigate(item.route, item.payload, item.title);
+    } else if (item.route === 'DeleteAccount') {
+      handleDeleteAccount();
     } else {
-      setDeleteAccountOpen(true);
+      navigation.navigate(item.route);
     }
+  };
+
+  const handleDeleteAccount = () => {
+    setButtonType('#FF3115');
+    alert(
+      t('profileDeleteTitle'),
+      t('profileDeleteDescription'),
+
+      {
+        textConfirm: t('delete'),
+        textCancel: t('cancel'),
+        onConfirm: () => deleteAccount(),
+      },
+    );
   };
 
   const ListItem = ({item}) => {
     return (
       <Styled.TouchableOpacity
         className={`flex-row items-center justify-between shadow shadow-zinc-300 my-[8px] mx-5 px-6 py-5 bg-[#F6F8FA] rounded-[8px]`}
-        onPress={handleRoute}>
+        onPress={() => handleRoute(item)}>
         <Styled.View className="flex-row items-center">
           <Styled.View className="bg-white h-[40px] w-[40px] items-center justify-center rounded-full">
             {item.logo}
           </Styled.View>
 
           <Styled.Text
-            className={`text-[#292B2D] text-base font-poppi-medium ml-2`}>
+            className={`text-[#292B2D] text-base font-poppins-medium ml-2`}>
             {item.title}
           </Styled.Text>
         </Styled.View>
@@ -104,7 +122,9 @@ const Profile = () => {
   };
 
   return (
-    <Styled.ScrollView className="bg-white h-full pb-[28px]">
+    <Styled.ScrollView
+      contentContainerStyle={{paddingBottom: 30}}
+      className="bg-white h-full">
       <SectionList
         contentContainerStyle={{paddingBottom: 54}}
         scrollEnabled={false}
@@ -112,14 +132,14 @@ const Profile = () => {
         renderItem={({item}) => <ListItem item={item} />}
         renderSectionHeader={({section: {title}}) => (
           <Styled.View className="mx-5 pt-4 pb-3">
-            <Styled.Text className="text-[#184639] text-[20px] font-semibold">
+            <Styled.Text className="text-[#184639] text-[20px] font-poppins-semibold">
               {title}
             </Styled.Text>
           </Styled.View>
         )}
       />
 
-      <LogOutButton setLogoutModalOpen={setLogoutModalOpen} />
+      <LogOutButton />
     </Styled.ScrollView>
   );
 };

@@ -23,6 +23,14 @@ import ArrowWhite from './arrowWhite.svg';
 import ChevronRightBlack from './chevronRightBlack.svg';
 import PrivacyPolicy from './privacyPolicy.svg';
 import HomeHeaderLogo from './homeHeaderLogo.svg';
+import AzFlag from './azFlag.svg';
+import GbFlag from './gbFlag.svg';
+import SelectedLanguage from './selectedLanguage.svg';
+import NoInternet from './noInternet.svg';
+import ArrowUp from './arrowUp.svg';
+import ArrowDown from './arrowDown.svg';
+import X from './x.svg';
+import Barcode from './barcode.svg';
 
 const Icons = {
   AddLocations,
@@ -50,6 +58,14 @@ const Icons = {
   ChevronRightBlack,
   PrivacyPolicy,
   HomeHeaderLogo,
+  AzFlag,
+  GbFlag,
+  SelectedLanguage,
+  NoInternet,
+  ArrowDown,
+  ArrowUp,
+  X,
+  Barcode,
 };
 
 export default Icons;

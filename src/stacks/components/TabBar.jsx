@@ -72,7 +72,7 @@ const TabBar = ({state, descriptors, navigation}) => {
               <Styled.Text
                 className={`${
                   isFocused ? 'text-[#66B600]' : 'text-[#757575]'
-                } mt-1 text-xs font-serrat-medium`}>
+                } mt-1 text-xs font-poppins-medium`}>
                 {label}
               </Styled.Text>
             </Styled.View>

@@ -1,16 +1,15 @@
 import {refreshTokens} from './authUtils.js';
-import {API_URL} from '@env';
+import storage from './MMKVStore.js';
 
 export const fetchData = async ({
   url,
   headers,
   method = 'GET',
   body = null,
-  setLoading,
   returnsData = true,
 }) => {
   try {
-    setLoading(true);
+    storage.set('loading', true);
 
     const options = {
       headers,
@@ -18,8 +17,7 @@ export const fetchData = async ({
       ...(body && {body: JSON.stringify(body)}),
     };
 
-    const response = await fetch(`${API_URL}${url}`, options);
-    // console.log(response);
+    const response = await fetch(url, options);
     const data = returnsData ? await response?.json() : null;
 
     if (response.ok) {
@@ -28,7 +26,7 @@ export const fetchData = async ({
         status: response.status,
         data: data,
       };
-    } else if (response.status === 401) {
+    } else if (response.status === 403) {
       const tokensRefreshed = await refreshTokens();
 
       if (tokensRefreshed) {
@@ -37,7 +35,6 @@ export const fetchData = async ({
           headers,
           (method = 'GET'),
           (body = null),
-          setLoading,
           (returnsData = true),
         );
       }
@@ -51,8 +48,8 @@ export const fetchData = async ({
       };
     }
   } catch (error) {
-    console.error(error);
+    console.error('Error in fetchData:', error);
   } finally {
-    setLoading(false);
+    storage.set('loading', false);
   }
 };

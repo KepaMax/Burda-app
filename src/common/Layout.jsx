@@ -3,8 +3,7 @@ import Styled from './StyledComponents';
 import LoadingScreen from './LoadingScreen';
 
 const Layout = ({children}) => {
-  //   const [loading, setLoading] = useMMKVBoolean('loading');
-  const loading = false;
+  const [loading, setLoading] = useMMKVBoolean('loading');
 
   return (
     <Styled.View className="flex-1">

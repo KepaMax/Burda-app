@@ -28,13 +28,13 @@ const AcceptTermsAndConditions = ({accepted, setAccepted}) => {
                 title: 'İstifadəçi qaydaları və şərtləri',
               });
             }}>
-            <Styled.Text className="font-poppi text-xs text-[#204F50] mr-1">
-              {t('attributes.termsOfUse')}
+            <Styled.Text className="font-poppins text-xs text-[#204F50] mr-1">
+              {t('termsOfUse')}
             </Styled.Text>
           </Styled.TouchableOpacity>
 
-          <Styled.Text className="font-poppi text-xs text-[#91919F]">
-            {t('attributes.and')}
+          <Styled.Text className="font-poppins text-xs text-[#91919F]">
+            {t('and')}
           </Styled.Text>
 
           <Styled.TouchableOpacity
@@ -44,20 +44,20 @@ const AcceptTermsAndConditions = ({accepted, setAccepted}) => {
                 title: 'Məxfilik Siyasəti',
               });
             }}>
-            <Styled.Text className="font-poppi text-xs text-[#204F50]">
+            <Styled.Text className="font-poppins text-xs text-[#204F50]">
               {' '}
-              {t('attributes.privacyPolicySignUp')}{' '}
+              {t('privacyPolicySignUp')}{' '}
             </Styled.Text>
           </Styled.TouchableOpacity>
 
-          <Styled.Text className="font-poppi text-xs text-[#91919F]">
-            {t('attributes.readAndAgreed')}
+          <Styled.Text className="font-poppins text-xs text-[#91919F]">
+            {t('readAndAgreed')}
           </Styled.Text>
         </Styled.View>
       ) : (
         <Styled.View className="flex-row px-2 items-center flex-wrap w-full">
-          <Styled.Text className="font-poppi text-xs text-[#91919F]">
-            {t('attributes.readAndAgreed')}
+          <Styled.Text className="font-poppins text-xs text-[#91919F]">
+            {t('readAndAgreed')}
           </Styled.Text>
 
           <Styled.TouchableOpacity
@@ -67,13 +67,13 @@ const AcceptTermsAndConditions = ({accepted, setAccepted}) => {
                 title: 'Terms of use',
               });
             }}>
-            <Styled.Text className="font-poppi text-xs text-[#204F50] mr-1">
-              {t('attributes.termsOfUse')}
+            <Styled.Text className="font-poppins text-xs text-[#204F50] mr-1">
+              {t('termsOfUse')}
             </Styled.Text>
           </Styled.TouchableOpacity>
 
-          <Styled.Text className="font-poppi text-xs text-[#91919F]">
-            {t('attributes.and')}
+          <Styled.Text className="font-poppins text-xs text-[#91919F]">
+            {t('and')}
           </Styled.Text>
 
           <Styled.TouchableOpacity
@@ -83,8 +83,8 @@ const AcceptTermsAndConditions = ({accepted, setAccepted}) => {
                 title: 'Privacy Policy',
               });
             }}>
-            <Styled.Text className="font-poppi text-xs text-[#204F50]">
-              {t('attributes.privacyPolicySignUp')}
+            <Styled.Text className="font-poppins text-xs text-[#204F50]">
+              {t('privacyPolicySignUp')}
             </Styled.Text>
           </Styled.TouchableOpacity>
         </Styled.View>

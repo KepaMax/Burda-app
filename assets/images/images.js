@@ -7,6 +7,9 @@ import PaymentFailed from './paymentFailed.svg';
 import PaymentSuccessful from './paymentSuccessful.svg';
 import SignInHeader from './signInHeader.png';
 import NoInternet from './noInternet.svg';
+import Banner1 from './banner1.png';
+import Banner2 from './banner2.png';
+import NoCardAdded from './noCardAdded.png';
 
 const Images = {
   DeleteAccountModal,
@@ -18,6 +21,9 @@ const Images = {
   PaymentSuccessful,
   SignInHeader,
   NoInternet,
+  Banner1,
+  Banner2,
+  NoCardAdded,
 };
 
 export default Images;

@@ -10,54 +10,64 @@ import 'react-native-gesture-handler';
 import Navigation from '@stacks/Navigation';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {useEffect, useState} from 'react';
-import {StatusBar} from 'react-native';
+import {Dimensions, StatusBar} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import storage from '@utils/MMKVStore';
 import {refreshTokens} from '@utils/authUtils';
 import SuperAlert from 'react-native-super-alert';
 import NetInfo from '@react-native-community/netinfo';
 import NoInternet from '@common/NoInternet';
+import {useMMKVString} from 'react-native-mmkv';
 
 function App(): JSX.Element {
   const [connected, setConnected] = useState();
   const {i18n} = useTranslation();
+  const screenWidth = Dimensions.get('screen').width;
+  const [buttonType, setButtonType] = useMMKVString('buttonType');
 
-  const customStyle = {
+  const alertStyle = {
     container: {
-      backgroundColor: '#e8e8e8',
-      borderRadius: 12,
+      backgroundColor: '#FFFFFF',
+      borderRadius: 8,
+      paddingHorizontal: 46,
+      width: screenWidth - 56,
     },
     buttonCancel: {
-      backgroundColor: '#e8e8e8',
-      borderWidth: 1,
-      borderColor: '#7658F2',
-      borderRadius: 6,
-      paddingHorizontal: 20,
+      backgroundColor: '#FFFFFF',
+      paddingVertical: 8,
+      width: (screenWidth - 110) / 2,
     },
     buttonConfirm: {
-      backgroundColor: '#7658F2',
+      backgroundColor: buttonType,
       borderRadius: 6,
-      paddingHorizontal: 20,
+      paddingVertical: 8,
+      width: (screenWidth - 110) / 2,
     },
     textButtonCancel: {
-      color: '#7658F2',
-      fontWeight: 'bold',
+      color: '#757575',
+      fontFamily: 'Poppins-Medium',
+      fontSize: 18,
     },
     textButtonConfirm: {
       color: '#fff',
-      fontWeight: 'bold',
+      fontFamily: 'Poppins-Medium',
+      fontSize: 18,
     },
     title: {
       color: '#000',
       fontSize: 16,
+      fontFamily: 'Poppins-SemiBold',
     },
     message: {
-      color: '#4f4f4f',
-      fontSize: 12,
+      color: '#414141',
+      fontSize: 14,
+      fontFamily: 'Poppins-Regular',
+      marginBottom: 14,
     },
   };
 
   useEffect(() => {
+    storage.set('buttonType', '#FF8C03');
     refreshTokens();
 
     const currentLanguage = async () => {
@@ -87,7 +97,7 @@ function App(): JSX.Element {
         </SafeAreaView>
       </SafeAreaProvider>
 
-      <SuperAlert customStyle={customStyle} />
+      <SuperAlert customStyle={alertStyle} />
     </>
   );
 }

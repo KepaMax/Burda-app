@@ -1,0 +1,21 @@
+{
+  "name": "iOS Device",
+  "program": "${workspaceRoot}/.vscode/launchReactNative.js",
+  "type": "reactnative",
+  "request": "launch",
+  "platform": "ios",
+  "sourceMaps": true,
+  "target": "device",
+  "outDir": "${workspaceRoot}/.vscode/.react",
+  "runArguments": ["--device", "Ilkin's iPhone"],
+  "configurations": [
+    {
+      "name": "Run iOS Hermes",
+      "request": "launch",
+      "type": "reactnativedirect",
+      "cwd": "${workspaceFolder}",
+      "enableDebug": false,
+      "platform": "ios"
+    }
+  ]
+}

@@ -31,7 +31,7 @@ const CustomSelect = ({
               ? 'border-red-400 bg-red-50'
               : 'border-[#EDEFF3] bg-white focus:border-[#7658F2]'
           } `}>
-          <Styled.Text className="text-[#868782] text-base font-poppi mr-2">
+          <Styled.Text className="text-[#868782] text-poppins font-poppi mr-2">
             {selectedItem ? selectedItem.label : placeholder}
           </Styled.Text>
           <Icons.ArrowUpIconArrowDownIcon />
@@ -44,7 +44,7 @@ const CustomSelect = ({
                 ? 'rounded-t-[18px] justify-between'
                 : 'rounded-tl-[18px] justify-center border-r-0'
             }  border-[#EDEFF3]`}>
-            <Styled.Text className="text-[#868782] text-base font-poppi mr-2">
+            <Styled.Text className="text-[#868782] text-poppins font-poppi mr-2">
               {selectedItem ? selectedItem.label : placeholder}
             </Styled.Text>
             <Icons.ArrowUpIcon />
@@ -71,7 +71,7 @@ const CustomSelect = ({
                       setSelectedItem(item);
                       setDropdownOpen(false);
                     }}>
-                    <Styled.Text className="text-[#868782] text-base font-poppi px-4 py-[10px]">
+                    <Styled.Text className="text-[#868782] text-poppins font-poppi px-4 py-[10px]">
                       {item.label}
                     </Styled.Text>
                   </Styled.TouchableOpacity>

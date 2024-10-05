@@ -32,3 +32,19 @@ export const prefixData = [
     value: '99',
   },
 ];
+
+export const codeTypes = [
+  'qr',
+  'ean-13',
+  'ean-8',
+  'aztec',
+  'codabar',
+  'code-128',
+  'code-39',
+  'code-93',
+  'data-matrix',
+  'itf',
+  'pdf-417',
+  'upc-a',
+  'upc-e',
+];

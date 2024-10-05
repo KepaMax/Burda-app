@@ -39,6 +39,7 @@ target 'burda' do
     # Add the permissions pods here
     permissions_path = '../node_modules/react-native-permissions/ios'
     pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
+    pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
 
   target 'burdaTests' do
     inherit! :complete

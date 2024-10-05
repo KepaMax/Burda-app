@@ -4,8 +4,11 @@ import {Dimensions} from 'react-native';
 import CustomComponents from '@common/CustomComponents';
 import {useState} from 'react';
 import {openInbox} from 'react-native-email-link';
+import {useTranslation} from 'react-i18next';
+import {fetchData} from '@utils/fetchData';
 
 const ForgotPassword = () => {
+  const {t} = useTranslation();
   const [formData, setFormData] = useState({});
   const [emailSent, setEmailSent] = useState(false);
   const [errors, setErrors] = useState({});
@@ -13,6 +16,21 @@ const ForgotPassword = () => {
 
   const handleInputChange = (name, value) => {
     setFormData(prevState => ({...prevState, [name]: value}));
+  };
+
+  const handleForgotPassword = async () => {
+    const result = await fetchData({
+      url: 'https://api.myburda.com/api/v1/users/reset-password/',
+      body: formData,
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      returnsData: false,
+    });
+
+    result?.success && setEmailSent(true);
   };
 
   return (
@@ -24,14 +42,12 @@ const ForgotPassword = () => {
         source={Images.ForgotPasswordHeader}
       />
       <Styled.View className="px-5">
-        <Styled.Text className="text-[#184639] text-[24px] font-semibold mb-4 text-center mt-[70px]">
-          {!emailSent ? 'Forgot Password?' : 'Check your email'}
+        <Styled.Text className="text-[#184639] text-[24px] font-poppins-semibold mb-4 text-center mt-[70px]">
+          {t(!emailSent ? 'forgotPassword' : 'checkEmail')}
         </Styled.Text>
 
-        <Styled.Text className="text-black text-base font-medium mb-4">
-          {!emailSent
-            ? 'Enter your registered e-mail and click recover account.'
-            : 'We have sent a password recover instructions to your email'}
+        <Styled.Text className="text-black text-base font-poppins-medium mb-4">
+          {t(!emailSent ? 'enterRegisteredEmail' : 'emailSent')}
         </Styled.Text>
 
         {!emailSent && (
@@ -39,7 +55,7 @@ const ForgotPassword = () => {
             inputName="email"
             inputValue={formData?.email}
             handleInputChange={handleInputChange}
-            placeholder="Email"
+            placeholder={t('email')}
             error={errors?.email}
           />
         )}
@@ -50,9 +66,9 @@ const ForgotPassword = () => {
           margin="mt-2"
           bgColor="bg-[#66B600]"
           textSize="text-lg"
-          title={!emailSent ? 'Confirm' : 'Open email app'}
+          title={t(!emailSent ? 'confirm' : 'openEmail')}
           buttonAction={() => {
-            !emailSent ? setEmailSent(true) : openInbox();
+            !emailSent ? handleForgotPassword() : openInbox();
           }}
         />
       </Styled.View>

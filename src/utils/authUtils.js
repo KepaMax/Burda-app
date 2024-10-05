@@ -1,12 +1,12 @@
 import {API_URL} from '@env';
 import storage from './MMKVStore';
+import {openInbox} from 'react-native-email-link';
 
 export const refreshTokens = async () => {
   const refreshToken = storage.getString('refreshToken');
 
   if (refreshToken) {
-    const userType = storage.getString('userType');
-    const url = `${API_URL}/${userType}/token/refresh/`;
+    const url = `${API_URL}/jwt/refresh/`;
     const body = JSON.stringify({refresh: refreshToken});
 
     const headers = {
@@ -22,8 +22,8 @@ export const refreshTokens = async () => {
       });
 
       if (response.ok) {
-        const access = await response.json();
-        storage.set('accessToken', access.access);
+        const data = await response.json();
+        storage.set('accessToken', data.access);
         return true;
       } else {
         const selectedLanguage = storage.getString('selectedLanguage');
@@ -37,18 +37,17 @@ export const refreshTokens = async () => {
         storage.clearAll();
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error on refreshTokens', error);
     }
   }
 };
 
-export const login = async (formData, setLoading, setErrors) => {
-  const userType = storage.getString('userType');
-  const url = `${API_URL}/${userType}/login/`;
+export const login = async ({formData, setErrors}) => {
+  const url = `${API_URL}/jwt/create/`;
 
   try {
     if (formData.email && formData.password) {
-      setLoading(true);
+      storage.set('loading', true);
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -61,8 +60,8 @@ export const login = async (formData, setLoading, setErrors) => {
       const data = await response.json();
 
       if (response.ok) {
-        storage.set('accessToken', data.token.access);
-        storage.set('refreshToken', data.token.refresh);
+        storage.set('accessToken', data.access);
+        storage.set('refreshToken', data.refresh);
       } else {
         setErrors(data.error);
       }
@@ -77,7 +76,7 @@ export const login = async (formData, setLoading, setErrors) => {
   } catch (error) {
     console.error('Error:', error);
   } finally {
-    setLoading(false);
+    storage.set('loading', false);
   }
 };
 
@@ -88,74 +87,101 @@ export const logout = () => {
 export const createAccount = async ({
   formData,
   setErrors,
-  termsConditionsAccepted,
-  selectedPrefix,
+  // termsConditionsAccepted,
+  // selectedPrefix,
   setLoading,
 }) => {
-  const userType = storage.getString('userType');
-  const url = `${API_URL}/${userType}/register/`;
+  const url = `${API_URL}/users/`;
   const selectedLanguage = storage.getString('selectedLanguage');
 
   try {
+    setErrors(null);
     setLoading(true);
-    if (termsConditionsAccepted) {
-      if (selectedPrefix) {
-        if (
-          formData.password &&
-          formData.password_confirm !== formData.password
-        ) {
-          setErrors(prevState => ({
-            ...prevState,
-            password:
-              selectedLanguage === 'az'
-                ? 'Daxil edilmiş şifrələr eyni deyil'
-                : selectedLanguage === 'en'
-                ? 'Entered passwords do not match'
-                : 'Введенные пароли не совпадают',
-          }));
-        } else {
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-          });
-
-          const data = await response.json();
-
-          if (response.ok) {
-            setErrors(null);
-            storage.set('accessToken', data.token.access);
-            storage.set('refreshToken', data.token.refresh);
-            return {success: true};
-          } else {
-            setErrors(data);
-          }
-        }
-      } else {
-        selectedLanguage === 'az'
-          ? alert('Xəta', 'Zəhmət olmasa öncə prefiks seçin')
-          : selectedLanguage === 'en'
-          ? alert('Error', 'You must choose a prefix first')
-          : alert('Ошибка', 'Сначала необходимо выбрать префикс');
-      }
+    // if (termsConditionsAccepted) {
+    // if (selectedPrefix) {
+    if (formData.repeat_password !== formData.password) {
+      setErrors(prevState => ({
+        ...prevState,
+        password:
+          selectedLanguage === 'az'
+            ? 'Daxil edilmiş şifrələr eyni deyil'
+            : // : selectedLanguage === 'en'
+              // ?
+              'Entered passwords do not match',
+        // : 'Введенные пароли не совпадают',
+      }));
     } else {
-      selectedLanguage === 'az'
-        ? alert(
-            'Xəta',
-            'Zəhmət olmasa əvvəlcə istifadə qaydaları oxuyun və razılaşın',
-          )
-        : selectedLanguage === 'en'
-        ? alert(
-            'Error',
-            'Please first read and agree with terms and conditions',
-          )
-        : alert(
-            'Ошибка',
-            'Пожалуйста, сначала прочитайте и согласитесь с условиями использования',
-          );
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(
+          selectedLanguage === 'az' ? 'Uğurlu əməliyyat' : 'Success',
+          selectedLanguage === 'az'
+            ? 'Zəhmət olmasa, e-poçtunuza göndərilən linkə keçid edərək qeydiyyatı tamamlayın.'
+            : 'Please click on the link sent to your email to complete the registration.',
+          {
+            textConfirm:
+              selectedLanguage === 'az' ? 'E-poçtu aç' : 'Open email app',
+            onConfirm: () => openInbox(),
+          },
+        );
+        // storage.set('accessToken', data.token.access);
+        // storage.set('refreshToken', data.token.refresh);
+        // return {success: true};
+      } else {
+        const fields = [
+          'first_name',
+          'last_name',
+          'phone_number',
+          'company',
+          'email',
+          'password',
+          'repeat_password',
+          'non_field_errors',
+        ];
+
+        const output = fields.reduce((acc, field) => {
+          const error = data.errors.find(e => e.attr === field);
+          acc[field] = error ? error.detail : '';
+          return acc;
+        }, {});
+
+        output.non_field_errors && alert(output.non_field_errors);
+
+        setErrors(output);
+      }
     }
+    // } else {
+    //   selectedLanguage === 'az'
+    //     ? alert('Xəta', 'Zəhmət olmasa öncə prefiks seçin')
+    //     : selectedLanguage === 'en'
+    //     ? alert('Error', 'You must choose a prefix first')
+    //     : alert('Ошибка', 'Сначала необходимо выбрать префикс');
+    // }
+    // } else {
+    //   selectedLanguage === 'az'
+    //     ? alert(
+    //         'Xəta',
+    //         'Zəhmət olmasa əvvəlcə istifadə qaydaları oxuyun və razılaşın',
+    //       )
+    //     : selectedLanguage === 'en'
+    //     ? alert(
+    //         'Error',
+    //         'Please first read and agree with terms and conditions',
+    //       )
+    //     : alert(
+    //         'Ошибка',
+    //         'Пожалуйста, сначала прочитайте и согласитесь с условиями использования',
+    //       );
+    // }
   } catch (error) {
     console.error('Error:', error);
   } finally {

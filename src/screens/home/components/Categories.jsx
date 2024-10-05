@@ -1,29 +1,82 @@
 import Styled from '@common/StyledComponents';
 import {FlatList} from 'react-native';
 import FastImage from 'react-native-fast-image';
+import {fetchData} from '@utils/fetchData';
+import storage from '@utils/MMKVStore';
+import {useEffect, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {useMMKVBoolean} from 'react-native-mmkv';
 
 const Categories = () => {
-  2;
-  const arr = [...new Array(3).keys()];
+  const [loading, setLoading] = useMMKVBoolean('loading');
+  const [categories, setCategories] = useState([]);
+  const navigation = useNavigation();
+
+  const getCategoriesData = async () => {
+    const result = await fetchData({
+      url: 'https://api.myburda.com/api/v1/categories/',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${storage.getString('accessToken')}`,
+      },
+      setLoading,
+    });
+
+    result?.success && setCategories(result?.data.results);
+  };
+
+  const getMealsByCategory = async (categoryId, categoryName) => {
+    const result = await fetchData({
+      url: `https://api.myburda.com/api/v1/meals/?category=${categoryId}`,
+      headers: {
+        Authorization: `Bearer ${storage.getString('accessToken')}`,
+        Accept: 'application/json',
+      },
+    });
+
+    result?.success &&
+      navigation.navigate('FoodList', {
+        items: result.data.results,
+        title: categoryName,
+      });
+  };
+
+  useEffect(() => {
+    getCategoriesData();
+  }, []);
 
   const CategoryItem = ({item}) => {
     return (
-      <Styled.TouchableOpacity className="items-center gap-2 mb-5">
+      <Styled.TouchableOpacity
+        onPress={() => {
+          getMealsByCategory(item.id, item.name);
+        }}
+        className="items-center gap-2 mb-5">
         <FastImage
-          style={{borderWidth: 1, width: 50, height: 50, borderRadius: 100}}
-          source={item}
+          style={{
+            borderWidth: 1,
+            width: 50,
+            height: 50,
+            borderRadius: 100,
+            borderColor: '#42C2E5',
+          }}
+          source={{uri: item.thumbnail}}
         />
-        <Styled.Text className="text-sm text-[#184639]">item name</Styled.Text>
+        <Styled.Text className="text-sm text-[#184639] font-poppins">
+          {item.name}
+        </Styled.Text>
       </Styled.TouchableOpacity>
     );
   };
 
   return (
     <FlatList
+      keyExtractor={item => item.id}
+      showsHorizontalScrollIndicator={false}
       contentContainerStyle={{gap: 20, paddingHorizontal: 20}}
       horizontal
-      data={arr}
-      renderItem={item => <CategoryItem item={item} />}
+      data={categories}
+      renderItem={({item}) => <CategoryItem item={item} />}
     />
   );
 };

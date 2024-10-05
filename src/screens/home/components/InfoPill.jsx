@@ -1,6 +1,9 @@
 import Styled from '@common/StyledComponents';
+import {useTranslation} from 'react-i18next';
 
-const InfoPill = ({type, title, overlay = true}) => {
+const InfoPill = ({type, overlay = true}) => {
+  const {t} = useTranslation();
+
   return (
     <Styled.View
       className={`w-fit ${
@@ -8,7 +11,9 @@ const InfoPill = ({type, title, overlay = true}) => {
       }  px-2 py-1 m-1 rounded-[8px] ${
         type === 'new' ? 'bg-[#FFC529]' : 'bg-[#FF6135]'
       }`}>
-      <Styled.Text className="text-white font-medium">{title}</Styled.Text>
+      <Styled.Text className="text-white font-poppins-medium">
+        {t(type)}
+      </Styled.Text>
     </Styled.View>
   );
 };

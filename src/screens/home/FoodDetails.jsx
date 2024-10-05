@@ -1,21 +1,46 @@
-import Style from '@common/StyledComponents';
+import Styled from '@common/StyledComponents';
 import Images from '@images/images.js';
 import CustomComponents from '@common/CustomComponents';
 import FoodProperties from './components/FoodProperties';
 import Ingredients from './components/Ingredients';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
+import {useTranslation} from 'react-i18next';
 
 const FoodDetails = () => {
+  const route = useRoute();
+  const item = route.params?.item;
+  const navigation = useNavigation();
+  const {t} = useTranslation();
+
   return (
-    <Style.ScrollView>
+    <Styled.ScrollView>
       <CustomComponents.Header
         overlay={true}
-        title="Sezar salad"
+        title={item.name}
         titleColor="text-white"
       />
       <Images.FoodDetailsHeader />
-      <FoodProperties />
-      <Ingredients />
-    </Style.ScrollView>
+      <Styled.View className="w-full absolute items-center top-[140px]">
+        <FastImage
+          style={{width: 200, height: 200, borderRadius: 100}}
+          source={{uri: item.thumbnail}}
+        />
+      </Styled.View>
+      <FoodProperties item={item} />
+      <Ingredients ingredients={item.ingredients} />
+
+      <CustomComponents.Button
+        title={t('addToBasket')}
+        padding="py-3"
+        margin="mx-5 mt-5"
+        borderRadius="rounded-[24px]"
+        bgColor="bg-[#66B600]"
+        buttonAction={() => {
+          navigation.navigate('Scan');
+        }}
+      />
+    </Styled.ScrollView>
   );
 };
 

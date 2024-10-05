@@ -28,13 +28,27 @@ export const handlePhotoSelect = (setSelectedImage, setSelectedImageUrl) => {
 
 export const handlePermissionDenied = () => {
   alert(
-    t('attributes.error'),
-    t('attributes.galleryErrorMessage'),
+    'Error',
+    'Error occurred',
+    // t('attributes.error'),
+    // t('attributes.galleryErrorMessage'),
 
     {
-      textConfirm: t('attributes.Settings'),
-      textCancel: t('attributes.profileDeleteNo'),
+      textConfirm: 'Settings',
+      textCancel: 'No',
       onConfirm: () => Linking.openSettings(),
     },
   );
+};
+
+export const canUseCamera = setCameraAccess => {
+  request(
+    Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA,
+  ).then(result => {
+    if (result === 'granted') {
+      setCameraAccess(true);
+    } else {
+      handlePermissionDenied();
+    }
+  });
 };

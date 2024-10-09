@@ -49,7 +49,11 @@ const Scan = () => {
       url: `https://api.myburda.com/api/v1/meals/${barcode}/`,
     });
 
-    result?.success && navigation.navigate('Basket', {mealId: result.data.id});
+    result?.success &&
+      navigation.navigate('HomeStack', {
+        screen: 'Basket',
+        params: {mealId: result.data.id},
+      });
   };
 
   useEffect(() => {

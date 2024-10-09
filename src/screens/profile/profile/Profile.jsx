@@ -10,8 +10,6 @@ import {deleteAccount} from '@utils/authUtils';
 const Profile = () => {
   const navigation = useNavigation();
   const {t} = useTranslation();
-  const [selectedLanguage, setSelectedLanguage] =
-    useMMKVString('selectedLanguage');
   const [buttonType, setButtonType] = useMMKVString('buttonType');
 
   const sections = [
@@ -32,31 +30,19 @@ const Profile = () => {
           logo: <Icons.TermsConditions />,
           title: t('termsAndConditions'),
           route: 'WebViewScreen',
-          payload:
-            selectedLanguage === 'az' || selectedLanguage === 'ru'
-              ? {
-                  url: 'http://2school.app/open/az/terms_and_conditions/',
-                  title: 'Qayda və şərtlər',
-                }
-              : {
-                  url: 'http://2school.app/open/en/terms_and_conditions/',
-                  title: 'Terms and conditions',
-                },
+          payload: {
+            url: 'https://burda-staticfiles-storage.s3.eu-north-1.amazonaws.com/BURDA+Terms+and+conditions.pdf',
+            title: 'Qayda və şərtlər',
+          },
         },
         {
           logo: <Icons.PrivacyPolicy />,
           title: t('privacyPolicy'),
           route: 'WebViewScreen',
-          payload:
-            selectedLanguage === 'az' || selectedLanguage === 'ru'
-              ? {
-                  url: 'https://2school.app/open/az/privacy_policy/',
-                  title: 'Məxfilik siyasəti',
-                }
-              : {
-                  url: 'https://2school.app/open/en/privacy_policy/',
-                  title: 'Privacy policy',
-                },
+          payload: {
+            url: 'https://burda-staticfiles-storage.s3.eu-north-1.amazonaws.com/BURDA+Privacy+policy.pdf',
+            title: 'Məxfilik siyasəti',
+          },
         },
         {
           logo: <Icons.Payments />,

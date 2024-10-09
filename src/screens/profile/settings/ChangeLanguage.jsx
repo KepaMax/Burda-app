@@ -29,7 +29,7 @@ const ChangeLanguage = () => {
         className="items-center flex-row justify-between shadow shadow-zinc-300 my-[8px] mx-5 px-6 py-7 bg-white rounded-[8px]"
         onPress={() => {
           setSelectedLanguage(item.value);
-          i18n.changeLanguage(item.value);
+          // i18n.changeLanguage(item.value);
         }}>
         <Styled.View className="flex-row items-center">
           {item.icon}

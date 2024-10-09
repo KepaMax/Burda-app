@@ -70,5 +70,14 @@
   "year": "İl",
   "addCard": "Kartı əlavə et",
   "paymentMethodDeleted": "Ödəniş metodu uğurla silindi",
-  "selectPaymentMethod": "Ödəniş metodunu seçin"
+  "selectPaymentMethod": "Ödəniş metodunu seçin",
+  "viewBasket": "Səbətə nəzər yetir",
+  "home": "Ana səhifə",
+  "subscription": "Abunəlik",
+  "scan": "Skan",
+  "menu": "Menyu",
+  "toBeAddedSoon": "Tezliklə əlavə olunacaq...",
+  "proceedToPayment": "Ödənişə keçid et",
+  "confirmPayment": "Ödənişi təsdiqlə",
+  "choosePaymentMethod": "İlk öncə ödəniş metodunu seçin"
 }

@@ -19,7 +19,7 @@ const Ingredients = ({ingredients}) => {
       </Styled.Text>
 
       <Styled.View className="w-auto flex-row flex-wrap bg-white p-2.5 mx-5 rounded-[8px] shadow shadow-zinc-300">
-        {ingredients.map(item => (
+        {ingredients?.map(item => (
           <IngredientItem key={item.id} item={item} />
         ))}
       </Styled.View>

@@ -20,6 +20,8 @@ import NoInternet from '@common/NoInternet';
 import {useMMKVString} from 'react-native-mmkv';
 
 function App(): JSX.Element {
+  const [selectedLanguage, setSelectedLanguage] =
+    useMMKVString('selectedLanguage');
   const [connected, setConnected] = useState();
   const {i18n} = useTranslation();
   const screenWidth = Dimensions.get('screen').width;
@@ -70,15 +72,6 @@ function App(): JSX.Element {
     storage.set('buttonType', '#FF8C03');
     refreshTokens();
 
-    const currentLanguage = async () => {
-      const selectedLanguage = storage.getString('selectedLanguage');
-      if (selectedLanguage) {
-        i18n.changeLanguage(selectedLanguage);
-      }
-    };
-
-    currentLanguage();
-
     const unsubscribe = NetInfo.addEventListener(state => {
       setConnected(state.isConnected);
     });
@@ -87,6 +80,12 @@ function App(): JSX.Element {
       unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (selectedLanguage) {
+      i18n.changeLanguage(selectedLanguage);
+    }
+  }, [selectedLanguage]);
 
   return (
     <>

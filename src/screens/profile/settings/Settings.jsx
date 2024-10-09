@@ -52,6 +52,9 @@ const Settings = () => {
           data={settingItems}
           renderItem={({item}) => <SettingItem item={item} />}
         />
+        <Styled.Text className="text-zinc-500 text-sm text-center">
+          Version: 1.1
+        </Styled.Text>
       </Styled.ScrollView>
     </>
   );

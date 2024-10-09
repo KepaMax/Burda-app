@@ -4,18 +4,24 @@ import FastImage from 'react-native-fast-image';
 import InfoPill from './InfoPill';
 import {useState, useEffect} from 'react';
 import {fetchData} from '@utils/fetchData';
-import storage from '@utils/MMKVStore';
+import CustomComponents from '@common/CustomComponents';
 import {useMMKVString} from 'react-native-mmkv';
 import {format} from 'date-fns';
+import {az, enUS} from 'date-fns/locale';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '@react-navigation/native';
 
 const TodaysMenu = () => {
-  const date = format(new Date(), 'yyyy-MM-d');
-  const {t} = useTranslation();
-  const [menuItems, setMenuItems] = useState([]);
   const [selectedLanguage, setSelectedLanguage] =
     useMMKVString('selectedLanguage');
+  const date = format(new Date(), 'yyyy-MM-d');
+  const formatString = 'd MMMM';
+
+  const locale = selectedLanguage === 'az' ? az : enUS;
+
+  const formattedDate = format(new Date(), formatString, {locale});
+  const {t} = useTranslation();
+  const [menuItems, setMenuItems] = useState([]);
   const navigation = useNavigation();
 
   const getMenuItems = async () => {
@@ -53,6 +59,7 @@ const TodaysMenu = () => {
       <Styled.TouchableOpacity
         onPress={() => {
           navigation.navigate('FoodMenu', {
+            scrollToCategory: category.name,
             categoryId: category.id,
             date: date.split('-')[2],
             month: date.split('-')[1],
@@ -93,9 +100,30 @@ const TodaysMenu = () => {
   if (menuItems.length) {
     return (
       <>
-        <Styled.Text className="text-[20px] text-[#184639] font-poppins-medium mx-5">
-          {t('todaysMenu')}
-        </Styled.Text>
+        <Styled.View className="flex-row justify-between items-center mx-5">
+          <Styled.Text className="text-[20px] text-[#184639] font-poppins-medium">
+            {t('todaysMenu')}{' '}
+            <Styled.Text className="text-[#7D7D7D] font-poppins-italic">
+              ({formattedDate})
+            </Styled.Text>
+          </Styled.Text>
+
+          <CustomComponents.Link
+            title={t('seeMore')}
+            textColor="text-[#66B600]"
+            textSize="text-sm w-[60px]"
+            numberOfLines={1}
+            fontWeight="font-poppins"
+            linkAction={() => {
+              navigation.navigate('FoodMenu', {
+                date: date.split('-')[2],
+                month: date.split('-')[1],
+                year: date.split('-')[0],
+                fullDate: date,
+              });
+            }}
+          />
+        </Styled.View>
 
         <FlatList
           showsHorizontalScrollIndicator={false}

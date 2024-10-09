@@ -58,7 +58,7 @@ const WeeklyMenu = () => {
             fullDate: `${year}-${month}-${item.date}`,
           });
         }}
-        className={`min-w-[48px] px-[16px] py-[24px] ${
+        className={`border-[1px] border-zinc-200 min-w-[48px] px-[16px] py-[24px] ${
           weekDays[0].dayName === item.dayName ? 'bg-[#66B600]' : 'bg-white'
         } rounded-[100px] shadow shadow-zinc-300`}>
         <Styled.Text

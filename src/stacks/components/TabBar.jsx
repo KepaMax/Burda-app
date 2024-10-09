@@ -1,11 +1,13 @@
 import Icons from '@icons/icons.js';
-import {useTranslation} from 'react-i18next';
 import {Dimensions} from 'react-native';
 import Styled from '@common/StyledComponents';
+import ViewBasket from '@common/ViewBasket';
 
 const TabBar = ({state, descriptors, navigation}) => {
-  const {t} = useTranslation();
   const width = Dimensions.get('screen').width;
+  const currentTab = state.routes[state.index];
+  const isBasketOpen =
+    currentTab?.params?.screen === 'Basket' || currentTab?.name === 'Scan';
 
   return (
     <Styled.View
@@ -14,12 +16,8 @@ const TabBar = ({state, descriptors, navigation}) => {
       }`}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
-        const label =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-            ? options.title
-            : route.name;
+        const visibleLabel = options.tabBarLabel;
+        const label = route.name;
 
         const isFocused = state.index === index;
 
@@ -46,7 +44,10 @@ const TabBar = ({state, descriptors, navigation}) => {
           });
 
           if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name);
+            navigation.reset({
+              index: 0,
+              routes: [{name: route.name}],
+            });
           }
         };
 
@@ -66,19 +67,22 @@ const TabBar = ({state, descriptors, navigation}) => {
             testID={options.tabBarTestID}
             onPress={onPress}
             onLongPress={onLongPress}
-            disabled={label === 'Subscription'}>
+            // disabled={label === 'Subscription'}
+          >
             <Styled.View className="items-center">
               {icon}
               <Styled.Text
                 className={`${
                   isFocused ? 'text-[#66B600]' : 'text-[#757575]'
                 } mt-1 text-xs font-poppins-medium`}>
-                {label}
+                {visibleLabel}
               </Styled.Text>
             </Styled.View>
           </Styled.TouchableOpacity>
         );
       })}
+
+      {!isBasketOpen && <ViewBasket navigation={navigation} />}
     </Styled.View>
   );
 };

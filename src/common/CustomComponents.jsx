@@ -21,10 +21,12 @@ const Button = ({
   extraTxtStyling = '',
   icon = null,
   iconPosition = 'left',
+  widthInPixels = null,
   // gap = icon ? 'gap-2' : 'gap-0',
 }) => {
   return (
     <Styled.TouchableOpacity
+      {...(widthInPixels ? {style: {width: widthInPixels}} : {})}
       onPress={buttonAction}
       className={`-z-10 justify-center ${bgColor} ${borderRadius} ${padding} ${margin} ${
         icon && iconPosition === 'right' ? 'flex-row-reverse' : 'flex-row'
@@ -149,11 +151,13 @@ const Link = ({
   margin = 'm-0',
   padding = 'p-0',
   textAlign = 'text-left',
+  numberOfLines = null,
   linkAction = () => console.log('Link Clicked'),
 }) => {
   return (
     <Styled.TouchableOpacity onPress={linkAction} className={`${margin}`}>
       <Styled.Text
+        {...(numberOfLines ? {numberOfLines: numberOfLines} : {})}
         className={`${textColor} ${textSize} ${fontWeight} ${textAlign} ${padding}`}>
         {title}
       </Styled.Text>

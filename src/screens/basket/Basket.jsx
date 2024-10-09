@@ -132,9 +132,9 @@ const Basket = () => {
   return (
     <>
       <CustomComponents.Header
-        navigationScreen={'Scan'}
         title={t('basket')}
         bgColor="bg-white"
+        navigationScreen="HomePage"
       />
 
       <FlatList
@@ -182,7 +182,7 @@ const Basket = () => {
         </Styled.View>
 
         <CustomComponents.Button
-          title={t('confirm')}
+          title={t('proceedToPayment')}
           bgColor="bg-[#66B600]"
           borderRadius="rounded-[24px]"
           padding="p-[10px]"

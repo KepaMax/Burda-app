@@ -24,7 +24,7 @@ const AcceptTermsAndConditions = ({accepted, setAccepted}) => {
           <Styled.TouchableOpacity
             onPress={() => {
               navigation.navigate('WebViewScreen', {
-                url: 'http://2school.app/open/az/terms_and_conditions/',
+                url: 'https://burda-staticfiles-storage.s3.eu-north-1.amazonaws.com/BURDA+Terms+and+conditions.pdf',
                 title: 'İstifadəçi qaydaları və şərtləri',
               });
             }}>
@@ -40,7 +40,7 @@ const AcceptTermsAndConditions = ({accepted, setAccepted}) => {
           <Styled.TouchableOpacity
             onPress={() => {
               navigation.navigate('WebViewScreen', {
-                url: 'https://2school.app/open/az/privacy_policy/',
+                url: 'https://burda-staticfiles-storage.s3.eu-north-1.amazonaws.com/BURDA+Privacy+policy.pdf',
                 title: 'Məxfilik Siyasəti',
               });
             }}>
@@ -63,7 +63,7 @@ const AcceptTermsAndConditions = ({accepted, setAccepted}) => {
           <Styled.TouchableOpacity
             onPress={() => {
               navigation.navigate('WebViewScreen', {
-                url: 'http://2school.app/open/en/terms_and_conditions/',
+                url: 'https://burda-staticfiles-storage.s3.eu-north-1.amazonaws.com/BURDA+Terms+and+conditions.pdf',
                 title: 'Terms of use',
               });
             }}>
@@ -79,7 +79,7 @@ const AcceptTermsAndConditions = ({accepted, setAccepted}) => {
           <Styled.TouchableOpacity
             onPress={() => {
               navigation.navigate('WebViewScreen', {
-                url: 'https://2school.app/open/en/privacy_policy/',
+                url: 'https://burda-staticfiles-storage.s3.eu-north-1.amazonaws.com/BURDA+Privacy+policy.pdf',
                 title: 'Privacy Policy',
               });
             }}>

@@ -70,5 +70,14 @@
   "year": "Year",
   "addCard": "Add card",
   "paymentMethodDeleted": "Payment method is successfully deleted",
-  "selectPaymentMethod": "Select payment method"
+  "selectPaymentMethod": "Select payment method",
+  "viewBasket": "View basket",
+  "home": "Home",
+  "subscription": "Subscription",
+  "scan": "Scan",
+  "menu": "Menu",
+  "toBeAddedSoon": "To be added soon...",
+  "proceedToPayment": "Proceed to payment",
+  "confirmPayment": "Confirm payment",
+  "choosePaymentMethod": "Please choose a payment method first"
 }

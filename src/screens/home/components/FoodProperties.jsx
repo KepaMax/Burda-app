@@ -11,41 +11,47 @@ const FoodProperties = ({item}) => {
         <Styled.Text
           numberOfLines={1}
           className="max-w-[200px] text-lg font-poppins text-[#184639]">
-          {item.name}
+          {item?.meal?.name ? item?.meal?.name : item.name}
         </Styled.Text>
         <Styled.View className="flex-row">
-          {item.new && <InfoPill type="new" overlay={false} />}
-          {item.top && <InfoPill type="top" overlay={false} />}
+          {Boolean(item?.meal?.new || item.new) && (
+            <InfoPill type="new" overlay={false} />
+          )}
+          {Boolean(item?.meal?.top || item.top) && (
+            <InfoPill type="top" overlay={false} />
+          )}
         </Styled.View>
       </Styled.View>
 
       <Styled.View className="w-auto h-[84px] bg-white p-2.5 mx-5 rounded-[8px] shadow shadow-zinc-300">
         <Styled.View className="flex-row justify-between">
           <Styled.View className="flex-row gap-1">
-            {item.weight && (
+            {Boolean(item?.meal?.weight || item.weight) && (
               <Styled.View className="w-fit bg-white px-[6px] py-[4px] rounded-[8px] shadow shadow-zinc-300">
                 <Styled.Text className="text-[#66B600] text-sm font-poppins">
-                  {item.weight} g
+                  {item?.meal?.weight ? item?.meal?.weight : item.weight} g
                 </Styled.Text>
               </Styled.View>
             )}
 
-            {item.calories && (
+            {Boolean(item?.meal?.calories || item.calories) && (
               <Styled.View className="w-fit bg-white px-[6px] py-[4px] rounded-[8px] shadow shadow-zinc-300">
                 <Styled.Text className="text-[#184639] text-sm font-poppins">
-                  {item.calories} kkal
+                  {item?.meal?.calories ? item?.meal?.calories : item.calories}{' '}
+                  kkal
                 </Styled.Text>
               </Styled.View>
             )}
           </Styled.View>
 
           <Styled.Text className="text-base text-[#42C2E5] font-poppins-bold">
-            {item.price} AZN
+            {item?.meal?.price ? item?.meal?.price : item.price} AZN
           </Styled.Text>
         </Styled.View>
 
         <Styled.Text className="text-[#FF8C03] font-poppins-bold text-right mt-3">
-          {item.quantity} {t('left')}
+          {item?.meal?.quantity ? item?.meal?.quantity : item.quantity}{' '}
+          {t('left')}
         </Styled.Text>
       </Styled.View>
     </>

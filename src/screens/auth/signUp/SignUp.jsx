@@ -112,8 +112,6 @@ const SignUp = () => {
             createAccount({
               formData,
               setErrors,
-              // termsConditionsAccepted,
-              // selectedPrefix,
               setLoading,
             });
           }}

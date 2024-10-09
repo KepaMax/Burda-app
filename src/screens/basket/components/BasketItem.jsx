@@ -4,10 +4,7 @@ import {Dimensions} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icons from '@icons/icons';
 
-const BasketItem = ({
-  item,
-  decrementBasketItemCount,
-}) => {
+const BasketItem = ({item, decrementBasketItemCount}) => {
   const navigation = useNavigation();
   const screenWidth = Dimensions.get('screen').width;
 
@@ -30,7 +27,7 @@ const BasketItem = ({
         <Icons.X />
       </Styled.TouchableOpacity>
 
-      <Styled.View className="absolute right-4 top-3 h-[25px] w-[25px] items-center justify-center border-[1px] border-[#66B600] rounded-[8px] bg-white">
+      <Styled.View className="absolute right-4 top-3 h-[25px] w-[25px] items-center justify-center border-[1px] border-[#66B600] rounded-[8px] bg-white z-10">
         <Styled.Text className="text-xs text-[#66B600] font-poppins-semibold">
           {item.quantity}x
         </Styled.Text>
@@ -53,7 +50,7 @@ const BasketItem = ({
         style={{width: screenWidth - 140}}
         className="h-full px-[14px] py-[16px] justify-between">
         <Styled.Text
-          className="font-poppins-semibold text-base text-black mb-1"
+          className="font-poppins-semibold text-base text-black mb-1 w-[90%]"
           numberOfLines={1}>
           {item.meal.name}
         </Styled.Text>

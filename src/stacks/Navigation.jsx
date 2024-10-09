@@ -2,11 +2,10 @@ import {NavigationContainer} from '@react-navigation/native';
 import TabStack from '@stacks/TabStack';
 import AuthStack from '@stacks/AuthStack';
 import {useMMKVString} from 'react-native-mmkv';
-import Layout from '../common/Layout';
+import Layout from '@common/Layout';
 
 const Navigation = () => {
   const [accessToken, setAccessToken] = useMMKVString('accessToken');
-  // const accessToken = true;
 
   const linking = {
     prefixes: ['burda://'],

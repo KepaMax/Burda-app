@@ -9,6 +9,7 @@ import NoItemsFound from '@common/NoItemsFound';
 import CustomComponents from '@common/CustomComponents';
 import {format} from 'date-fns';
 import {az, enUS} from 'date-fns/locale';
+import CategoryHeader from './components/CategoryHeader';
 
 const FoodMenu = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -16,6 +17,7 @@ const FoodMenu = () => {
   const [menu, setMenu] = useState([]);
   const route = useRoute();
   const {year, date, fullDate} = route.params;
+  const scrollToCategory = route.params?.scrollToCategory;
   const today = new Date();
   const sectionListRef = useRef(null);
 
@@ -85,6 +87,7 @@ const FoodMenu = () => {
   };
 
   useEffect(() => {
+    scrollToCategory && scrollToSectionByTitle(scrollToCategory);
     getFoodData();
   }, []);
 
@@ -100,35 +103,12 @@ const FoodMenu = () => {
         title={`${date} ${formattedMonth} ${year}`}
       />
 
-      {categories?.length ? (
-        <Styled.ScrollView
-          showsHorizontalScrollIndicator={false}
-          className="bg-white"
-          horizontal
-          contentContainerStyle={{
-            gap: 24,
-            paddingHorizontal: 20,
-          }}>
-          {categories.map(category => (
-            <CustomComponents.Link
-              padding="pb-4"
-              margin="mb-2"
-              title={category}
-              textSize="text-lg"
-              fontWeight="font-poppins-medium"
-              textColor={
-                category === selectedCategory
-                  ? 'text-[#66B600] border-b-[2px] border-[#66B600]'
-                  : 'text-[#B7B7B7]'
-              }
-              linkAction={() => {
-                setSelectedCategory(category);
-                scrollToSectionByTitle(category);
-              }}
-            />
-          ))}
-        </Styled.ScrollView>
-      ) : null}
+      <CategoryHeader
+        categories={categories}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        scrollToSectionByTitle={scrollToSectionByTitle}
+      />
 
       {menu?.length ? (
         <SectionList

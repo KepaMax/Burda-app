@@ -17,18 +17,24 @@ const FoodDetails = () => {
     <Styled.ScrollView>
       <CustomComponents.Header
         overlay={true}
-        title={item.name}
+        title={item?.meal?.name ? item?.meal?.name : item.name}
         titleColor="text-white"
       />
       <Images.FoodDetailsHeader />
       <Styled.View className="w-full absolute items-center top-[140px]">
         <FastImage
           style={{width: 200, height: 200, borderRadius: 100}}
-          source={{uri: item.thumbnail}}
+          source={{
+            uri: item?.meal?.thumbnail ? item?.meal?.thumbnail : item.thumbnail,
+          }}
         />
       </Styled.View>
       <FoodProperties item={item} />
-      <Ingredients ingredients={item.ingredients} />
+      <Ingredients
+        ingredients={
+          item?.meal?.ingredients ? item?.meal?.ingredients : item.ingredients
+        }
+      />
 
       <CustomComponents.Button
         title={t('addToBasket')}

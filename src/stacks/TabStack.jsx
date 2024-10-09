@@ -5,10 +5,13 @@ import '@locales/index';
 import TabBar from './components/TabBar';
 import SubscriptionStack from '@stacks/SubscriptionStack';
 import ScanStack from '@stacks/ScanStack';
+import {useTranslation} from 'react-i18next';
 
 const Tab = createBottomTabNavigator();
 
 const TabStack = () => {
+  const {t} = useTranslation();
+
   return (
     <Tab.Navigator
       screenOptions={{headerShown: false}}
@@ -19,10 +22,26 @@ const TabStack = () => {
           navigation={navigation}
         />
       )}>
-      <Tab.Screen name="Home" component={HomeStack} />
-      <Tab.Screen name="Subscription" component={SubscriptionStack} />
-      <Tab.Screen name="Scan" component={ScanStack} />
-      <Tab.Screen name="Profile" component={ProfileStack} />
+      <Tab.Screen
+        name="Home"
+        component={HomeStack}
+        options={{tabBarLabel: t('home')}}
+      />
+      <Tab.Screen
+        name="Subscription"
+        component={SubscriptionStack}
+        options={{tabBarLabel: t('subscription')}}
+      />
+      <Tab.Screen
+        name="Scan"
+        component={ScanStack}
+        options={{tabBarLabel: t('scan')}}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileStack}
+        options={{tabBarLabel: t('menu')}}
+      />
     </Tab.Navigator>
   );
 };

@@ -20,7 +20,7 @@ const FoodItem = ({item}) => {
       className="mx-auto h-[140px] flex-row justify-between bg-white my-2 shadow shadow-zinc-300 rounded-[18px]">
       <FastImage
         source={{
-          uri: item.meal ? item.meal.thumbnail : item.thumbnail,
+          uri: item.meal ? item?.meal?.thumbnail : item.thumbnail,
         }}
         style={{
           borderTopLeftRadius: 18,
@@ -37,13 +37,13 @@ const FoodItem = ({item}) => {
           <Styled.Text
             className="font-poppins-semibold text-base text-black mb-2"
             numberOfLines={1}>
-            {item.meal ? item.meal.name : item.name}
+            {item.meal ? item?.meal?.name : item.name}
           </Styled.Text>
 
           <Styled.Text
             className="font-poppins text-sm text-black"
             numberOfLines={2}>
-            {item.meal ? item.meal.description : item.description}
+            {item.meal ? item?.meal?.description : item.description}
           </Styled.Text>
         </Styled.View>
 
@@ -51,13 +51,13 @@ const FoodItem = ({item}) => {
           <Styled.Text
             className="font-poppins-bold text-xs text-[#FF8C03]"
             numberOfLines={2}>
-            {item.meal ? item.meal.quantity : item.quantity} {t('left')}
+            {item.meal ? item?.meal?.quantity : item.quantity} {t('left')}
           </Styled.Text>
 
           <Styled.Text
             className="font-poppins-bold text-base text-[#42C2E5]"
             numberOfLines={2}>
-            {item.meal ? item.meal.price : item.price} AZN
+            {item.meal ? item?.meal?.price : item.price} AZN
           </Styled.Text>
         </Styled.View>
       </Styled.View>

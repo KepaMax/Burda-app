@@ -95,7 +95,7 @@ export const fetchData = async ({
         data: data,
       };
     } else if (response.status === 403) {
-      refreshTokens();
+      const tokensRefreshed = await refreshTokens();
 
       if (tokensRefreshed) {
         fetchAgain(url, (method = 'GET'), (body = null), (returnsData = true));

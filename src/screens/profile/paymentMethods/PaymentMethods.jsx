@@ -34,7 +34,7 @@ const PaymentMethods = () => {
         },
       });
     } else {
-      alert('Please choose a payment method first');
+      alert(t('choosePaymentMethod'));
     }
   };
 
@@ -115,7 +115,7 @@ const PaymentMethods = () => {
 
         {pay && (
           <CustomComponents.Button
-            title={t('confirm')}
+            title={t('confirmPayment')}
             bgColor="bg-[#66B600]"
             padding="py-3"
             margin="mx-5 mt-10"

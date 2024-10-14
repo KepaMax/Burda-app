@@ -81,6 +81,7 @@ export const fetchData = async ({
 
     const response = await fetch(url, options);
     const data = returnsData ? await response?.json() : null;
+    console.log(data)
 
     // console.log(
     //   `Data from ${calledFrom} \n Url: ${url} \n Options: ${JSON.stringify(

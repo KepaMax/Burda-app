@@ -14,10 +14,10 @@ const FoodProperties = ({item}) => {
           {item?.meal?.name ? item?.meal?.name : item.name}
         </Styled.Text>
         <Styled.View className="flex-row">
-          {Boolean(item?.meal?.new || item.new) && (
+          {Boolean(item?.meal?.new || item?.new) && (
             <InfoPill type="new" overlay={false} />
           )}
-          {Boolean(item?.meal?.top || item.top) && (
+          {Boolean(item?.meal?.top || item?.top) && (
             <InfoPill type="top" overlay={false} />
           )}
         </Styled.View>

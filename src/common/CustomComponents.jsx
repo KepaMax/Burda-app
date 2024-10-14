@@ -6,6 +6,7 @@ import {FlatList} from 'react-native';
 import {prefixData} from '@utils/staticData';
 import {useTranslation} from 'react-i18next';
 import {fetchData} from '@utils/fetchData';
+import {useMMKVBoolean} from 'react-native-mmkv';
 
 const Button = ({
   bgColor = 'bg-slate-400',
@@ -172,6 +173,7 @@ const Header = ({
   titleColor = 'text-black',
   navigationScreen = null,
   extraStyles,
+  reset,
 }) => {
   const navigation = useNavigation();
 
@@ -184,11 +186,12 @@ const Header = ({
         {(navigationScreen || navigation.canGoBack()) && (
           <Styled.TouchableOpacity
             hitSlop={{top: 50, right: 50, bottom: 50, left: 50}}
-            onPress={() =>
+            onPress={() => {
+              console.log(navigationScreen);
               navigationScreen
                 ? navigation.navigate(navigationScreen)
-                : navigation.goBack()
-            }
+                : navigation.goBack();
+            }}
             className="absolute left-0">
             {titleColor === 'text-black' ? (
               <Icons.ArrowBlack />

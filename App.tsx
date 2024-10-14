@@ -18,6 +18,8 @@ import SuperAlert from 'react-native-super-alert';
 import NetInfo from '@react-native-community/netinfo';
 import NoInternet from '@common/NoInternet';
 import {useMMKVString} from 'react-native-mmkv';
+import {useMMKVBoolean} from 'react-native-mmkv';
+import {fetchData} from '@utils/fetchData';
 
 function App(): JSX.Element {
   const [selectedLanguage, setSelectedLanguage] =
@@ -26,6 +28,18 @@ function App(): JSX.Element {
   const {i18n} = useTranslation();
   const screenWidth = Dimensions.get('screen').width;
   const [buttonType, setButtonType] = useMMKVString('buttonType');
+  const [basketVisible, setBasketVisible] = useMMKVBoolean('basketVisible');
+
+  const getBasketItems = async () => {
+    const result = await fetchData({
+      url: 'https://api.myburda.com/api/v1/basket-items/',
+      tokenRequired: true,
+    });
+
+    if (result.success && result.data.basket_items.length) {
+      setBasketVisible(true);
+    }
+  };
 
   const alertStyle = {
     container: {
@@ -86,6 +100,10 @@ function App(): JSX.Element {
       i18n.changeLanguage(selectedLanguage);
     }
   }, [selectedLanguage]);
+
+  useEffect(() => {
+    getBasketItems();
+  }, []);
 
   return (
     <>

@@ -2,12 +2,11 @@ import Icons from '@icons/icons.js';
 import {Dimensions} from 'react-native';
 import Styled from '@common/StyledComponents';
 import ViewBasket from '@common/ViewBasket';
+import {useMMKVBoolean} from 'react-native-mmkv';
 
 const TabBar = ({state, descriptors, navigation}) => {
   const width = Dimensions.get('screen').width;
-  const currentTab = state.routes[state.index];
-  const isBasketOpen =
-    currentTab?.params?.screen === 'Basket' || currentTab?.name === 'Scan';
+  const [basketVisible, setBasketVisible] = useMMKVBoolean('basketVisible');
 
   return (
     <Styled.View
@@ -38,6 +37,12 @@ const TabBar = ({state, descriptors, navigation}) => {
         }
 
         const onPress = () => {
+          if (label === 'Scan') {
+            setBasketVisible(false);
+          } else {
+            setBasketVisible(true);
+          }
+
           const event = navigation.emit({
             type: 'tabPress',
             target: route.key,
@@ -82,7 +87,7 @@ const TabBar = ({state, descriptors, navigation}) => {
         );
       })}
 
-      {!isBasketOpen && <ViewBasket navigation={navigation} />}
+      {Boolean(basketVisible) && <ViewBasket navigation={navigation} />}
     </Styled.View>
   );
 };

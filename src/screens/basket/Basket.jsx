@@ -7,15 +7,18 @@ import BasketItem from './components/BasketItem';
 import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
 import Styled from '@common/StyledComponents';
 import {fetchData} from '@utils/fetchData';
+import {useMMKVBoolean} from 'react-native-mmkv';
 
 const Basket = () => {
   const isFocused = useIsFocused();
   const router = useRoute();
-  const [mealId, setMealId] = useState(null);
+  const passedMealId = router.params?.mealId;
+  const [mealId, setMealId] = useState(passedMealId);
   const {t} = useTranslation();
   const [basketItems, setBasketItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(null);
   const navigation = useNavigation();
+  const [basketVisible, setBasketVisible] = useMMKVBoolean('basketVisible');
 
   const getBasketItems = async () => {
     const result = await fetchData({
@@ -30,19 +33,18 @@ const Basket = () => {
   };
 
   const setBasketItem = async () => {
-    const result = await fetchData({
+    await fetchData({
       url: `https://api.myburda.com/api/v1/basket-items/`,
       tokenRequired: true,
       method: 'POST',
       body: {meal: mealId},
     });
 
-    // result?.success ? console.log(result?.data) : console.log(result?.error);
-
     getBasketItems();
   };
 
   const incrementBasketItemCount = async ({basketItemId, itemQuantity}) => {
+    // console.log('incrementBasketItemCount');
     const result = await fetchData({
       url: `https://api.myburda.com/api/v1/basket-items/${basketItemId}/`,
       tokenRequired: true,
@@ -52,14 +54,11 @@ const Basket = () => {
       },
     });
 
-    // result?.success
-    //   ? console.log(JSON.stringify(result?.data))
-    //   : console.log(JSON.stringify(result?.error));
-
     getBasketItems();
   };
 
   const checkForExistingItem = async () => {
+    // console.log('checkForExistingItems');
     if (basketItems.length) {
       basketItems.map(item => {
         if (item.meal.id === mealId) {
@@ -76,10 +75,11 @@ const Basket = () => {
     }
 
     getBasketItems();
-    setMealId(null);
+    // setMealId(null);
   };
 
   const decrementBasketItemCount = async ({basketItemId, itemQuantity}) => {
+    // console.log('decreaseBasketItemCount');
     const result = await fetchData({
       url: `https://api.myburda.com/api/v1/basket-items/${basketItemId}/`,
       tokenRequired: true,
@@ -97,6 +97,7 @@ const Basket = () => {
   };
 
   const createOrder = async () => {
+    // console.log('createOrder');
     const transformedData = basketItems.map(item => ({
       quantity: item.quantity,
       meal: item.meal.id,
@@ -121,13 +122,17 @@ const Basket = () => {
   };
 
   useEffect(() => {
-    setMealId(router.params?.mealId);
-    getBasketItems();
-  }, [router.params]);
-
-  useEffect(() => {
-    isFocused && mealId && checkForExistingItem();
+    if (isFocused) {
+      setBasketVisible(false);
+      setMealId(passedMealId);
+      getBasketItems();
+      mealId && checkForExistingItem()
+    }
   }, [isFocused]);
+
+  // useEffect(() => {
+  //   isFocused && ;
+  // }, [isFocused]);
 
   return (
     <>

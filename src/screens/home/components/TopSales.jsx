@@ -6,20 +6,16 @@ import {useNavigation} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import {useState, useEffect} from 'react';
 import {fetchData} from '@utils/fetchData';
-import storage from '@utils/MMKVStore';
-import {useMMKVBoolean} from 'react-native-mmkv';
-import CustomComponents from '../../../common/CustomComponents';
+import CustomComponents from '@common/CustomComponents';
 
 const TopSales = () => {
   const navigation = useNavigation();
   const {t} = useTranslation();
   const [topSaleItems, setTopSaleItems] = useState([]);
-  const [loading, setLoading] = useMMKVBoolean('loading');
 
   const getTopSales = async () => {
     const result = await fetchData({
       url: `https://api.myburda.com/api/v1/meals/?top=true&page_size=100`,
-      setLoading,
     });
 
     result?.success && setTopSaleItems(result?.data.results);
@@ -36,7 +32,7 @@ const TopSales = () => {
           navigation.navigate('FoodDetails', {item: item});
         }}
         className="w-[267px] h-[281px] bg-white rounded-[18px] shadow shadow-zinc-300">
-        <InfoPill type="new" title="New" />
+        <InfoPill type="new" />
         <FastImage
           source={{uri: item.thumbnail}}
           style={{

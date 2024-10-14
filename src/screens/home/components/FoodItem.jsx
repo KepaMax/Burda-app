@@ -3,6 +3,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import {Dimensions} from 'react-native';
 import FastImage from 'react-native-fast-image';
+import InfoPill from './InfoPill';
 
 const FoodItem = ({item}) => {
   const navigation = useNavigation();
@@ -18,6 +19,9 @@ const FoodItem = ({item}) => {
       }}
       style={{width: screenWidth - 40}}
       className="mx-auto h-[140px] flex-row justify-between bg-white my-2 shadow shadow-zinc-300 rounded-[18px]">
+      {item?.meal?.new || item?.new ? (
+        <InfoPill type="new" customPosition="absolute left-2 top-2" />
+      ) : null}
       <FastImage
         source={{
           uri: item.meal ? item?.meal?.thumbnail : item.thumbnail,

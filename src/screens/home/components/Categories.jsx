@@ -2,13 +2,10 @@ import Styled from '@common/StyledComponents';
 import {FlatList} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {fetchData} from '@utils/fetchData';
-import storage from '@utils/MMKVStore';
 import {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {useMMKVBoolean} from 'react-native-mmkv';
 
 const Categories = () => {
-  const [loading, setLoading] = useMMKVBoolean('loading');
   const [categories, setCategories] = useState([]);
   const navigation = useNavigation();
 

@@ -86,14 +86,31 @@ const FoodMenu = () => {
     result?.success && setMenu(structuredData);
   };
 
+  const getItemLayout = (data, index) => {
+    const itemHeight = 140; // Adjust this to match your item's height
+    return {
+      length: itemHeight,
+      offset: itemHeight * index,
+      index,
+    };
+  };
+
+  const onScrollToIndexFailed = info => {
+    console.warn('Scroll to index failed', info);
+    // You might want to handle this more gracefully
+  };
+
   useEffect(() => {
-    scrollToCategory && scrollToSectionByTitle(scrollToCategory);
     getFoodData();
   }, []);
 
   useEffect(() => {
-    setSelectedCategory(categories[0]);
-  }, [menu]);
+    setSelectedCategory(scrollToCategory ? scrollToCategory : categories[0]);
+  }, [scrollToCategory, categories]);
+
+  useEffect(() => {
+    scrollToSectionByTitle(selectedCategory);
+  }, [selectedCategory, menu]);
 
   return (
     <>
@@ -115,6 +132,8 @@ const FoodMenu = () => {
           ref={sectionListRef}
           stickySectionHeadersEnabled={false}
           sections={menu}
+          getItemLayout={getItemLayout}
+          onScrollToIndexFailed={onScrollToIndexFailed}
           renderItem={({item}) => <FoodItem item={item} />}
           renderSectionHeader={({section: {title}}) => (
             <Styled.Text className="text-[#414141] font-poppins-medium text-[20px] mx-5 mt-5 mb-3">

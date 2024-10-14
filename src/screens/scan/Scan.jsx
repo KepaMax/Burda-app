@@ -9,11 +9,10 @@ import {
 } from 'react-native-vision-camera';
 import {codeTypes} from '@utils/staticData';
 import {useTranslation} from 'react-i18next';
-import {useMMKVString} from 'react-native-mmkv';
+import {useMMKVBoolean} from 'react-native-mmkv';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {fetchData} from '@utils/fetchData';
-import storage from '@utils/MMKVStore';
-import CustomComponents from '@common/CustomComponents';
+import Icons from '@icons/icons';
 
 const Scan = () => {
   const screenWidth = Dimensions.get('screen').width;
@@ -25,12 +24,12 @@ const Scan = () => {
       'telephoto-camera',
     ],
   });
-  const [scannedItems, setScannedItems] = useMMKVString('scannedItems');
   const [scannedOnce, setScannedOnce] = useState(false);
   const [cameraActive, setCameraActive] = useState(true);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const {t} = useTranslation();
+  const [basketVisible, setBasketVisible] = useMMKVBoolean('basketVisible');
 
   const codeScanner = useCodeScanner({
     codeTypes: codeTypes,
@@ -50,7 +49,7 @@ const Scan = () => {
     });
 
     result?.success &&
-      navigation.navigate('HomeStack', {
+      navigation.navigate('Home', {
         screen: 'Basket',
         params: {mealId: result.data.id},
       });
@@ -62,14 +61,27 @@ const Scan = () => {
 
   useEffect(() => {
     if (isFocused) {
+      setBasketVisible(false);
       setScannedOnce(false);
       setCameraActive(true);
     }
   }, [isFocused]);
 
   return (
-    <Styled.View className="h-full">
-      <CustomComponents.Header overlay />
+    <Styled.View className="h-full mt-10">
+      <Styled.View className={`w-full bg-transparent items-center`}>
+        <Styled.View className="w-11/12 items-center justify-center flex-row relative">
+          <Styled.TouchableOpacity
+            hitSlop={{top: 50, right: 50, bottom: 50, left: 50}}
+            onPress={() => {
+              navigation.navigate('Home', {screen: 'HomeStack'});
+            }}
+            className="absolute left-0">
+            <Icons.ArrowBlack />
+          </Styled.TouchableOpacity>
+        </Styled.View>
+      </Styled.View>
+
       {cameraAccess ? (
         <Styled.View className="h-full">
           <Styled.Text className="text-black text-2xl font-poppins-semibold mt-10 text-center">

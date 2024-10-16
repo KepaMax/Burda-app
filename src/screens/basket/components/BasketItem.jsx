@@ -11,7 +11,10 @@ const BasketItem = ({item, decrementBasketItemCount}) => {
   return (
     <Styled.TouchableOpacity
       onPress={() => {
-        navigation.navigate('FoodDetails', {item: item});
+        navigation.navigate('FoodDetails', {
+          item: item,
+          navigationScreen: 'Basket',
+        });
       }}
       style={{width: screenWidth - 40}}
       className="mx-auto h-[115px] flex-row justify-between bg-white my-2 shadow shadow-zinc-300 rounded-[8px]">

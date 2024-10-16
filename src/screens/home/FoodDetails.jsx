@@ -10,6 +10,7 @@ import {useTranslation} from 'react-i18next';
 const FoodDetails = () => {
   const route = useRoute();
   const item = route.params?.item;
+  const navigationScreen = route.params?.navigationScreen;
   const navigation = useNavigation();
   const {t} = useTranslation();
 
@@ -19,6 +20,7 @@ const FoodDetails = () => {
         overlay={true}
         title={item?.meal?.name ? item?.meal?.name : item.name}
         titleColor="text-white"
+        {...(navigationScreen ? {navigationScreen: navigationScreen} : {})}
       />
       <Images.FoodDetailsHeader />
       <Styled.View className="w-full absolute items-center top-[140px]">

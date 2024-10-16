@@ -12,8 +12,7 @@ import {useMMKVBoolean} from 'react-native-mmkv';
 const Basket = () => {
   const isFocused = useIsFocused();
   const router = useRoute();
-  const passedMealId = router.params?.mealId;
-  const [mealId, setMealId] = useState(passedMealId);
+  const mealId = router.params?.mealId;
   const {t} = useTranslation();
   const [basketItems, setBasketItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(null);
@@ -44,7 +43,6 @@ const Basket = () => {
   };
 
   const incrementBasketItemCount = async ({basketItemId, itemQuantity}) => {
-    // console.log('incrementBasketItemCount');
     const result = await fetchData({
       url: `https://api.myburda.com/api/v1/basket-items/${basketItemId}/`,
       tokenRequired: true,
@@ -58,7 +56,6 @@ const Basket = () => {
   };
 
   const checkForExistingItem = async () => {
-    // console.log('checkForExistingItems');
     if (basketItems.length) {
       basketItems.map(item => {
         if (item.meal.id === mealId) {
@@ -79,7 +76,6 @@ const Basket = () => {
   };
 
   const decrementBasketItemCount = async ({basketItemId, itemQuantity}) => {
-    // console.log('decreaseBasketItemCount');
     const result = await fetchData({
       url: `https://api.myburda.com/api/v1/basket-items/${basketItemId}/`,
       tokenRequired: true,
@@ -89,15 +85,10 @@ const Basket = () => {
       },
     });
 
-    // result?.success
-    //   ? console.log(JSON.stringify(result?.data))
-    //   : console.log(JSON.stringify(result?.error));
-
     getBasketItems();
   };
 
   const createOrder = async () => {
-    // console.log('createOrder');
     const transformedData = basketItems.map(item => ({
       quantity: item.quantity,
       meal: item.meal.id,
@@ -112,8 +103,6 @@ const Basket = () => {
       },
     });
 
-    // console.log(result);
-
     result?.success &&
       navigation.navigate('Profile', {
         screen: 'PaymentMethods',
@@ -124,15 +113,10 @@ const Basket = () => {
   useEffect(() => {
     if (isFocused) {
       setBasketVisible(false);
-      setMealId(passedMealId);
       getBasketItems();
-      mealId && checkForExistingItem()
+      mealId && checkForExistingItem();
     }
   }, [isFocused]);
-
-  // useEffect(() => {
-  //   isFocused && ;
-  // }, [isFocused]);
 
   return (
     <>

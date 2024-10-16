@@ -187,7 +187,6 @@ const Header = ({
           <Styled.TouchableOpacity
             hitSlop={{top: 50, right: 50, bottom: 50, left: 50}}
             onPress={() => {
-              console.log(navigationScreen);
               navigationScreen
                 ? navigation.navigate(navigationScreen)
                 : navigation.goBack();

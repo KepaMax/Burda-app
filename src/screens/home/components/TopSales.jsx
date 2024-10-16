@@ -32,7 +32,7 @@ const TopSales = () => {
           navigation.navigate('FoodDetails', {item: item});
         }}
         className="w-[267px] h-[281px] bg-white rounded-[18px] shadow shadow-zinc-300">
-        <InfoPill type="new" />
+        {item?.new && <InfoPill type="new" />}
         <FastImage
           source={{uri: item.thumbnail}}
           style={{

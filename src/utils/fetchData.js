@@ -1,57 +1,6 @@
 import {refreshTokens} from './authUtils.js';
 import storage from './MMKVStore.js';
 
-const fetchAgain = async ({
-  url,
-  tokenRequired,
-  method = 'GET',
-  body = null,
-  returnsData = true,
-}) => {
-  try {
-    storage.set('loading', true);
-
-    const headers = {
-      Accept: 'application/json',
-      ...((method === 'POST' || method === 'PUT' || method === 'PATCH') && {
-        'Content-Type': 'application/json',
-      }),
-      ...(tokenRequired && {
-        Authorization: `Bearer ${storage.getString('accessToken')}`,
-      }),
-    };
-
-    const options = {
-      headers,
-      method,
-      ...(body && {body: JSON.stringify(body)}),
-    };
-
-    const response = await fetch(url, options);
-    const data = returnsData ? await response?.json() : null;
-
-    if (response.ok) {
-      return {
-        success: true,
-        status: response.status,
-        data: data,
-      };
-    } else {
-      console.error(`Fetch error: ${response.status} ${response.statusText}`);
-
-      return {
-        success: false,
-        status: response.status,
-        error: data.error,
-      };
-    }
-  } catch (error) {
-    console.error('Error in fetchData:', error);
-  } finally {
-    storage.set('loading', false);
-  }
-};
-
 export const fetchData = async ({
   url,
   tokenRequired,
@@ -81,7 +30,6 @@ export const fetchData = async ({
 
     const response = await fetch(url, options);
     const data = returnsData ? await response?.json() : null;
-    console.log(data)
 
     // console.log(
     //   `Data from ${calledFrom} \n Url: ${url} \n Options: ${JSON.stringify(
@@ -99,7 +47,7 @@ export const fetchData = async ({
       const tokensRefreshed = await refreshTokens();
 
       if (tokensRefreshed) {
-        fetchAgain(url, (method = 'GET'), (body = null), (returnsData = true));
+        fetchData(url, tokenRequired, method, body, returnsData);
       }
     } else {
       console.error(`Fetch error: ${response.status} ${response.statusText}`);

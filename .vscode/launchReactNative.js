@@ -15,7 +15,6 @@ function runCommand(command, args, options) {
     const spawnedProcess = child_process.spawn(command, args, options);
 
     spawnedProcess.stdout.on('data', data => {
-      // console.log(data.toString());
     });
 
     spawnedProcess.stderr.on('data', data => {
@@ -35,7 +34,6 @@ function runCommand(command, args, options) {
 // Launch React Native app
 async function launchReactNative() {
   try {
-    // console.log('Starting React Native app...');
 
     // Set default platform to iOS
     const platform = isMac ? 'ios' : 'android';
@@ -50,7 +48,6 @@ async function launchReactNative() {
     // Run the React Native command
     await runCommand(command, args, {cwd: workspaceRoot});
 
-    // console.log('React Native app launched successfully!');
   } catch (error) {
     console.error('Failed to launch React Native app:', error);
   }

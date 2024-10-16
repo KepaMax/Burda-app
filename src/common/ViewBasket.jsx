@@ -35,7 +35,7 @@ const ViewBasket = ({navigation}) => {
           bgColor="bg-white"
           textColor="text-[#FF8C03]"
           padding="p-3"
-          extraBtnStyling="w-full absolute z-10 bottom-[90px] left-[20px] border-[1px] border-[#FF8C03] justify-start"
+          extraBtnStyling="w-full absolute z-10 bottom-[90px] left-[20px] border-[1px] border-dashed border-[#FF8C03] justify-start"
           widthInPixels={screenWidth - 40}
           buttonAction={() => {
             navigation.navigate('Home', {

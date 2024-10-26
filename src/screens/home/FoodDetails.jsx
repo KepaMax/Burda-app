@@ -6,6 +6,7 @@ import Ingredients from './components/Ingredients';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import {useTranslation} from 'react-i18next';
+import {useEffect} from 'react';
 
 const FoodDetails = () => {
   const route = useRoute();
@@ -31,12 +32,14 @@ const FoodDetails = () => {
           }}
         />
       </Styled.View>
-      <FoodProperties item={item} />
-      <Ingredients
-        ingredients={
-          item?.meal?.ingredients ? item?.meal?.ingredients : item.ingredients
-        }
-      />
+      <FoodProperties item={item} navigationScreen={navigationScreen} />
+      {navigationScreen !== 'Basket' && (
+        <Ingredients
+          ingredients={
+            item?.meal?.ingredients ? item?.meal?.ingredients : item.ingredients
+          }
+        />
+      )}
 
       <CustomComponents.Button
         title={t('addToBasket')}

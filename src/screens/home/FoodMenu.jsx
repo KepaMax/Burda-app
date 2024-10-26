@@ -10,6 +10,7 @@ import CustomComponents from '@common/CustomComponents';
 import {format} from 'date-fns';
 import {az, enUS} from 'date-fns/locale';
 import CategoryHeader from './components/CategoryHeader';
+import {API_URL} from '@env';
 
 const FoodMenu = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -52,7 +53,7 @@ const FoodMenu = () => {
 
   const getFoodData = async () => {
     const result = await fetchData({
-      url: `https://api.myburda.com/api/v1/menu-items/?date=${fullDate}&page_size=100`,
+      url: `${API_URL}/menu-items/?date=${fullDate}&page_size=100`,
     });
 
     const restructureData = items => {

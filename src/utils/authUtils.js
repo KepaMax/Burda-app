@@ -6,7 +6,7 @@ export const refreshTokens = async () => {
   const refreshToken = storage.getString('refreshToken');
 
   if (refreshToken) {
-    const url = `https://api.myburda.com/api/v1/jwt/refresh/`;
+    const url = `${API_URL}/jwt/refresh/`;
     const body = JSON.stringify({refresh: refreshToken});
 
     const headers = {
@@ -58,7 +58,7 @@ export const login = async ({formData, setErrors}) => {
       });
 
       const data = await response.json();
-
+      // console.log(data);
       if (response.ok) {
         storage.set('accessToken', data.access);
         storage.set('refreshToken', data.refresh);
@@ -90,6 +90,7 @@ export const createAccount = async ({
   // termsConditionsAccepted,
   // selectedPrefix,
   setLoading,
+  navigate,
 }) => {
   const url = `${API_URL}/users/`;
   const selectedLanguage = storage.getString('selectedLanguage');
@@ -128,11 +129,11 @@ export const createAccount = async ({
             ? 'Zəhmət olmasa, e-poçtunuza göndərilən linkə keçid edərək qeydiyyatı tamamlayın.'
             : 'Please click on the link sent to your email to complete the registration.',
           {
-            textConfirm:
-              selectedLanguage === 'az' ? 'E-poçtu aç' : 'Open email app',
-            onConfirm: () => openInbox(),
+            textConfirm: selectedLanguage === 'az' ? 'Təsdiqlə' : 'Confirm',
+            onConfirm: () => navigate(),
           },
         );
+
         // storage.set('accessToken', data.token.access);
         // storage.set('refreshToken', data.token.refresh);
         // return {success: true};

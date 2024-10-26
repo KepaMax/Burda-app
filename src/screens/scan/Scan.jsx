@@ -9,14 +9,18 @@ import {
 } from 'react-native-vision-camera';
 import {codeTypes} from '@utils/staticData';
 import {useTranslation} from 'react-i18next';
-import {useMMKVBoolean} from 'react-native-mmkv';
+import {useMMKVBoolean, useMMKVNumber} from 'react-native-mmkv';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {fetchData} from '@utils/fetchData';
 import Icons from '@icons/icons';
+import {API_URL} from '@env';
 
 const Scan = () => {
   const screenWidth = Dimensions.get('screen').width;
   const [cameraAccess, setCameraAccess] = useState(false);
+  // const [basketItems, setBasketItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(null);
+
   const device = useCameraDevice('back', {
     physicalDevices: [
       'ultra-wide-angle-camera',
@@ -43,16 +47,76 @@ const Scan = () => {
     },
   });
 
-  const getMealId = async barcode => {
+  const incrementBasketItemCount = async ({basketItemId, itemQuantity}) => {
     const result = await fetchData({
-      url: `https://api.myburda.com/api/v1/meals/${barcode}/`,
+      url: `${API_URL}/basket-items/${basketItemId}/`,
+      tokenRequired: true,
+      method: 'PATCH',
+      body: {
+        quantity: itemQuantity + 1,
+      },
+    });
+  };
+
+  const setBasketItem = async mealId => {
+    await fetchData({
+      url: `${API_URL}/basket-items/`,
+      tokenRequired: true,
+      method: 'POST',
+      body: {meal: mealId},
     });
 
-    result?.success &&
+    getBasketItems();
+  };
+
+  const getBasketItems = async () => {
+    const result = await fetchData({
+      url: `${API_URL}/basket-items/`,
+      tokenRequired: true,
+    });
+
+    if (result?.success) {
+      // setBasketItems(result.data.basket_items);
+      // setTotalPrice(result.data.total_price);
+      return result?.data?.basket_items;
+    } else {
+      return [];
+    }
+  };
+
+  const checkForExistingItem = async (mealId, basketItems) => {
+    if (basketItems.length) {
+      basketItems.map(item => {
+        if (item.meal.id === mealId) {
+          incrementBasketItemCount({
+            basketItemId: item.id,
+            itemQuantity: item.quantity,
+          });
+        } else {
+          setBasketItem(mealId);
+        }
+      });
+    } else {
+      setBasketItem(mealId);
+    }
+  };
+
+  const getMealId = async barcode => {
+    const result = await fetchData({
+      url: `https://piglet-big-snail.ngrok-free.app/api/v1/meals/${barcode}/`,
+    });
+
+    if (result?.success) {
+      const data = await getBasketItems();
+      if (data.length !== 0) {
+        await checkForExistingItem(result.data.id, data);
+      } else {
+        await setBasketItem(result.data.id);
+      }
       navigation.navigate('Home', {
         screen: 'Basket',
-        params: {mealId: result.data.id},
       });
+    }
   };
 
   useEffect(() => {

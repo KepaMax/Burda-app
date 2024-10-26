@@ -10,8 +10,11 @@ const Navigation = () => {
   const linking = {
     prefixes: ['burda://'],
     config: {
-      initialRouteName: 'ResetPasswordSignIn',
+      initialRouteName: 'HomePage',
       screens: {
+        HomePage: {
+          path: 'home',
+        },
         ResetPasswordSignIn: {
           path: 'reset/:uuid/:token',
         },

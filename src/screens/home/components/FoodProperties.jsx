@@ -2,25 +2,23 @@ import Styled from '@common/StyledComponents';
 import InfoPill from './InfoPill';
 import {useTranslation} from 'react-i18next';
 
-const FoodProperties = ({item}) => {
+const FoodProperties = ({item,navigationScreen}) => {
   const {t} = useTranslation();
 
   return (
     <>
       <Styled.View className="w-auto mx-5 mb-3 flex-row justify-between items-center">
-        <Styled.Text
-          numberOfLines={1}
-          className="max-w-[200px] text-lg font-poppins text-[#184639]">
+        <Styled.Text className="text-lg font-poppins text-[#184639]">
           {item?.meal?.name ? item?.meal?.name : item.name}
         </Styled.Text>
-        <Styled.View className="flex-row">
-          {Boolean(item?.meal?.new || item?.new) && (
-            <InfoPill type="new" overlay={false} />
-          )}
-          {Boolean(item?.meal?.top || item?.top) && (
-            <InfoPill type="top" overlay={false} />
-          )}
-        </Styled.View>
+      </Styled.View>
+      <Styled.View className="flex-row w-auto mx-5 mb-3  items-center">
+        {Boolean(item?.meal?.new || item?.new) && (
+          <InfoPill type="new" overlay={false} />
+        )}
+        {Boolean(item?.meal?.top || item?.top) && (
+          <InfoPill type="top" overlay={false} />
+        )}
       </Styled.View>
 
       <Styled.View className="w-auto h-[84px] bg-white p-2.5 mx-5 rounded-[8px] shadow shadow-zinc-300">
@@ -50,8 +48,11 @@ const FoodProperties = ({item}) => {
         </Styled.View>
 
         <Styled.Text className="text-[#FF8C03] font-poppins-bold text-right mt-3">
-          {item?.meal?.quantity ? item?.meal?.quantity : item.quantity}{' '}
-          {t('left')}
+          {navigationScreen !== 'Basket'
+            ? item?.meal?.quantity
+              ? item?.meal?.quantity
+              : item.quantity
+            : null}
         </Styled.Text>
       </Styled.View>
     </>

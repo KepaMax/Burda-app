@@ -21,6 +21,7 @@ export const fetchData = async ({
         Authorization: `Bearer ${storage.getString('accessToken')}`,
       }),
     };
+    // console.log(JSON.stringify(body))
 
     const options = {
       headers,
@@ -29,13 +30,9 @@ export const fetchData = async ({
     };
 
     const response = await fetch(url, options);
+    // console.log(response)
     const data = returnsData ? await response?.json() : null;
-
-    // console.log(
-    //   `Data from ${calledFrom} \n Url: ${url} \n Options: ${JSON.stringify(
-    //     options,
-    //   )} \n Result: ${JSON.stringify(data)}`,
-    // );
+    // console.log(data);
 
     if (response.ok) {
       return {
@@ -55,7 +52,7 @@ export const fetchData = async ({
       return {
         success: false,
         status: response.status,
-        error: data.error,
+        data: data.errors,
       };
     }
   } catch (error) {

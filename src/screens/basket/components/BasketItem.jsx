@@ -3,6 +3,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Dimensions} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icons from '@icons/icons';
+import {useEffect} from 'react';
 
 const BasketItem = ({item, decrementBasketItemCount}) => {
   const navigation = useNavigation();

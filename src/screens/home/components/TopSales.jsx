@@ -7,6 +7,7 @@ import {useTranslation} from 'react-i18next';
 import {useState, useEffect} from 'react';
 import {fetchData} from '@utils/fetchData';
 import CustomComponents from '@common/CustomComponents';
+import {API_URL} from '@env';
 
 const TopSales = () => {
   const navigation = useNavigation();
@@ -15,7 +16,7 @@ const TopSales = () => {
 
   const getTopSales = async () => {
     const result = await fetchData({
-      url: `https://api.myburda.com/api/v1/meals/?top=true&page_size=100`,
+      url: `${API_URL}/meals/?top=true&page_size=100`,
     });
 
     result?.success && setTopSaleItems(result?.data.results);

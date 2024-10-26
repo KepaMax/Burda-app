@@ -7,6 +7,8 @@ import {prefixData} from '@utils/staticData';
 import {useTranslation} from 'react-i18next';
 import {fetchData} from '@utils/fetchData';
 import {useMMKVBoolean} from 'react-native-mmkv';
+import {API_URL} from '@env';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const Button = ({
   bgColor = 'bg-slate-400',
@@ -58,6 +60,7 @@ const Input = ({
   titleSize = 'text-xs',
   titleColor = 'text-zinc-400',
   titleFontWeight = 'font-regular',
+  editable = true
 }) => {
   return (
     <Styled.View className={`${width} relative ${margin} -z-10`}>
@@ -68,6 +71,7 @@ const Input = ({
         </Styled.Text>
       )}
       <Styled.TextInput
+        editable={editable}
         style={{height: height ? height : 45}}
         multiline={multiline}
         value={inputValue}
@@ -107,6 +111,7 @@ const PasswordInput = ({
   handleInputChange,
   placeholder,
   error,
+  disabled
 }) => {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
 
@@ -246,7 +251,6 @@ const Dropdown = ({
           } else {
             setSelectedItem(item);
           }
-
           setDropdownOpen(false);
         }}>
         <Styled.Text className="text-[#868782] text-base font-poppins text-center">
@@ -259,7 +263,7 @@ const Dropdown = ({
   useEffect(() => {
     const getCompanyData = async () => {
       const result = await fetchData({
-        url: 'https://api.myburda.com/api/v1/companies/',
+        url: `${API_URL}/companies/`,
       });
 
       if (result?.success) {
@@ -269,9 +273,12 @@ const Dropdown = ({
         }));
 
         setCompanyData(formattedCompanyData);
+        setSelectedItem({
+          label: selectedItem?.label,
+          value: selectedItem?.value,
+        });
       }
     };
-
     inputName === 'company' && getCompanyData();
   }, []);
 
@@ -300,11 +307,16 @@ const Dropdown = ({
 
       {dropdownOpen && (
         <Styled.View className="z-10 absolute top-12 w-full h-[120px] bg-white rounded-b-[18px] overflow-hidden border-t-0 border-[1px] border-[#EDEFF3]">
-          <FlatList
+          {/* <FlatList
             nestedScrollEnabled
             data={companyData.length ? companyData : items}
             renderItem={({item}) => <DropdownItem item={item} />}
-          />
+          /> */}
+          <ScrollView nestedScrollEnabled>
+            {companyData.length
+              ? companyData.map(item => <DropdownItem item={item} />)
+              : items.map(item => <DropdownItem item={item} />)}
+          </ScrollView>
         </Styled.View>
       )}
     </Styled.TouchableOpacity>
@@ -314,14 +326,20 @@ const Dropdown = ({
 const PhoneInput = ({handleInputChange, inputValue, error}) => {
   const [selectedPrefix, setSelectedPrefix] = useState({});
   const [phoneInputValue, setPhoneInputValue] = useState('');
+  const [initialFormatDone,setInitialFormatDone] = useState(false);
   const {t} = useTranslation();
 
   const handlePhoneInputChange = (name, value) => {
     value.length <= 7 && setPhoneInputValue(value);
+    handleInputChange(
+      'phone_number',
+      `+994${selectedPrefix.value}${phoneInputValue}`,
+    );
   };
 
   useEffect(() => {
-    !inputValue &&
+
+    initialFormatDone &&
       handleInputChange(
         'phone_number',
         `+994${selectedPrefix.value}${phoneInputValue}`,
@@ -329,17 +347,19 @@ const PhoneInput = ({handleInputChange, inputValue, error}) => {
   }, [selectedPrefix, phoneInputValue]);
 
   useEffect(() => {
-    if (inputValue) {
+    if (inputValue && !initialFormatDone) {
       const formatted = {
         prefix: {
           label: '0' + inputValue.slice(4, 6),
-          value: +inputValue.slice(5, 7),
+          value: inputValue.slice(4, 6),
         },
+        
         phoneInputValue: inputValue.slice(6),
       };
 
       setSelectedPrefix(formatted.prefix);
       setPhoneInputValue(formatted.phoneInputValue);
+      setInitialFormatDone(true)
     }
   }, [inputValue]);
 

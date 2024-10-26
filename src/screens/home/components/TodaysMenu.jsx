@@ -10,6 +10,7 @@ import {format} from 'date-fns';
 import {az, enUS} from 'date-fns/locale';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '@react-navigation/native';
+import {API_URL} from '@env';
 
 const TodaysMenu = () => {
   const [selectedLanguage, setSelectedLanguage] =
@@ -26,7 +27,7 @@ const TodaysMenu = () => {
 
   const getMenuItems = async () => {
     const result = await fetchData({
-      url: `https://api.myburda.com/api/v1/menu-items/?date=${date}&page_size=100`,
+      url: `${API_URL}/menu-items/?date=${date}&page_size=100`,
     });
 
     const getUniqueByCategoryId = items => {

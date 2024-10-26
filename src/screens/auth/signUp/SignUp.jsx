@@ -20,9 +20,14 @@ const SignUp = () => {
   const handleInputChange = (name, value) => {
     setFormData(prevState => ({...prevState, [name]: value}));
   };
+  const navigate = () => {
+    navigation.navigate('SignIn');
+  };
 
   return (
-    <KeyboardAwareScrollView style={{backgroundColor: '#FAFAFA'}}>
+    <KeyboardAwareScrollView
+      nestedScrollEnabled={true}
+      style={{backgroundColor: '#FAFAFA'}}>
       <CustomComponents.Header overlay={true} />
       <Styled.Image
         style={{width: screenWidth}}
@@ -113,6 +118,7 @@ const SignUp = () => {
               formData,
               setErrors,
               setLoading,
+              navigate
             });
           }}
         />

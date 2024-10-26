@@ -20,6 +20,7 @@ import NoInternet from '@common/NoInternet';
 import {useMMKVString} from 'react-native-mmkv';
 import {useMMKVBoolean} from 'react-native-mmkv';
 import {fetchData} from '@utils/fetchData';
+import {API_URL} from '@env';
 
 function App(): JSX.Element {
   const [selectedLanguage, setSelectedLanguage] =
@@ -32,7 +33,7 @@ function App(): JSX.Element {
 
   const getBasketItems = async () => {
     const result = await fetchData({
-      url: 'https://api.myburda.com/api/v1/basket-items/',
+      url: `${API_URL}/basket-items/`,
       tokenRequired: true,
     });
 

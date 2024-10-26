@@ -37,10 +37,19 @@ const TabBar = ({state, descriptors, navigation}) => {
         }
 
         const onPress = () => {
+          // Control ViewBasket visibility based on the selected tab
           if (label === 'Scan') {
             setBasketVisible(false);
           } else {
             setBasketVisible(true);
+          }
+
+          // Logic for resetting Home tab to initial screen when "Basket" is focused
+          if (label === 'Home' && isFocused) {
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'Home'}],
+            });
           }
 
           const event = navigation.emit({
@@ -48,11 +57,9 @@ const TabBar = ({state, descriptors, navigation}) => {
             target: route.key,
           });
 
+          // Handle default navigation to the selected tab if not focused
           if (!isFocused && !event.defaultPrevented) {
-            navigation.reset({
-              index: 0,
-              routes: [{name: route.name}],
-            });
+            navigation.navigate(route.name);
           }
         };
 

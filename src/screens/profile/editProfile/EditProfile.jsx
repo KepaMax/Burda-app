@@ -3,6 +3,7 @@ import CustomComponents from '@common/CustomComponents';
 import {useState, useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 import {fetchData} from '@utils/fetchData';
+import {API_URL} from '@env';
 
 const EditProfile = () => {
   const [formData, setFormData] = useState({});
@@ -11,11 +12,12 @@ const EditProfile = () => {
 
   const handleInputChange = (name, value) => {
     setFormData(prevState => ({...prevState, [name]: value}));
+    // console.log(formData);
   };
 
   const getUserData = async () => {
     const result = await fetchData({
-      url: 'https://api.myburda.com/api/v1/users/me/',
+      url: `${API_URL}/users/me/`,
       tokenRequired: true,
     });
 
@@ -32,11 +34,25 @@ const EditProfile = () => {
   };
 
   const editProfile = async () => {
+    if (
+      formData.company !== null &&
+      typeof formData.company === 'object' &&
+      !Array.isArray(formData.company)
+    ) {
+      const result = await fetchData({
+        url: `${API_URL}/users/${userId}/`,
+        tokenRequired: true,
+        method: 'PATCH',
+        body: {...formData, company: formData.company.id},
+      });
+
+      result?.success && alert('User successfully updated');
+    }
     const result = await fetchData({
-      url: `https://api.myburda.com/api/v1/users/${userId}/`,
+      url: `${API_URL}/users/${userId}/`,
       tokenRequired: true,
-      method: 'PUT',
-      body: formData,
+      method: 'PATCH',
+      body: {...formData, company: formData.company.id},
     });
 
     result?.success && alert('User successfully updated');
@@ -75,7 +91,6 @@ const EditProfile = () => {
         <CustomComponents.Dropdown
           margin="mb-3"
           inputName="company"
-          inputValue={formData?.company}
           placeholder={t('companyName')}
           selectedItem={{
             label: formData?.company?.name,
@@ -89,6 +104,7 @@ const EditProfile = () => {
           inputValue={formData?.email}
           placeholder={t('email')}
           handleInputChange={handleInputChange}
+          editable={false}
         />
 
         <CustomComponents.Button

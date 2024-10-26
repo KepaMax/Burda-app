@@ -6,6 +6,7 @@ import {useState} from 'react';
 import {openInbox} from 'react-native-email-link';
 import {useTranslation} from 'react-i18next';
 import {fetchData} from '@utils/fetchData';
+import {API_URL} from '@env';
 
 const ForgotPassword = () => {
   const {t} = useTranslation();
@@ -20,7 +21,7 @@ const ForgotPassword = () => {
 
   const handleForgotPassword = async () => {
     const result = await fetchData({
-      url: 'https://api.myburda.com/api/v1/users/reset-password/',
+      url: `${API_URL}/users/reset-password/`,
       body: formData,
       method: 'POST',
       tokenRequired: true,

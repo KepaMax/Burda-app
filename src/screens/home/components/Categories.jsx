@@ -4,6 +4,7 @@ import FastImage from 'react-native-fast-image';
 import {fetchData} from '@utils/fetchData';
 import {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import {API_URL} from '@env';
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -11,7 +12,7 @@ const Categories = () => {
 
   const getCategoriesData = async () => {
     const result = await fetchData({
-      url: 'https://api.myburda.com/api/v1/categories/',
+      url: `${API_URL}/categories/`,
     });
 
     result?.success && setCategories(result?.data.results);
@@ -19,7 +20,7 @@ const Categories = () => {
 
   const getMealsByCategory = async (categoryId, categoryName) => {
     const result = await fetchData({
-      url: `https://api.myburda.com/api/v1/meals/?category=${categoryId}&page_size=100`,
+      url: `${API_URL}/meals/?category=${categoryId}&page_size=100`,
     });
 
     result?.success &&

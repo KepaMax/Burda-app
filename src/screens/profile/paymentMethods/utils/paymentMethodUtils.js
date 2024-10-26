@@ -1,8 +1,9 @@
 import {fetchData} from '@utils/fetchData';
+import {API_URL} from "@env"
 
 export const getPaymentMethods = async ({setPaymentMethods}) => {
   const result = await fetchData({
-    url: 'https://api.myburda.com/api/v4/payment-methods/',
+    url: `${API_URL}/payment-methods/`,
     tokenRequired: true,
   });
 
@@ -11,7 +12,7 @@ export const getPaymentMethods = async ({setPaymentMethods}) => {
 
 export const addNewPaymentMethod = async ({t, navigation}) => {
   const result = await fetchData({
-    url: 'https://api.myburda.com/api/v4/payment-methods/',
+    url: `${API_URL}/payment-methods/`,
     tokenRequired: true,
     method: 'POST',
   });
@@ -29,7 +30,7 @@ export const deletePaymentMethod = async ({
   setPaymentMethods,
 }) => {
   const result = await fetchData({
-    url: `https://api.myburda.com/api/v4/payment-methods/${paymentMethodId}/`,
+    url: `${API_URL}/payment-methods/${paymentMethodId}/`,
     tokenRequired: true,
     method: 'DELETE',
     returnsData: false,

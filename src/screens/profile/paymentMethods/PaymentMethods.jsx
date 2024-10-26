@@ -13,6 +13,7 @@ import {
   addNewPaymentMethod,
   deletePaymentMethod,
 } from './utils/paymentMethodUtils';
+import {API_URL} from '@env';
 
 const PaymentMethods = () => {
   const pay = useRoute().params?.pay;
@@ -26,13 +27,15 @@ const PaymentMethods = () => {
   const handlePayment = async () => {
     if (selectPaymentMethod) {
       const result = await fetchData({
-        url: `https://api.myburda.com/api/v4/orders/${orderId}/pay/`,
+        url: `${API_URL}/orders/${orderId}/pay/`,
         method: 'POST',
         tokenRequired: true,
         body: {
           payment_method: selectPaymentMethod,
         },
       });
+
+      result.success && navigation.navigate('HomePage');
     } else {
       alert(t('choosePaymentMethod'));
     }

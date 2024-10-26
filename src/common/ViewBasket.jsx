@@ -5,6 +5,7 @@ import Styled from './StyledComponents';
 import {useState, useEffect} from 'react';
 import {fetchData} from '@utils/fetchData';
 import {useIsFocused} from '@react-navigation/native';
+import {API_URL} from '@env';
 
 const ViewBasket = ({navigation}) => {
   const {t} = useTranslation();
@@ -14,7 +15,7 @@ const ViewBasket = ({navigation}) => {
 
   const getBasketItems = async () => {
     const result = await fetchData({
-      url: 'https://api.myburda.com/api/v1/basket-items/',
+      url: `${API_URL}/basket-items/`,
       tokenRequired: true,
     });
 

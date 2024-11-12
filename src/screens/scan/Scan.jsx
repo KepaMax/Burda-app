@@ -103,7 +103,7 @@ const Scan = () => {
 
   const getMealId = async barcode => {
     const result = await fetchData({
-      url: `https://piglet-big-snail.ngrok-free.app/api/v1/meals/${barcode}/`,
+      url: `https://api.myburda.com/api/v1/meals/${barcode}/`,
     });
 
     if (result?.success) {

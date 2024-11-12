@@ -135,7 +135,7 @@ const FoodMenu = () => {
           sections={menu}
           getItemLayout={getItemLayout}
           onScrollToIndexFailed={onScrollToIndexFailed}
-          renderItem={({item}) => <FoodItem item={item} />}
+          renderItem={({item}) => <FoodItem showCount={true} item={item} />}
           renderSectionHeader={({section: {title}}) => (
             <Styled.Text className="text-[#414141] font-poppins-medium text-[20px] mx-5 mt-5 mb-3">
               {title}

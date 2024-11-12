@@ -21,6 +21,7 @@ import {useMMKVString} from 'react-native-mmkv';
 import {useMMKVBoolean} from 'react-native-mmkv';
 import {fetchData} from '@utils/fetchData';
 import {API_URL} from '@env';
+import {useIsFocused} from '@react-navigation/native';
 
 function App(): JSX.Element {
   const [selectedLanguage, setSelectedLanguage] =
@@ -30,7 +31,7 @@ function App(): JSX.Element {
   const screenWidth = Dimensions.get('screen').width;
   const [buttonType, setButtonType] = useMMKVString('buttonType');
   const [basketVisible, setBasketVisible] = useMMKVBoolean('basketVisible');
-
+  const [initBasket, setInitBakset] = useMMKVBoolean('initBasket');
   const getBasketItems = async () => {
     const result = await fetchData({
       url: `${API_URL}/basket-items/`,
@@ -104,7 +105,7 @@ function App(): JSX.Element {
 
   useEffect(() => {
     getBasketItems();
-  }, []);
+  }, [initBasket]);
 
   return (
     <>

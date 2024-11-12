@@ -104,12 +104,11 @@ const Basket = () => {
         },
       });
 
-      console.log(result);
-
       if (result?.success) {
         navigation.navigate('Profile', {
           screen: 'PaymentMethods',
           params: {pay: true, orderId: result.data.id},
+          navigationScreen: 'Basket',
         });
       } else {
         alert(result.data[0].detail);
@@ -135,39 +134,41 @@ const Basket = () => {
         navigationScreen="HomePage"
       />
 
-      <FlatList
-        style={{
-          backgroundColor: '#F8F8F8',
-        }}
-        contentContainerStyle={{
-          flex: 1,
-          paddingTop: 10,
-        }}
-        data={basketItems}
-        renderItem={({item}) => (
-          <BasketItem
-            item={item}
-            decrementBasketItemCount={decrementBasketItemCount}
-          />
-        )}
-        ListFooterComponent={() => (
-          <CustomComponents.Button
-            buttonAction={() => {
-              navigation.navigate('Scan');
-            }}
-            title={t('addNewProduct')}
-            bgColor="bg-white"
-            textColor="text-[#FF8C03]"
-            textSize="text-base"
-            fontWeight="font-poppins-medium"
-            extraBtnStyling="shadow shadow-zinc-300 border-[1px] border-dashed border-[#FF8C03] w-auto justify-center"
-            extraTxtStyling="ml-2"
-            icon={<Icons.Barcode />}
-            gap="gap-2"
-          />
-        )}
-        ListFooterComponentStyle={{marginHorizontal: 20, marginTop: 30}}
-      />
+      <Styled.View className="flex-1">
+        <FlatList
+        scrollEnabled
+          style={{
+            backgroundColor: '#F8F8F8',
+          }}
+          contentContainerStyle={{
+            paddingTop: 10,
+          }}
+          data={basketItems}
+          renderItem={({item}) => (
+            <BasketItem
+              item={item}
+              decrementBasketItemCount={decrementBasketItemCount}
+            />
+          )}
+          ListFooterComponent={() => (
+            <CustomComponents.Button
+              buttonAction={() => {
+                navigation.navigate('Scan');
+              }}
+              title={t('addNewProduct')}
+              bgColor="bg-white"
+              textColor="text-[#FF8C03]"
+              textSize="text-base"
+              fontWeight="font-poppins-medium"
+              extraBtnStyling="shadow shadow-zinc-300 border-[1px] border-dashed border-[#FF8C03] w-auto justify-center"
+              extraTxtStyling="ml-2"
+              icon={<Icons.Barcode />}
+              gap="gap-2"
+            />
+          )}
+          ListFooterComponentStyle={{marginHorizontal: 20, marginTop: 30}}
+        />
+      </Styled.View>
 
       <Styled.View className="bg-[#F8F8F8] p-5 pt-0">
         <Styled.View className="flex-row justify-between items-center mb-5 border-t-[1px] border-zinc-200 pt-4">

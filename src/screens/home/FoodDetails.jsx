@@ -33,22 +33,25 @@ const FoodDetails = () => {
         />
       </Styled.View>
       <FoodProperties item={item} navigationScreen={navigationScreen} />
-      {navigationScreen !== 'Basket' && (
-        <Ingredients
-          ingredients={
-            item?.meal?.ingredients ? item?.meal?.ingredients : item.ingredients
-          }
-        />
-      )}
+
+      <Ingredients
+        ingredients={
+          item?.meal?.ingredients ? item?.meal?.ingredients : item.ingredients
+        }
+      />
 
       <CustomComponents.Button
-        title={t('addToBasket')}
+        title={
+          navigationScreen === 'Basket' ? t('returnToBasket') : t('addToBasket')
+        }
         padding="py-3"
-        margin="mx-5 mt-5"
+        margin="mx-5 my-5"
         borderRadius="rounded-[24px]"
         bgColor="bg-[#66B600]"
         buttonAction={() => {
-          navigation.navigate('Scan');
+          navigationScreen === 'Basket'
+            ? navigation.goBack()
+            : navigation.navigate('Scan');
         }}
       />
     </Styled.ScrollView>

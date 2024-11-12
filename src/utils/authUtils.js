@@ -58,12 +58,25 @@ export const login = async ({formData, setErrors}) => {
       });
 
       const data = await response.json();
-      // console.log(data);
+      (data);
       if (response.ok) {
         storage.set('accessToken', data.access);
         storage.set('refreshToken', data.refresh);
+        storage.set('initBasket', true);
       } else {
-        setErrors(data.error);
+        setErrors(data.errors);
+        const selectedLanguage = storage.getString('selectedLanguage');
+        selectedLanguage === 'az'
+          ? alert(
+              'Xəta',
+              'Göstərilən giriş məlumatları ilə aktiv hesab tapılmadı',
+            )
+          : selectedLanguage === 'en'
+          ? alert('Error', 'No active account found with the given credentials')
+          : alert(
+              'Ошибка',
+              'Не найдено активной учетной записи с указанными учетными данными',
+            );
       }
     } else {
       const selectedLanguage = storage.getString('selectedLanguage');

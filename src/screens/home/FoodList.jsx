@@ -8,6 +8,7 @@ const FoodList = () => {
   const route = useRoute();
   const title = route.params?.title;
   const items = route.params?.items;
+  const navigationScreen = route.params?.navigationScreen;
 
   return (
     <>
@@ -21,7 +22,7 @@ const FoodList = () => {
           paddingVertical: 10,
         }}
         data={items}
-        renderItem={({item}) => <FoodItem item={item} />}
+        renderItem={({item}) => <FoodItem showCount={false} item={item} />}
         ListEmptyComponent={() => <NoItemsFound />}
       />
     </>

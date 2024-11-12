@@ -26,7 +26,7 @@ const Categories = () => {
     result?.success &&
       navigation.navigate('FoodList', {
         items: result.data.results,
-        title: categoryName,
+        title: categoryName
       });
   };
 

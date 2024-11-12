@@ -21,7 +21,7 @@ const FoodProperties = ({item,navigationScreen}) => {
         )}
       </Styled.View>
 
-      <Styled.View className="w-auto h-[84px] bg-white p-2.5 mx-5 rounded-[8px] shadow shadow-zinc-300">
+      <Styled.View className="w-auto h-[84px] bg-white p-2.5 mx-5 rounded-[8px] justify-center shadow shadow-zinc-300">
         <Styled.View className="flex-row justify-between">
           <Styled.View className="flex-row gap-1">
             {Boolean(item?.meal?.weight || item.weight) && (
@@ -46,14 +46,6 @@ const FoodProperties = ({item,navigationScreen}) => {
             {item?.meal?.price ? item?.meal?.price : item.price} AZN
           </Styled.Text>
         </Styled.View>
-
-        <Styled.Text className="text-[#FF8C03] font-poppins-bold text-right mt-3">
-          {navigationScreen !== 'Basket'
-            ? item?.meal?.quantity
-              ? item?.meal?.quantity
-              : item.quantity
-            : null}
-        </Styled.Text>
       </Styled.View>
     </>
   );

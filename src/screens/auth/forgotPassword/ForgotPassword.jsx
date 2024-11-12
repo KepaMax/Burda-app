@@ -24,7 +24,6 @@ const ForgotPassword = () => {
       url: `${API_URL}/users/reset-password/`,
       body: formData,
       method: 'POST',
-      tokenRequired: true,
       returnsData: false,
     });
 

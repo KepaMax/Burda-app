@@ -79,6 +79,7 @@ const TopSales = () => {
             navigation.navigate('FoodList', {
               title: t('topSales'),
               items: topSaleItems,
+              navigationScreen: 'TopSales',
             });
           }}
         />

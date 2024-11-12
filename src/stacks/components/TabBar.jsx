@@ -1,10 +1,10 @@
 import Icons from '@icons/icons.js';
-import {Dimensions} from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 import Styled from '@common/StyledComponents';
 import ViewBasket from '@common/ViewBasket';
-import {useMMKVBoolean} from 'react-native-mmkv';
+import { useMMKVBoolean } from 'react-native-mmkv';
 
-const TabBar = ({state, descriptors, navigation}) => {
+const TabBar = ({ state, descriptors, navigation }) => {
   const width = Dimensions.get('screen').width;
   const [basketVisible, setBasketVisible] = useMMKVBoolean('basketVisible');
 
@@ -14,22 +14,18 @@ const TabBar = ({state, descriptors, navigation}) => {
         Platform.OS === 'ios' && width > 375 ? 'pb-[25px]' : ''
       }`}>
       {state.routes.map((route, index) => {
-        const {options} = descriptors[route.key];
+        const { options } = descriptors[route.key];
         const visibleLabel = options.tabBarLabel;
         const label = route.name;
-
         const isFocused = state.index === index;
 
         let icon;
 
+        // Set icons based on the label
         if (label === 'Home') {
           icon = isFocused ? <Icons.TabHomeActive /> : <Icons.TabHome />;
         } else if (label === 'Subscription') {
-          icon = isFocused ? (
-            <Icons.TabSubscriptionActive />
-          ) : (
-            <Icons.TabSubscription />
-          );
+          icon = isFocused ? <Icons.TabSubscriptionActive /> : <Icons.TabSubscription />;
         } else if (label === 'Profile') {
           icon = isFocused ? <Icons.TabProfileActive /> : <Icons.TabProfile />;
         } else if (label === 'Scan') {
@@ -44,23 +40,17 @@ const TabBar = ({state, descriptors, navigation}) => {
             setBasketVisible(true);
           }
 
-          // Logic for resetting Home tab to initial screen when "Basket" is focused
-          if (label === 'Home' && isFocused) {
-            navigation.reset({
-              index: 0,
-              routes: [{name: 'Home'}],
-            });
-          }
+          // Reset to the initial screen of the current tab's stack
+          navigation.reset({
+            index: 0,
+            routes: [{ name: route.name }],
+          });
 
-          const event = navigation.emit({
+          // Emit tab press event to handle other listeners
+          navigation.emit({
             type: 'tabPress',
             target: route.key,
           });
-
-          // Handle default navigation to the selected tab if not focused
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name);
-          }
         };
 
         const onLongPress = () => {
@@ -79,7 +69,6 @@ const TabBar = ({state, descriptors, navigation}) => {
             testID={options.tabBarTestID}
             onPress={onPress}
             onLongPress={onLongPress}
-            // disabled={label === 'Subscription'}
           >
             <Styled.View className="items-center">
               {icon}

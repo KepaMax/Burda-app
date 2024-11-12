@@ -11,7 +11,6 @@ export const fetchData = async ({
 }) => {
   try {
     storage.set('loading', true);
-
     const headers = {
       Accept: 'application/json',
       ...((method === 'POST' || method === 'PUT' || method === 'PATCH') && {
@@ -21,7 +20,6 @@ export const fetchData = async ({
         Authorization: `Bearer ${storage.getString('accessToken')}`,
       }),
     };
-    // console.log(JSON.stringify(body))
 
     const options = {
       headers,
@@ -30,9 +28,7 @@ export const fetchData = async ({
     };
 
     const response = await fetch(url, options);
-    // console.log(response)
     const data = returnsData ? await response?.json() : null;
-    // console.log(data);
 
     if (response.ok) {
       return {
@@ -48,11 +44,10 @@ export const fetchData = async ({
       }
     } else {
       console.error(`Fetch error: ${response.status} ${response.statusText}`);
-
       return {
         success: false,
         status: response.status,
-        data: data.errors,
+        data: data?.errors,
       };
     }
   } catch (error) {

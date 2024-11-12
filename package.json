@@ -1,5 +1,5 @@
 {
-  "name": "burda",
+  "name": "svgburda",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -44,7 +44,7 @@
     "react-native-safe-area-context": "^4.8.0",
     "react-native-screens": "^3.29.0",
     "react-native-super-alert": "^0.1.0",
-    "react-native-svg": "^13.9.0",
+    "react-native-svg": "^13.14.1",
     "react-native-vision-camera": "4.5.2",
     "react-native-webview": "^13.4.0"
   },

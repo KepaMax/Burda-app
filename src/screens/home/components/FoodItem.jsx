@@ -5,7 +5,7 @@ import {Dimensions} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import InfoPill from './InfoPill';
 
-const FoodItem = ({item}) => {
+const FoodItem = ({item, showCount}) => {
   const navigation = useNavigation();
   const {t} = useTranslation();
   const screenWidth = Dimensions.get('screen').width;
@@ -52,12 +52,13 @@ const FoodItem = ({item}) => {
         </Styled.View>
 
         <Styled.View className="flex-row justify-between items-center">
-          <Styled.Text
-            className="font-poppins-bold text-xs text-[#FF8C03]"
-            numberOfLines={2}>
-            {item.meal ? item?.meal?.quantity : item.quantity} {t('left')}
-          </Styled.Text>
-
+          {showCount && (
+            <Styled.Text
+              className="font-poppins-bold text-xs text-[#FF8C03]"
+              numberOfLines={2}>
+              {item.meal ? item?.meal?.quantity : item.quantity} {t('left')}
+            </Styled.Text>
+          )}
           <Styled.Text
             className="font-poppins-bold text-base text-[#42C2E5]"
             numberOfLines={2}>

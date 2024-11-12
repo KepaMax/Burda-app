@@ -12,7 +12,6 @@ const EditProfile = () => {
 
   const handleInputChange = (name, value) => {
     setFormData(prevState => ({...prevState, [name]: value}));
-    // console.log(formData);
   };
 
   const getUserData = async () => {

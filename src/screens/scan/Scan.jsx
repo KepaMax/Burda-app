@@ -9,7 +9,7 @@ import {
 } from 'react-native-vision-camera';
 import {codeTypes} from '@utils/staticData';
 import {useTranslation} from 'react-i18next';
-import {useMMKVBoolean, useMMKVNumber} from 'react-native-mmkv';
+import {useMMKVBoolean} from 'react-native-mmkv';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {fetchData} from '@utils/fetchData';
 import Icons from '@icons/icons';
@@ -18,8 +18,12 @@ import {API_URL} from '@env';
 const Scan = () => {
   const screenWidth = Dimensions.get('screen').width;
   const [cameraAccess, setCameraAccess] = useState(false);
-  // const [basketItems, setBasketItems] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(null);
+  const [scannedOnce, setScannedOnce] = useState(false);
+  const [cameraActive, setCameraActive] = useState(true);
+  const navigation = useNavigation();
+  const isFocused = useIsFocused();
+  const {t} = useTranslation();
+  const [basketVisible, setBasketVisible] = useMMKVBoolean('basketVisible');
 
   const device = useCameraDevice('back', {
     physicalDevices: [
@@ -28,12 +32,6 @@ const Scan = () => {
       'telephoto-camera',
     ],
   });
-  const [scannedOnce, setScannedOnce] = useState(false);
-  const [cameraActive, setCameraActive] = useState(true);
-  const navigation = useNavigation();
-  const isFocused = useIsFocused();
-  const {t} = useTranslation();
-  const [basketVisible, setBasketVisible] = useMMKVBoolean('basketVisible');
 
   const codeScanner = useCodeScanner({
     codeTypes: codeTypes,
@@ -48,7 +46,7 @@ const Scan = () => {
   });
 
   const incrementBasketItemCount = async ({basketItemId, itemQuantity}) => {
-    const result = await fetchData({
+    await fetchData({
       url: `${API_URL}/basket-items/${basketItemId}/`,
       tokenRequired: true,
       method: 'PATCH',
@@ -76,8 +74,6 @@ const Scan = () => {
     });
 
     if (result?.success) {
-      // setBasketItems(result.data.basket_items);
-      // setTotalPrice(result.data.total_price);
       return result?.data?.basket_items;
     } else {
       return [];
@@ -103,7 +99,8 @@ const Scan = () => {
 
   const getMealId = async barcode => {
     const result = await fetchData({
-      url: `https://api.myburda.com/api/v1/meals/${barcode}/`,
+      url: `${API_URL}/meals/${barcode}/`,
+      tokenRequired: true,
     });
 
     if (result?.success) {
@@ -133,7 +130,8 @@ const Scan = () => {
 
   return (
     <Styled.View className="h-full mt-10">
-      <Styled.View className={`w-full bg-transparent items-center`}>
+      {/* Top Header */}
+      <Styled.View className="w-full bg-transparent items-center">
         <Styled.View className="w-11/12 items-center justify-center flex-row relative">
           <Styled.TouchableOpacity
             hitSlop={{top: 50, right: 50, bottom: 50, left: 50}}
@@ -146,17 +144,22 @@ const Scan = () => {
         </Styled.View>
       </Styled.View>
 
+      {/* Camera & Text */}
       {cameraAccess ? (
-        <Styled.View className="h-full">
-          <Styled.Text className="text-black text-2xl font-poppins-semibold mt-10 text-center">
+        <Styled.View className="h-full justify-center items-center">
+          <Styled.Text className="text-black text-2xl font-poppins-semibold mt-10 text-center z-10">
             {t('scanFood')}
           </Styled.Text>
-          <Camera
-            codeScanner={codeScanner}
-            style={{width: screenWidth, height: screenWidth}}
-            device={device}
-            isActive={cameraActive && isFocused}
-          />
+
+          {/* Absolute Camera View */}
+          <Styled.View className="absolute top-0 left-0 w-full h-full">
+            <Camera
+              codeScanner={codeScanner}
+              style={{width: screenWidth, height: screenWidth}}
+              device={device}
+              isActive={cameraActive && isFocused}
+            />
+          </Styled.View>
         </Styled.View>
       ) : (
         <Styled.Text className="font-poppins-medium text-base">

@@ -3,13 +3,14 @@ import CustomComponents from '@common/CustomComponents';
 import {useTranslation} from 'react-i18next';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {fetchData} from '@utils/fetchData';
+import {API_URL} from '@env';
 
 const AddNewCard = () => {
   const {t} = useTranslation();
 
   const addNewCard = async () => {
     const result = await fetchData({
-      url: 'https://api.myburda.com/api/v4/payment-methods/',
+      url: `${API_URL}/payment-methods/`,
       tokenRequired: true,
       method: 'POST',
     });

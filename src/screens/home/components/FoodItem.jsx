@@ -36,7 +36,7 @@ const FoodItem = ({item, showCount}) => {
 
       <Styled.View
         style={{width: screenWidth - 180}}
-        className="h-full px-[14px] py-[16px] justify-between">
+        className="h-full px-[14px] py-[16px] justify-around">
         <Styled.View>
           <Styled.Text
             className="font-poppins-semibold text-base text-black mb-2"
@@ -50,15 +50,14 @@ const FoodItem = ({item, showCount}) => {
             {item.meal ? item?.meal?.description : item.description}
           </Styled.Text>
         </Styled.View>
+        {(item?.meal?.calories || item.calories) && (
+          <Styled.Text>{item?.meal?.calories || item.calories} kkal</Styled.Text>
+        )}
+        {(item?.meal?.weight || item.weight) && (
+          <Styled.Text>{item?.meal?.weight || item.weight} g</Styled.Text>
+        )}
 
         <Styled.View className="flex-row justify-between items-center">
-          {showCount && (
-            <Styled.Text
-              className="font-poppins-bold text-xs text-[#FF8C03]"
-              numberOfLines={2}>
-              {item.meal ? item?.meal?.quantity : item.quantity} {t('left')}
-            </Styled.Text>
-          )}
           <Styled.Text
             className="font-poppins-bold text-base text-[#42C2E5]"
             numberOfLines={2}>

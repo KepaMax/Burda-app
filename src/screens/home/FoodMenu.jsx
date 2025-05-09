@@ -51,9 +51,11 @@ const FoodMenu = () => {
     locale: getLocale(selectedLanguage),
   });
 
+
   const getFoodData = async () => {
     const result = await fetchData({
       url: `${API_URL}/menu-items/?date=${fullDate}&page_size=100`,
+      tokenRequired: true,
     });
 
     const restructureData = items => {
@@ -82,7 +84,7 @@ const FoodMenu = () => {
       }, []);
     };
 
-    const structuredData = restructureData(result.data.results);
+    const structuredData = restructureData(result.data.results[0].meal_items);
 
     result?.success && setMenu(structuredData);
   };

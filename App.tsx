@@ -22,6 +22,8 @@ import {useMMKVBoolean} from 'react-native-mmkv';
 import {fetchData} from '@utils/fetchData';
 import {API_URL} from '@env';
 import {useIsFocused} from '@react-navigation/native';
+import Styled from './src/common/StyledComponents';
+import Receipt from './src/screens/profile/paymentMethods/Receipt';
 
 function App(): JSX.Element {
   const [selectedLanguage, setSelectedLanguage] =

@@ -2,7 +2,7 @@ import Styled from '@common/StyledComponents';
 import CustomComponents from '@common/CustomComponents';
 import {useTranslation} from 'react-i18next';
 import NoCardAdded from './components/NoCardAdded';
-import PaymentHistory from './components/PaymentHistory';
+import PaymentHistory from './PaymentHistory';
 import {fetchData} from '@utils/fetchData';
 import {useEffect, useState} from 'react';
 import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
@@ -35,7 +35,18 @@ const PaymentMethods = () => {
         },
       });
 
-      result.success && navigation.navigate('HomePage');
+      if (result.success) {
+        alert(
+          '',
+          result.data.status === 'APPROVED'
+            ? t('paymentSuccessfull')
+            : t('paymentFailed'),
+          {
+            textConfirm: 'Ok',
+            onConfirm: () => navigation.navigate('HomePage'),
+          },
+        );
+      }
     } else {
       alert(t('choosePaymentMethod'));
     }

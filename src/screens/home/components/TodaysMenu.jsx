@@ -28,6 +28,7 @@ const TodaysMenu = () => {
   const getMenuItems = async () => {
     const result = await fetchData({
       url: `${API_URL}/menu-items/?date=${date}&page_size=100`,
+      tokenRequired: true,
     });
 
     const getUniqueByCategoryId = items => {
@@ -44,7 +45,7 @@ const TodaysMenu = () => {
       return Array.from(uniqueItemsMap.values());
     };
 
-    const uniqueItems = getUniqueByCategoryId(result.data.results);
+    const uniqueItems = getUniqueByCategoryId(result.data.results[0].meal_items);
 
     result?.success && setMenuItems(uniqueItems);
   };
@@ -69,7 +70,6 @@ const TodaysMenu = () => {
           });
         }}
         className="w-[226px] h-[280px] px-4 py-2.5 bg-white rounded-[10px] shadow shadow-zinc-300">
-        <InfoPill type="new" title="New" />
         <FastImage
           source={{uri: category.thumbnail}}
           style={{height: 144, borderRadius: 18}}
@@ -90,7 +90,7 @@ const TodaysMenu = () => {
           {selectedLanguage === 'en' && 'From'}
           <Styled.Text className="font-poppins-bold">
             {' '}
-            {category.starting_price} AZN
+            {category.starting_price} AZN - dən başlayaraq
           </Styled.Text>
           {selectedLanguage === 'az' && '-dən başlayaraq'}
         </Styled.Text>

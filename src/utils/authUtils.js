@@ -58,7 +58,7 @@ export const login = async ({formData, setErrors}) => {
       });
 
       const data = await response.json();
-      (data);
+      data;
       if (response.ok) {
         storage.set('accessToken', data.access);
         storage.set('refreshToken', data.refresh);
@@ -205,14 +205,17 @@ export const createAccount = async ({
 
 export const deleteAccount = async () => {
   const accessToken = storage.getString('accessToken');
-  const userType = storage.getString('userType');
   const selectedLanguage = storage.getString('selectedLanguage');
-  const response = await fetch(`${API_URL}/${userType}/profile/`, {
+  const response = await fetch(`${API_URL}/users/me/`, {
     method: 'DELETE',
     headers: {
-      authorization: `Bearer ${accessToken}`,
+      "Authorization": `Bearer ${accessToken}`,
     },
   });
+
+  console.log(response);
+
+  return;
 
   if (response.ok) {
     selectedLanguage === 'az'

@@ -60,7 +60,7 @@ const Input = ({
   titleSize = 'text-xs',
   titleColor = 'text-zinc-400',
   titleFontWeight = 'font-regular',
-  editable = true
+  editable = true,
 }) => {
   return (
     <Styled.View className={`${width} relative ${margin} -z-10`}>
@@ -111,7 +111,7 @@ const PasswordInput = ({
   handleInputChange,
   placeholder,
   error,
-  disabled
+  disabled,
 }) => {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
 
@@ -234,6 +234,7 @@ const Dropdown = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [companyData, setCompanyData] = useState([]);
   const [companyTitle, setCompanyTitle] = useState('');
+  const [searchValue, setSearchValue] = useState('');
 
   const DropdownItem = ({item}) => {
     return (
@@ -252,6 +253,7 @@ const Dropdown = ({
             setSelectedItem(item);
           }
           setDropdownOpen(false);
+          setSearchValue('');
         }}>
         <Styled.Text className="text-[#868782] text-base font-poppins text-center">
           {item.label}
@@ -273,14 +275,17 @@ const Dropdown = ({
         }));
 
         setCompanyData(formattedCompanyData);
-        setSelectedItem({
-          label: selectedItem?.label,
-          value: selectedItem?.value,
-        });
       }
     };
     inputName === 'company' && getCompanyData();
   }, []);
+
+  const filteredData =
+    searchValue.length > 0
+      ? companyData.filter(item =>
+          item.label.toLowerCase().includes(searchValue.toLowerCase()),
+        )
+      : companyData;
 
   return (
     <Styled.TouchableOpacity
@@ -306,16 +311,21 @@ const Dropdown = ({
       </Styled.View>
 
       {dropdownOpen && (
-        <Styled.View className="z-10 absolute top-12 w-full h-[120px] bg-white rounded-b-[18px] overflow-hidden border-t-0 border-[1px] border-[#EDEFF3]">
-          {/* <FlatList
-            nestedScrollEnabled
-            data={companyData.length ? companyData : items}
-            renderItem={({item}) => <DropdownItem item={item} />}
-          /> */}
+        <Styled.View className="z-10 absolute top-12 w-full max-h-[120px] bg-white rounded-b-[18px] overflow-hidden border-t-0 border-[1px] border-[#EDEFF3]">
+          {inputName === 'company' && (
+            <Styled.TextInput
+              value={searchValue}
+              onChangeText={setSearchValue}
+              placeholder="Search company..."
+              placeholderTextColor="#868782"
+              className="px-3 py-2 border-b-[1px] border-zinc-200 text-[#868782]"
+            />
+          )}
+
           <ScrollView nestedScrollEnabled>
-            {companyData.length
-              ? companyData.map(item => <DropdownItem item={item} />)
-              : items.map(item => <DropdownItem item={item} />)}
+            {(companyData.length ? filteredData : items).map(item => (
+              <DropdownItem key={item.value} item={item} />
+            ))}
           </ScrollView>
         </Styled.View>
       )}
@@ -326,7 +336,7 @@ const Dropdown = ({
 const PhoneInput = ({handleInputChange, inputValue, error}) => {
   const [selectedPrefix, setSelectedPrefix] = useState({});
   const [phoneInputValue, setPhoneInputValue] = useState('');
-  const [initialFormatDone,setInitialFormatDone] = useState(false);
+  const [initialFormatDone, setInitialFormatDone] = useState(false);
   const {t} = useTranslation();
 
   const handlePhoneInputChange = (name, value) => {
@@ -338,7 +348,6 @@ const PhoneInput = ({handleInputChange, inputValue, error}) => {
   };
 
   useEffect(() => {
-
     initialFormatDone &&
       handleInputChange(
         'phone_number',
@@ -353,13 +362,13 @@ const PhoneInput = ({handleInputChange, inputValue, error}) => {
           label: '0' + inputValue.slice(4, 6),
           value: inputValue.slice(4, 6),
         },
-        
+
         phoneInputValue: inputValue.slice(6),
       };
 
       setSelectedPrefix(formatted.prefix);
       setPhoneInputValue(formatted.phoneInputValue);
-      setInitialFormatDone(true)
+      setInitialFormatDone(true);
     }
   }, [inputValue]);
 

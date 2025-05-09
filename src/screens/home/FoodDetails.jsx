@@ -42,17 +42,13 @@ const FoodDetails = () => {
 
       <CustomComponents.Button
         title={
-          navigationScreen === 'Basket' ? t('returnToBasket') : t('addToBasket')
+          navigationScreen === 'Basket' ? t('returnToBasket') : t('goBack')
         }
         padding="py-3"
         margin="mx-5 my-5"
         borderRadius="rounded-[24px]"
         bgColor="bg-[#66B600]"
-        buttonAction={() => {
-          navigationScreen === 'Basket'
-            ? navigation.goBack()
-            : navigation.navigate('Scan');
-        }}
+        buttonAction={() => navigation.goBack()}
       />
     </Styled.ScrollView>
   );

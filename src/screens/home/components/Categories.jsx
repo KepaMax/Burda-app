@@ -5,9 +5,11 @@ import {fetchData} from '@utils/fetchData';
 import {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {API_URL} from '@env';
+import {useTranslation} from 'react-i18next';
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
+  const {t} = useTranslation();
   const navigation = useNavigation();
 
   const getCategoriesData = async () => {
@@ -21,12 +23,13 @@ const Categories = () => {
   const getMealsByCategory = async (categoryId, categoryName) => {
     const result = await fetchData({
       url: `${API_URL}/meals/?category=${categoryId}&page_size=100`,
+      tokenRequired: true,
     });
 
     result?.success &&
       navigation.navigate('FoodList', {
         items: result.data.results,
-        title: categoryName
+        title: categoryName,
       });
   };
 
@@ -59,14 +62,19 @@ const Categories = () => {
   };
 
   return (
-    <FlatList
-      keyExtractor={item => item.id}
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{gap: 20, paddingHorizontal: 20}}
-      horizontal
-      data={categories}
-      renderItem={({item}) => <CategoryItem item={item} />}
-    />
+    <Styled.View>
+      <Styled.Text className="text-lg mb-2 text-[#184639] px-4 font-poppins-medium">
+        {t('categories')}
+      </Styled.Text>
+      <FlatList
+        keyExtractor={item => item.id}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{gap: 20, paddingHorizontal: 20}}
+        horizontal
+        data={categories}
+        renderItem={({item}) => <CategoryItem item={item} />}
+      />
+    </Styled.View>
   );
 };
 

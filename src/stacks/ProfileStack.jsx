@@ -8,6 +8,8 @@ import WebViewScreen from '@common/WebViewScreen';
 import EditProfile from '@screens/profile/editProfile/EditProfile';
 import PaymentMethods from '@screens/profile/paymentMethods/PaymentMethods';
 import AddNewCard from '@screens/profile/paymentMethods/components/AddNewCard';
+import Receipt from '@screens/profile/paymentMethods/Receipt';
+import PaymentHistory from '@screens/profile/paymentMethods/PaymentHistory';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +25,8 @@ const ProfileStack = () => {
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="PaymentMethods" component={PaymentMethods} />
       <Stack.Screen name="AddNewCard" component={AddNewCard} />
+      <Stack.Screen name="Receipt" component={Receipt} />
+      <Stack.Screen name="PaymentHistory" component={PaymentHistory} />
     </Stack.Navigator>
   );
 };

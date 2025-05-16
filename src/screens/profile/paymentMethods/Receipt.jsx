@@ -28,7 +28,6 @@ export default function Receipt() {
           url: `${API_URL}/histories/${id}/`,
           tokenRequired: true,
         });
-        console.log(result.data.order);
         result.success && setReceiptData(result.data);
       } catch (error) {
         console.error('Error fetching receipt:', error);
@@ -74,10 +73,14 @@ export default function Receipt() {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>BURDA</Text>
 
-        <Text style={[styles.cell, {flex: 2}]}>Owner: {userFullName}</Text>
+        <Text style={[styles.cell, {flex: 2}]}>{`${t("owner")} ${userFullName}`}</Text>
         <Text style={styles.info}>
           Tarix:{' '}
           {format(new Date(createdAt), 'd MMMM yyyy HH:mm', {locale: az})}
+        </Text>
+        <Text style={styles.info}>
+          Filial:{' '}
+          {receiptData.company.name}
         </Text>
 
         <View style={styles.separator} />
@@ -153,7 +156,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#ccc',
     marginVertical: 10,
-    
+
   },
   row: {
     flexDirection: 'row',

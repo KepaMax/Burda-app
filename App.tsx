@@ -45,6 +45,7 @@ function App(): JSX.Element {
     }
   };
 
+
   const alertStyle = {
     container: {
       backgroundColor: '#FFFFFF',

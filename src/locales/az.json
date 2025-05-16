@@ -102,5 +102,7 @@
   "paymentMethod": "Ödəniş üsulu",
   "noItems": "Məhsul yoxdur",
   "paymentSuccessfull":"Uğurlu ödəniş",
-  "paymentFailed":"Uğursuz ödəniş"
+  "paymentFailed":"Uğursuz ödəniş",
+  "carbohydrates": "karbo",
+  "fat": "yağ",
 }

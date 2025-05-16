@@ -16,7 +16,6 @@ const Categories = () => {
     const result = await fetchData({
       url: `${API_URL}/categories/`,
     });
-
     result?.success && setCategories(result?.data.results);
   };
 

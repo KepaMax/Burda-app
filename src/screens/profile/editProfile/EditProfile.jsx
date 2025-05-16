@@ -12,6 +12,7 @@ const EditProfile = () => {
 
   const handleInputChange = (name, value) => {
     setFormData(prevState => ({...prevState, [name]: value}));
+    console.log(formData);
   };
 
   const getUserData = async () => {
@@ -38,6 +39,7 @@ const EditProfile = () => {
       typeof formData.company === 'object' &&
       !Array.isArray(formData.company)
     ) {
+      console.log("asdasdasda")
       const result = await fetchData({
         url: `${API_URL}/users/${userId}/`,
         tokenRequired: true,
@@ -51,7 +53,7 @@ const EditProfile = () => {
       url: `${API_URL}/users/${userId}/`,
       tokenRequired: true,
       method: 'PATCH',
-      body: {...formData, company: formData.company.id},
+      body: {...formData, company: formData.company},
     });
 
     result?.success && alert('User successfully updated');

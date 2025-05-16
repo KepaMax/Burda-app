@@ -187,7 +187,7 @@ const Header = ({
       className={`w-full ${bgColor} ${
         bgColor !== 'bg-transparent' && 'border-b-[1px] border-zinc-200'
       } items-center ${overlay && 'absolute top-0 z-50'} ${extraStyles}`}>
-      <Styled.View className="w-11/12 items-center justify-center flex-row relative">
+      <Styled.View className="w-11/12  items-center justify-center flex-row relative">
         {(navigationScreen || navigation.canGoBack()) && (
           <Styled.TouchableOpacity
             hitSlop={{top: 50, right: 50, bottom: 50, left: 50}}
@@ -206,7 +206,7 @@ const Header = ({
         )}
         <Styled.Text
           numberOfLines={1}
-          className={`max-w-[240px] ${titleColor} font-poppins-medium text-[20px] pb-5 pt-6`}>
+          className={`w-max  ${titleColor} font-poppins-medium text-[20px] pb-5 pt-6`}>
           {title}
         </Styled.Text>
       </Styled.View>

@@ -4,7 +4,7 @@ import {useTranslation} from 'react-i18next';
 
 const FoodProperties = ({item, navigationScreen}) => {
   const {t} = useTranslation();
-  
+
   return (
     <>
       <Styled.View className="w-auto mx-5 mb-3 flex-row justify-between items-center">
@@ -48,7 +48,10 @@ const FoodProperties = ({item, navigationScreen}) => {
               {Boolean(item?.meal?.carbohydrates || item.carbohydrates) && (
                 <Styled.View className="w-fit bg-white px-[6px] py-[4px] rounded-[8px] shadow shadow-zinc-300">
                   <Styled.Text className="text-[#66B600] text-sm font-poppins">
-                    {item?.meal?.carbohydrates ? item?.meal?.carbohydrates : item.carbohydrates} ch
+                    {item?.meal?.carbohydrates
+                      ? item?.meal?.carbohydrates
+                      : item.carbohydrates}{' '}
+                    {t("carbohydrates")}
                   </Styled.Text>
                 </Styled.View>
               )}
@@ -56,10 +59,7 @@ const FoodProperties = ({item, navigationScreen}) => {
               {Boolean(item?.meal?.fat || item.fat) && (
                 <Styled.View className="w-fit bg-white px-[6px] py-[4px] rounded-[8px] shadow shadow-zinc-300">
                   <Styled.Text className="text-[#184639] text-sm font-poppins">
-                    {item?.meal?.fat
-                      ? item?.meal?.fat
-                      : item.fat}{' '}
-                    fat
+                    {item?.meal?.fat ? item?.meal?.fat : item.fat} {t("fat")}
                   </Styled.Text>
                 </Styled.View>
               )}

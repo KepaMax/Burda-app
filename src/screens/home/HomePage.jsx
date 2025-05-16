@@ -29,6 +29,7 @@ const HomePage = () => {
       const result = await fetchData({
         url: `${API_URL}/sliders/`,
       });
+      console.log(API_URL);
       console.log(result.success);
 
       if (result.success) {

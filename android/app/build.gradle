@@ -79,7 +79,7 @@ android {
         applicationId "com.myburda.burda"
         minSdkVersion 23
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 11
+        versionCode 13
         versionName "1.2"
     }
     signingConfigs {

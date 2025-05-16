@@ -28,7 +28,7 @@ export const fetchData = async ({
     };
 
     const response = await fetch(url, options);
-    console.log(response)
+    console.log(response);
     const data = returnsData ? await response?.json() : null;
 
     if (response.ok) {

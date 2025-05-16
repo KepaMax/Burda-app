@@ -102,5 +102,7 @@
   "paymentMethod": "Payment Method",
   "noItems": "No items",
   "paymentSuccessfull": "Sucessfull payment",
-  "paymentFailed": "Payment Failed"
+  "paymentFailed": "Payment Failed",
+  "carbohydrates": "carbo",
+  "fat": "fat"
 }

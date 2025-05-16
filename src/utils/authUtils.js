@@ -57,6 +57,8 @@ export const login = async ({formData, setErrors}) => {
         body: JSON.stringify(formData),
       });
 
+      console.log(response);
+
       const data = await response.json();
       data;
       if (response.ok) {
@@ -212,9 +214,6 @@ export const deleteAccount = async () => {
       "Authorization": `Bearer ${accessToken}`,
     },
   });
-
-  console.log(response);
-
   return;
 
   if (response.ok) {

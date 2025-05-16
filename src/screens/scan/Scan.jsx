@@ -1,7 +1,7 @@
 import Styled from '@common/StyledComponents';
 import {canUseCamera} from '@utils/photoUtils';
 import {useState, useEffect} from 'react';
-import {Dimensions} from 'react-native';
+import {Dimensions, Linking} from 'react-native';
 import {
   Camera,
   useCameraDevice,
@@ -114,6 +114,19 @@ const Scan = () => {
         screen: 'Basket',
       });
     }
+    else{
+      console.log(result.data[0].detail);
+      alert(
+        t("error"),
+        `${result.data[0].detail}`,
+        // t('attributes.error'),
+        // t('attributes.galleryErrorMessage'),
+
+        {
+          textConfirm: 'Ok'
+        },
+      );
+    }
   };
 
   useEffect(() => {
@@ -146,20 +159,21 @@ const Scan = () => {
 
       {/* Camera & Text */}
       {cameraAccess ? (
-        <Styled.View className="h-full justify-center items-center">
-          <Styled.Text className="text-black text-2xl font-poppins-semibold mt-10 text-center z-10">
-            {t('scanFood')}
-          </Styled.Text>
-
-          {/* Absolute Camera View */}
-          <Styled.View className="absolute top-0 left-0 w-full h-full">
+        <Styled.View className="h-full justify-start items-center">
+          {/* Camera View */}
+          <Styled.View className="w-full mt-4" style={{ height: screenWidth }}>
             <Camera
               codeScanner={codeScanner}
-              style={{width: screenWidth, height: screenWidth}}
+              style={{ width: screenWidth, height: screenWidth }}
               device={device}
               isActive={cameraActive && isFocused}
             />
           </Styled.View>
+
+          {/* Scan Food Text */}
+          <Styled.Text className="text-black text-2xl font-poppins-semibold mt-4 text-center">
+            {t('scanFood')}
+          </Styled.Text>
         </Styled.View>
       ) : (
         <Styled.Text className="font-poppins-medium text-base">

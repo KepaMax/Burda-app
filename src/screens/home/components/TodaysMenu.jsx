@@ -17,6 +17,7 @@ const TodaysMenu = () => {
     useMMKVString('selectedLanguage');
   const date = format(new Date(), 'yyyy-MM-d');
   const formatString = 'd MMMM';
+  console.log(selectedLanguage);
 
   const locale = selectedLanguage === 'az' ? az : enUS;
 
@@ -30,7 +31,6 @@ const TodaysMenu = () => {
       url: `${API_URL}/menu-items/?date=${date}&page_size=100`,
       tokenRequired: true,
     });
-
     const getUniqueByCategoryId = items => {
       const uniqueItemsMap = new Map();
 
@@ -87,12 +87,13 @@ const TodaysMenu = () => {
         <Styled.Text
           numberOfLines={2}
           className="text-sm text-right mt-3 text-[#42C2E5] font-poppins">
-          {selectedLanguage === 'en' && 'From'}
+          {selectedLanguage === 'en' && 'From '}
           <Styled.Text className="font-poppins-bold">
             {' '}
-            {category.starting_price} AZN - dən başlayaraq
+            {category.starting_price} AZN
           </Styled.Text>
-          {selectedLanguage === 'az' && '-dən başlayaraq'}
+          {selectedLanguage === undefined  && '-dən başlayaraq'}
+          {selectedLanguage === "az"  && '-dən başlayaraq'}
         </Styled.Text>
       </Styled.TouchableOpacity>
     );

@@ -7,6 +7,7 @@ import {FlatList} from 'react-native';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {API_URL} from '@env';
 import CustomComponents from '@common/CustomComponents';
+import ReceiptIcon from '@icons/receipt.svg';
 
 const PaymentHistory = () => {
   const isFocused = useIsFocused();
@@ -27,15 +28,23 @@ const PaymentHistory = () => {
             id: item.id,
           });
         }}
-        className="p-[10px] mx-5 border-b-[1px] border-zinc-200">
+        className="px-[10px] mx-5 border-b-[1px] border-zinc-200">
+        <Styled.View>
+          <Styled.View className="flex-row justify-between mb-2 items-center">
+            <Styled.Text className="text-black font-poppins font-bold text-lg">
+              {item.company.name}
+            </Styled.Text>
+            <Styled.Text className="text-[#42C2E5] font-poppins-medium text-lg">
+              {item.transaction.amount} AZN
+            </Styled.Text>
+          </Styled.View>
+        </Styled.View>
         <Styled.View className="flex-row justify-between items-center">
           <Styled.Text className="text-black font-poppins text-lg">
-            {format(parseISO(item.order.created_at),"dd/MM/yyyy")}
+            {format(parseISO(item.order.created_at), 'dd/MM/yyyy')}
           </Styled.Text>
 
-          <Styled.Text className="text-[#42C2E5] font-poppins-medium text-lg">
-            {item.transaction.amount} {item.currency}
-          </Styled.Text>
+          <ReceiptIcon />
         </Styled.View>
 
         <Styled.View className="flex-row justify-between">
@@ -67,12 +76,8 @@ const PaymentHistory = () => {
 
   return (
     <>
-        <CustomComponents.Header bgColor="bg-white" title={t("myTransactions")} />
+      <CustomComponents.Header title={t('myTransactions')} bgColor="bg-white" />
       <Styled.View className="mt-4">
-        <Styled.Text className="text-[#414141] text-[20px] font-poppins-semibold mx-5 mb-5">
-          {t('paymentHistory')}
-        </Styled.Text>
-
         {!paymentHistory.length ? (
           <Styled.View className="bg-[#F7F8F9] rounded-[8px] py-6 items-center mx-5">
             <Styled.Text className="text-[#32343E] text-base font-poppins-semibold">

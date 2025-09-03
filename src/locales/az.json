@@ -105,4 +105,9 @@
   "paymentFailed":"Uğursuz ödəniş",
   "carbohydrates": "karbo",
   "fat": "yağ",
+  "selectPrefix": "Prefiks seçin",
+  "selectCompany": "Şirkət seçin",
+  "searchCompany": "Şirkət axtarın...",
+  "noCompaniesFound": "Şirkət tapılmadı",
+  "loadingCompanies": "Şirkətlər yüklənir..."
 }

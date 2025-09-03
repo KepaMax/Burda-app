@@ -1,7 +1,7 @@
 import Styled from '@common/StyledComponents';
 import {fetchData} from '@utils/fetchData';
 import storage from '@utils/MMKVStore';
-import {useEffect, useState, useRef} from 'react';
+import {useEffect, useState, useRef, useMemo} from 'react';
 import FoodItem from './components/FoodItem';
 import {useRoute} from '@react-navigation/native';
 import {SectionList} from 'react-native';
@@ -16,6 +16,7 @@ const FoodMenu = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categories, setCategories] = useState([]);
   const [menu, setMenu] = useState([]);
+  const [searchText, setSearchText] = useState('');
   const route = useRoute();
   const {year, date, fullDate} = route.params;
   const scrollToCategory = route.params?.scrollToCategory;
@@ -115,6 +116,21 @@ const FoodMenu = () => {
     scrollToSectionByTitle(selectedCategory);
   }, [selectedCategory, menu]);
 
+  // Filter menu based on search text
+  const filteredMenu = useMemo(() => {
+    if (!searchText.trim()) {
+      return menu;
+    }
+    
+    return menu.map(section => ({
+      ...section,
+      data: section.data.filter(item => 
+        item.name?.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.description?.toLowerCase().includes(searchText.toLowerCase())
+      )
+    })).filter(section => section.data.length > 0);
+  }, [menu, searchText]);
+
   return (
     <>
       <CustomComponents.Header
@@ -123,6 +139,26 @@ const FoodMenu = () => {
         title={`${date} ${formattedMonth} ${year}`}
       />
 
+      {/* Search Bar */}
+      <Styled.View className="bg-white px-4 py-3 border-b border-gray-200">
+        <Styled.View className="relative">
+          <Styled.TextInput
+            value={searchText}
+            onChangeText={setSearchText}
+            placeholder="Yemək axtarın..."
+            placeholderTextColor="#9CA3AF"
+            className="bg-white border border-gray-200 rounded-lg px-4 py-3 text-black font-poppins text-base"
+          />
+          {searchText.length > 0 && (
+            <Styled.TouchableOpacity
+              onPress={() => setSearchText('')}
+              className="absolute right-3 top-3">
+              <Styled.Text className="text-gray-400 text-lg">✕</Styled.Text>
+            </Styled.TouchableOpacity>
+          )}
+        </Styled.View>
+      </Styled.View>
+
       <CategoryHeader
         categories={categories}
         selectedCategory={selectedCategory}
@@ -130,11 +166,11 @@ const FoodMenu = () => {
         scrollToSectionByTitle={scrollToSectionByTitle}
       />
 
-      {menu?.length ? (
+      {filteredMenu?.length ? (
         <SectionList
           ref={sectionListRef}
           stickySectionHeadersEnabled={false}
-          sections={menu}
+          sections={filteredMenu}
           getItemLayout={getItemLayout}
           onScrollToIndexFailed={onScrollToIndexFailed}
           renderItem={({item}) => <FoodItem showCount={true} item={item} />}

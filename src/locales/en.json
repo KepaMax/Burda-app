@@ -104,5 +104,10 @@
   "paymentSuccessfull": "Sucessfull payment",
   "paymentFailed": "Payment Failed",
   "carbohydrates": "carbo",
-  "fat": "fat"
+  "fat": "fat",
+  "selectPrefix": "Select Prefix",
+  "selectCompany": "Select Company",
+  "searchCompany": "Search company...",
+  "noCompaniesFound": "No companies found",
+  "loadingCompanies": "Loading companies..."
 }

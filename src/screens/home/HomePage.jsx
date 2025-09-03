@@ -50,10 +50,10 @@ const HomePage = () => {
     <Styled.ScrollView className="h-full bg-[#F8F8F8]">
       <HomeHeader />
       <CarouselC sliderImages={sliderImages} />
-      <Categories />
-      <TodaysMenu />
-      <TopSales />
       <WeeklyMenu />
+      <TodaysMenu />
+      <Categories />
+      <TopSales />
     </Styled.ScrollView>
   ) : (
     <Styled.View className="flex-1 bg-[#F8F8F8] justify-center items-center">

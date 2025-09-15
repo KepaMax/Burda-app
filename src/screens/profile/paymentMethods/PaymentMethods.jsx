@@ -3,6 +3,8 @@ import CustomComponents from '@common/CustomComponents';
 import {useTranslation} from 'react-i18next';
 import NoCardAdded from './components/NoCardAdded';
 import PaymentHistory from './PaymentHistory';
+import PaymentSuccessModal from './components/PaymentSuccessModal';
+import PaymentFailureModal from './components/PaymentFailureModal';
 import {fetchData} from '@utils/fetchData';
 import {useEffect, useState} from 'react';
 import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
@@ -21,6 +23,8 @@ const PaymentMethods = () => {
   const isFocused = useIsFocused();
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [selectPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showFailureModal, setShowFailureModal] = useState(false);
   const navigation = useNavigation();
   const {t} = useTranslation();
 
@@ -36,20 +40,31 @@ const PaymentMethods = () => {
       });
 
       if (result.success) {
-        alert(
-          '',
-          result.data.status === 'APPROVED'
-            ? t('paymentSuccessfull')
-            : t('paymentFailed'),
-          {
-            textConfirm: 'Ok',
-            onConfirm: () => navigation.navigate('HomePage'),
-          },
-        );
+        if (result.data.status === 'APPROVED') {
+          setShowSuccessModal(true);
+        } else {
+          setShowFailureModal(true);
+        }
       }
     } else {
       alert(t('choosePaymentMethod'));
     }
+  };
+
+  const handleSuccessClose = () => {
+    setShowSuccessModal(false);
+    navigation.navigate('HomePage');
+  };
+
+  const handleSuccessGoToTransactions = () => {
+    setShowSuccessModal(false);
+    navigation.navigate('Profile', {
+      screen: 'PaymentHistory',
+    });
+  };
+
+  const handleFailureClose = () => {
+    setShowFailureModal(false);
   };
 
   const PaymentItem = ({item}) => {
@@ -125,7 +140,7 @@ const PaymentMethods = () => {
           }}
         />
 
-        {!pay && <PaymentHistory />}
+
 
         {pay && (
           <CustomComponents.Button
@@ -138,6 +153,19 @@ const PaymentMethods = () => {
           />
         )}
       </Styled.ScrollView>
+
+      {/* Payment Success Modal */}
+      <PaymentSuccessModal
+        visible={showSuccessModal}
+        onClose={handleSuccessClose}
+        onGoToTransactions={handleSuccessGoToTransactions}
+      />
+
+      {/* Payment Failure Modal */}
+      <PaymentFailureModal
+        visible={showFailureModal}
+        onClose={handleFailureClose}
+      />
     </>
   );
 };

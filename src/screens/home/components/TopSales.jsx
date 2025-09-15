@@ -30,7 +30,7 @@ const TopSales = () => {
     return (
       <Styled.TouchableOpacity
         onPress={() => {
-          navigation.navigate('FoodDetails', {item: item});
+          navigation.navigate('FoodDetails', {item: item, source: 'TopSales'});
         }}
         className="w-[267px] h-[281px] bg-white rounded-[18px] shadow shadow-zinc-300">
         {item?.new && <InfoPill type="new" />}

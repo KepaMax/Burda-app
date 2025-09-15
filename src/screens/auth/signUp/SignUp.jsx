@@ -312,7 +312,7 @@ const SignUp = () => {
           inputName="email"
           inputValue={formData?.email}
           handleInputChange={handleInputChange}
-          placeholder={t('email')}
+          placeholder={t('cooperativEmail')}
           error={errors?.email}
         />
 

@@ -5,7 +5,7 @@ import FastImage from 'react-native-fast-image';
 import Icons from '@icons/icons';
 import {useEffect} from 'react';
 
-const BasketItem = ({item, decrementBasketItemCount}) => {
+const BasketItem = ({item, incrementBasketItemCount, decrementBasketItemCount, removeBasketItem}) => {
   const navigation = useNavigation();
   const screenWidth = Dimensions.get('screen').width;
 
@@ -21,9 +21,8 @@ const BasketItem = ({item, decrementBasketItemCount}) => {
       className="mx-auto h-[115px] flex-row justify-between bg-white my-2 shadow shadow-zinc-300 rounded-[8px]">
       <Styled.TouchableOpacity
         onPress={() => {
-          decrementBasketItemCount({
+          removeBasketItem({
             basketItemId: item.id,
-            itemQuantity: item.quantity,
           });
         }}
         hitSlop={{top: 30, bottom: 30, left: 30, right: 30}}
@@ -31,10 +30,34 @@ const BasketItem = ({item, decrementBasketItemCount}) => {
         <Icons.X />
       </Styled.TouchableOpacity>
 
-      <Styled.View className="absolute right-4 top-3 h-[25px] w-[25px] items-center justify-center border-[1px] border-[#66B600] rounded-[8px] bg-white z-10">
-        <Styled.Text className="text-xs text-[#66B600] font-poppins-semibold">
-          {item.quantity}x
+      <Styled.View className="absolute right-4 bottom-2 flex-row items-center gap-2 bg-white rounded-[8px] p-1 z-10">
+        <Styled.TouchableOpacity
+          onPress={() => {
+            if (item.quantity > 1) {
+              decrementBasketItemCount({
+                basketItemId: item.id,
+                itemQuantity: item.quantity,
+              });
+            }
+          }}
+          className="w-6 h-6 items-center justify-center rounded-[4px] border-[1px] border-[#66B600]">
+          <Icons.ArrowDown />
+        </Styled.TouchableOpacity>
+        
+        <Styled.Text className="text-sm text-[#66B600] font-poppins-semibold  text-center">
+          {item.quantity}
         </Styled.Text>
+        
+        <Styled.TouchableOpacity
+          onPress={() => {
+            incrementBasketItemCount({
+              basketItemId: item.id,
+              itemQuantity: item.quantity,
+            });
+          }}
+          className="w-6 h-6 items-center justify-center rounded-[4px] border-[1px] border-[#66B600]">
+          <Icons.ArrowUp />
+        </Styled.TouchableOpacity>
       </Styled.View>
 
       <FastImage

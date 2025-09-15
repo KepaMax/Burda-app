@@ -50,9 +50,14 @@ const Profile = () => {
           route: 'Support',
         },
         {
-          logo: <Icons.Payments />,
+          logo: <Icons.Receipt />,
           title: t('myTransactions'),
           route: 'PaymentHistory',
+        },
+        {
+          logo: <Icons.Payments />,
+          title: t('paymentMethods'),
+          route: 'PaymentMethods',
         },
         {
           logo: <Icons.Settings />,

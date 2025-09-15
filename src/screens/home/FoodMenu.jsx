@@ -31,7 +31,7 @@ const FoodMenu = () => {
         animated: true,
         sectionIndex: sectionIndex,
         itemIndex: 0,
-        viewPosition: 0,
+        viewPosition: 0.8,
       });
     }
   };
@@ -173,7 +173,7 @@ const FoodMenu = () => {
           sections={filteredMenu}
           getItemLayout={getItemLayout}
           onScrollToIndexFailed={onScrollToIndexFailed}
-          renderItem={({item}) => <FoodItem showCount={true} item={item} />}
+          renderItem={({item}) => <FoodItem showCount={true} item={item} source="WeeklyMenu" />}
           renderSectionHeader={({section: {title}}) => (
             <Styled.Text className="text-[#414141] font-poppins-medium text-[20px] mx-5 mt-5 mb-3">
               {title}

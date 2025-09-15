@@ -31,6 +31,7 @@ import ArrowUp from './arrowUp.svg';
 import ArrowDown from './arrowDown.svg';
 import X from './x.svg';
 import Barcode from './barcode.svg';
+import Receipt from './receipt.svg';
 
 const Icons = {
   AddLocations,
@@ -66,6 +67,7 @@ const Icons = {
   ArrowUp,
   X,
   Barcode,
+  Receipt,
 };
 
 export default Icons;

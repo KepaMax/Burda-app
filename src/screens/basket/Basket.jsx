@@ -43,16 +43,6 @@ const Basket = () => {
     getBasketItems();
   };
 
-  const incrementBasketItemCount = async ({basketItemId, itemQuantity}) => {
-    const result = await fetchData({
-      url: `${API_URL}/basket-items/${basketItemId}/`,
-      tokenRequired: true,
-      method: 'PUT',
-      body: {
-        quantity: itemQuantity + 1,
-      },
-    });
-  };
 
   const checkForExistingItem = async () => {
     if (basketItems.length) {
@@ -75,6 +65,19 @@ const Basket = () => {
     // setBasketItem(null);
   };
 
+  const incrementBasketItemCount = async ({basketItemId, itemQuantity}) => {
+    const result = await fetchData({
+      url: `${API_URL}/basket-items/${basketItemId}/`,
+      tokenRequired: true,
+      method: 'PUT',
+      body: {
+        quantity: itemQuantity + 1,
+      },
+    });
+
+    getBasketItems();
+  };
+
   const decrementBasketItemCount = async ({basketItemId, itemQuantity}) => {
     const result = await fetchData({
       url: `${API_URL}/basket-items/${basketItemId}/`,
@@ -83,6 +86,16 @@ const Basket = () => {
       body: {
         quantity: itemQuantity - 1,
       },
+    });
+
+    getBasketItems();
+  };
+
+  const removeBasketItem = async ({basketItemId}) => {
+    const result = await fetchData({
+      url: `${API_URL}/basket-items/${basketItemId}/`,
+      tokenRequired: true,
+      method: 'DELETE',
     });
 
     getBasketItems();
@@ -147,22 +160,28 @@ const Basket = () => {
           renderItem={({item}) => (
             <BasketItem
               item={item}
+              incrementBasketItemCount={incrementBasketItemCount}
               decrementBasketItemCount={decrementBasketItemCount}
+              removeBasketItem={removeBasketItem}
             />
           )}
           ListFooterComponent={() => (
             <CustomComponents.Button
               buttonAction={() => {
-                navigation.navigate('Scan');
+                navigation.navigate('FoodMenu', {
+                  month: new Date().getMonth() + 1,
+                  year: new Date().getFullYear(),
+                  date: new Date().getDate(),
+                  fullDate: new Date().toISOString().split('T')[0],
+                });
               }}
-              title={t('addNewProduct')}
+              title={t('addNewProductFromMenu')}
               bgColor="bg-white"
               textColor="text-[#FF8C03]"
               textSize="text-base"
               fontWeight="font-poppins-medium"
               extraBtnStyling="shadow shadow-zinc-300 border-[1px] border-dashed border-[#FF8C03] w-auto justify-center"
               extraTxtStyling="ml-2"
-              icon={<Icons.Barcode />}
               gap="gap-2"
             />
           )}

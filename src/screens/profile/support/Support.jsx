@@ -7,7 +7,7 @@ const Support = () => {
   const { t } = useTranslation();
 
   const handleCallPress = () => {
-    Linking.openURL('tel:0554448808');
+    Linking.openURL('tel:0771878836');
   };
 
   const handleEmailPress = () => {
@@ -30,7 +30,7 @@ const Support = () => {
             onPress={handleCallPress}
             className="border-[1px] mt-1 p-2 border-[#184639] rounded-[6px]">
             <Styled.Text className="text-[#184639] text-sm">
-              0554448808
+              0771878836
             </Styled.Text>
           </Styled.TouchableOpacity>
 

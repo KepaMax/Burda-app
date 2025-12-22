@@ -206,29 +206,88 @@ export const createAccount = async ({
 };
 
 export const deleteAccount = async () => {
-  const accessToken = storage.getString('accessToken');
-  const selectedLanguage = storage.getString('selectedLanguage');
-  const response = await fetch(`${API_URL}/users/me/`, {
-    method: 'DELETE',
-    headers: {
-      "Authorization": `Bearer ${accessToken}`,
-    },
-  });
-  return;
+  try {
+    const accessToken = storage.getString('accessToken');
+    const selectedLanguage = storage.getString('selectedLanguage');
+    
+    const response = await fetch(`${API_URL}/users/me/`, {
+      method: 'DELETE',
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+      },
+    });
 
-  if (response.ok) {
+    // Her durumda storage'ı temizle (logout)
+    // Önce selectedLanguage'ı sakla çünkü clearAll() onu da silecek
+    storage.clearAll();
+    
+    // accessToken ve isPinVerified'ı açıkça temizle (Navigation.jsx için)
+    storage.set('accessToken', '');
+    storage.set('isPinVerified', false);
+    
+    // selectedLanguage'ı geri kaydet (alert mesajları için gerekli)
+    if (selectedLanguage) {
+      storage.set('selectedLanguage', selectedLanguage);
+    }
+
+    if (response.ok) {
+      selectedLanguage === 'az'
+        ? alert('Uğurlu əməliyyat', 'Hesabınız uğurla silindi', {
+            textConfirm: 'Davam et',
+            onConfirm: () => {},
+          })
+        : selectedLanguage === 'en'
+        ? alert('Success', 'Your account was successfully deleted', {
+            textConfirm: 'Continue',
+            onConfirm: () => {},
+          })
+        : alert('Uğurlu əməliyyat', 'Hesabınız uğurla silindi', {
+            textConfirm: 'Davam et',
+            onConfirm: () => {},
+          });
+    } else {
+      selectedLanguage === 'az'
+        ? alert('Xəta', 'Hesabınız silinə bilmədi', {
+            textConfirm: 'Davam et',
+            onConfirm: () => {},
+          })
+        : selectedLanguage === 'en'
+        ? alert('Error', 'Your account could not be deleted', {
+            textConfirm: 'Continue',
+            onConfirm: () => {},
+          })
+        : alert('Xəta', 'Hesabınız silinə bilmədi', {
+            textConfirm: 'Davam et',
+            onConfirm: () => {},
+          });
+    }
+  } catch (error) {
+    console.error('Delete account error:', error);
+    const selectedLanguage = storage.getString('selectedLanguage');
+    // Hata durumunda da storage'ı temizle
+    storage.clearAll();
+    
+    // accessToken ve isPinVerified'ı açıkça temizle (Navigation.jsx için)
+    storage.set('accessToken', '');
+    storage.set('isPinVerified', false);
+    
+    // selectedLanguage'ı geri kaydet
+    if (selectedLanguage) {
+      storage.set('selectedLanguage', selectedLanguage);
+    }
     selectedLanguage === 'az'
-      ? alert('Hesabınız uğurla silindi')
+      ? alert('Xəta', 'Xəta baş verdi', {
+          textConfirm: 'Təsdiqlə',
+          onConfirm: () => {},
+        })
       : selectedLanguage === 'en'
-      ? alert('Your account was successfully deleted')
-      : alert('Ваш аккаунт был успешно удален');
-  } else {
-    selectedLanguage === 'az'
-      ? alert('Xəta', 'Xəta baş verdi')
-      : selectedLanguage === 'en'
-      ? alert('Error', 'An error occurred')
-      : alert('Ошибка', 'Произошла ошибка');
+      ? alert('Error', 'An error occurred', {
+          textConfirm: 'OK',
+          onConfirm: () => {},
+        })
+      : alert('Ошибка', 'Произошла ошибка', {
+          textConfirm: 'OK',
+          onConfirm: () => {},
+        });
   }
-
-  storage.clearAll();
 };

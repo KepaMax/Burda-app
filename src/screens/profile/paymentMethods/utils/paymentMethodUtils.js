@@ -16,7 +16,7 @@ export const addNewPaymentMethod = async ({t, navigation}) => {
     tokenRequired: true,
     method: 'POST',
   });
-
+console.log(result)
   result?.success &&
     navigation.navigate('WebViewScreen', {
       url: result.data.payment_url,

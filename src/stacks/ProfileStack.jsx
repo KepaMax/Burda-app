@@ -3,6 +3,8 @@ import Profile from '@screens/profile/profile/Profile';
 import Settings from '@screens/profile/settings/Settings';
 import Support from '@screens/profile/support/Support';
 import ChangePassword from '@screens/profile/changePassword/ChangePassword';
+import ForgotPin from '@screens/auth/forgotPin/ForgotPin';
+import PinLogin from '@screens/auth/pinLogin/PinLogin';
 import ChangeLanguage from '@screens/profile/settings/ChangeLanguage';
 import WebViewScreen from '@common/WebViewScreen';
 import EditProfile from '@screens/profile/editProfile/EditProfile';
@@ -22,6 +24,8 @@ const ProfileStack = () => {
       <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
       <Stack.Screen name="Support" component={Support} />
       <Stack.Screen name="ChangePassword" component={ChangePassword} />
+      <Stack.Screen name="ForgotPin" component={ForgotPin} />
+      <Stack.Screen name="PinLogin" component={PinLogin} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="PaymentMethods" component={PaymentMethods} />
       <Stack.Screen name="AddNewCard" component={AddNewCard} />

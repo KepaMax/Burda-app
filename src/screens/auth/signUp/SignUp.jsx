@@ -3,12 +3,10 @@ import Images from '@images/images.js';
 import CustomComponents from '@common/CustomComponents';
 import {useState, useEffect} from 'react';
 import {Dimensions, Modal, FlatList} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useTranslation} from 'react-i18next';
-import {createAccount} from '@utils/authUtils';
 import {useMMKVBoolean} from 'react-native-mmkv';
-import {prefixData} from '@utils/staticData';
 import {fetchData} from '@utils/fetchData';
 import {API_URL} from '@env';
 import Icons from '@icons/icons.js';
@@ -19,22 +17,91 @@ const SignUp = () => {
   const [loading, setLoading] = useMMKVBoolean('loading');
   const [errors, setErrors] = useState({});
   const navigation = useNavigation();
+  const route = useRoute();
   const screenWidth = Dimensions.get('screen').width;
   
   // Modal states
-  const [prefixModalVisible, setPrefixModalVisible] = useState(false);
   const [companyModalVisible, setCompanyModalVisible] = useState(false);
-  const [selectedPrefix, setSelectedPrefix] = useState({});
   const [selectedCompany, setSelectedCompany] = useState({});
   const [companyData, setCompanyData] = useState([]);
   const [companySearchValue, setCompanySearchValue] = useState('');
+
+  // Route params'dan telefon numarasını al
+  useEffect(() => {
+    if (route.params?.phone) {
+      setFormData(prev => ({...prev, phone_number: route.params.phone}));
+    }
+  }, [route.params?.phone]);
 
   const handleInputChange = (name, value) => {
     setFormData(prevState => ({...prevState, [name]: value}));
   };
 
-  const navigate = () => {
-    navigation.navigate('SignIn');
+  // Register API call
+  const handleRegister = async () => {
+    // Form validation
+    const newErrors = {};
+    
+    if (!formData.first_name) {
+      newErrors.first_name = t('fieldRequired');
+    }
+    if (!formData.last_name) {
+      newErrors.last_name = t('fieldRequired');
+    }
+    if (!formData.phone_number || formData.phone_number.length < 13) {
+      newErrors.phone_number = t('phoneNumberRequired');
+    }
+    if (!formData.email) {
+      newErrors.email = t('fieldRequired');
+    }
+    if (!formData.company) {
+      newErrors.company = t('fieldRequired');
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
+    setLoading(true);
+
+    try {
+      const result = await fetchData({
+        url: `${API_URL}/register/`,
+        method: 'POST',
+        body: {
+          phone_number: formData.phone_number,
+          email: formData.email,
+          first_name: formData.first_name,
+          last_name: formData.last_name,
+          company: formData.company,
+        },
+      });
+
+      console.log('Register result:', result);
+
+      if (result?.success) {
+        // OTP sayfasına yönlendir
+        navigation.navigate('OtpLogin', {
+          phone: formData.phone_number,
+          userId: result.data?.user_id,
+          isNewUser: true,
+        });
+      } else {
+        // API hatası
+        if (result?.data) {
+          setErrors(result.data);
+        } else {
+          setErrors({general: t('somethingWentWrong')});
+        }
+      }
+    } catch (error) {
+      console.error('Register error:', error);
+      setErrors({general: t('somethingWentWrong')});
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Fetch company data
@@ -59,20 +126,6 @@ const SignUp = () => {
     getCompanyData();
   }, []);
 
-  // Handle initial phone number formatting
-  useEffect(() => {
-    if (formData?.phone_number && !selectedPrefix.value) {
-      const phoneNumber = formData.phone_number;
-      if (phoneNumber.startsWith('+994') && phoneNumber.length >= 6) {
-        const prefixValue = phoneNumber.slice(4, 6);
-        const prefix = prefixData.find(p => p.value === prefixValue);
-        if (prefix) {
-          setSelectedPrefix(prefix);
-        }
-      }
-    }
-  }, [formData?.phone_number]);
-
   // Handle initial company selection
   useEffect(() => {
     if (formData?.company && !selectedCompany.value && companyData.length > 0) {
@@ -82,23 +135,6 @@ const SignUp = () => {
       }
     }
   }, [formData?.company, companyData]);
-
-  // Handle prefix selection
-  const handlePrefixSelect = (prefix) => {
-    setSelectedPrefix(prefix);
-    setFormData(prevState => ({...prevState, prefix: prefix.value}));
-    setPrefixModalVisible(false);
-  };
-
-  // Handle phone number input change
-  const handlePhoneInputChange = (name, value) => {
-    if (selectedPrefix.value) {
-      const fullPhoneNumber = `+994${selectedPrefix.value}${value}`;
-      setFormData(prevState => ({...prevState, phone_number: fullPhoneNumber}));
-    } else {
-      setFormData(prevState => ({...prevState, phone_number: value}));
-    }
-  };
 
   // Handle company selection
   const handleCompanySelect = (company) => {
@@ -111,48 +147,6 @@ const SignUp = () => {
   // Filter companies based on search
   const filteredCompanies = companyData.filter(company =>
     company.label.toLowerCase().includes(companySearchValue.toLowerCase())
-  );
-
-  // Prefix Modal
-  const PrefixModal = () => (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={prefixModalVisible}
-      onRequestClose={() => setPrefixModalVisible(false)}>
-      <Styled.View className="flex-1 justify-center items-center bg-black/50">
-        <Styled.View className="bg-white rounded-[16px] w-[90%] max-h-[400px]">
-          {/* Header */}
-          <Styled.View className="flex-row justify-between items-center p-4 border-b border-gray-200">
-            <Styled.Text className="text-[#184639] text-lg font-poppins-semibold">
-              {t('prefix')}
-            </Styled.Text>
-            <Styled.TouchableOpacity
-              onPress={() => setPrefixModalVisible(false)}>
-              <Icons.X />
-            </Styled.TouchableOpacity>
-          </Styled.View>
-          
-          {/* Prefix List */}
-          <FlatList
-            data={prefixData}
-            keyExtractor={(item) => item.value}
-            renderItem={({item}) => (
-              <Styled.TouchableOpacity
-                className={`p-4 border-b border-gray-100 ${
-                  selectedPrefix.value === item.value ? 'bg-[#76F5A4]' : 'bg-transparent'
-                }`}
-                onPress={() => handlePrefixSelect(item)}>
-                <Styled.Text className="text-[#868782] text-base font-poppins">
-                  {item.label}
-                </Styled.Text>
-              </Styled.TouchableOpacity>
-            )}
-            showsVerticalScrollIndicator={false}
-          />
-        </Styled.View>
-      </Styled.View>
-    </Modal>
   );
 
   // Company Modal
@@ -253,43 +247,12 @@ const SignUp = () => {
           />
         </Styled.View>
 
-        {/* Phone Input with Prefix Modal */}
-        <Styled.View className="z-30 w-full mb-3">
-          <Styled.View className="flex-row justify-between items-center">
-            <Styled.TouchableOpacity
-              onPress={() => setPrefixModalVisible(true)}
-              className={`w-[29%] h-[44px] ${
-                errors?.phone_number ? 'border-[1px] border-red-400 bg-red-50' : 'bg-white'
-              } shadow shadow-zinc-300 rounded-[8px] justify-center pl-4`}>
-              <Styled.Text
-                className={`w-full ${
-                  errors?.phone_number ? 'text-[#FF3115]' : 'text-[#868782]'
-                } text-base text-left font-poppins`}>
-                {selectedPrefix.label || t('prefix')}
-              </Styled.Text>
-              <Styled.View className="absolute right-3 top-3">
-                <Icons.ArrowDown />
-              </Styled.View>
-            </Styled.TouchableOpacity>
-            
-            <CustomComponents.Input
-              width="w-[69%]"
-              margin="m-0"
-              inputName="phone_number"
-              inputValue={formData?.phone_number && selectedPrefix.value ? formData.phone_number.replace(`+994${selectedPrefix.value}`, '') : formData?.phone_number || ''}
-              handleInputChange={handlePhoneInputChange}
-              placeholder={t('phoneNumber')}
-              error={errors?.phone_number ? 'ref' : null}
-            />
-          </Styled.View>
-
-          <Styled.Text
-            className={`-z-10 text-red-400 text-xs font-poppins mt-1 ${
-              errors?.phone_number ? 'block' : 'hidden'
-            }`}>
-            {errors?.phone_number}
-          </Styled.Text>
-        </Styled.View>
+        {/* Phone Input */}
+        <CustomComponents.PhoneInput
+          handleInputChange={handleInputChange}
+          inputValue={formData?.phone_number}
+          error={errors?.phone_number}
+        />
 
         {/* Company Selection with Modal */}
         <Styled.TouchableOpacity
@@ -314,22 +277,7 @@ const SignUp = () => {
           handleInputChange={handleInputChange}
           placeholder={t('cooperativEmail')}
           error={errors?.email}
-        />
-
-        <CustomComponents.PasswordInput
-          inputName="password"
-          inputValue={formData?.password}
-          handleInputChange={handleInputChange}
-          placeholder={t('password')}
-          error={errors?.password}
-        />
-
-        <CustomComponents.PasswordInput
-          inputName="repeat_password"
-          inputValue={formData?.repeat_password}
-          handleInputChange={handleInputChange}
-          placeholder={t('repeatPassword')}
-          error={errors?.repeat_password}
+          keyboardType="email-address"
         />
 
         <CustomComponents.Link
@@ -349,19 +297,11 @@ const SignUp = () => {
           textSize="text-lg"
           title={t('completeSignup')}
           extraTxtStyling="text-left"
-          buttonAction={() => {
-            createAccount({
-              formData,
-              setErrors,
-              setLoading,
-              navigate
-            });
-          }}
+          buttonAction={handleRegister}
         />
       </Styled.View>
 
       {/* Modals */}
-      <PrefixModal />
       <CompanyModal />
     </KeyboardAwareScrollView>
   );

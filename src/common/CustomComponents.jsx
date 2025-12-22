@@ -61,6 +61,7 @@ const Input = ({
   titleColor = 'text-zinc-400',
   titleFontWeight = 'font-regular',
   editable = true,
+  keyboardType = 'default',
 }) => {
   return (
     <Styled.View className={`${width} relative ${margin} -z-10`}>
@@ -77,6 +78,7 @@ const Input = ({
         value={inputValue}
         placeholder={placeholder}
         name={inputName}
+        keyboardType={keyboardType}
         placeholderTextColor={error ? '#FF3115' : '#868782'}
         onChangeText={value =>
           handleInputChange(
@@ -95,6 +97,41 @@ const Input = ({
           {icon}
         </Styled.View>
       )}
+      <Styled.Text
+        className={`text-red-400 text-xs font-poppins mt-1 ${
+          error && error !== 'ref' ? 'block' : 'hidden'
+        }`}>
+        {error}
+      </Styled.Text>
+    </Styled.View>
+  );
+};
+
+const PhoneNumberInput = ({
+  inputName,
+  inputValue,
+  handleInputChange,
+  placeholder,
+  error,
+  width = 'w-auto',
+  margin = 'mb-3',
+}) => {
+  return (
+    <Styled.View className={`${width} relative ${margin} -z-10`}>
+      <Styled.TextInput
+        style={{height: 45}}
+        value={inputValue}
+        placeholder={placeholder}
+        name={inputName}
+        keyboardType="phone-pad"
+        placeholderTextColor={error ? '#FF3115' : '#868782'}
+        onChangeText={value => handleInputChange(inputName, value)}
+        className={`border-[1px] shadow shadow-zinc-300 text-black font-poppins text-base placeholder:font-poppins ${
+          error
+            ? 'border-red-400 bg-red-50'
+            : 'border-[#EDEFF3] bg-white focus:border-[#66B600]'
+        } h-[45px] rounded-[8px] px-4`}
+      />
       <Styled.Text
         className={`text-red-400 text-xs font-poppins mt-1 ${
           error && error !== 'ref' ? 'block' : 'hidden'
@@ -241,7 +278,7 @@ const Dropdown = ({
       <Styled.TouchableOpacity
         className={`p-2 border-b-[1px] border-zinc-200 ${
           item.label === selectedItem?.label || item.label === companyTitle
-            ? 'bg-[#76F5A4]'
+            ? 'bg-[#66B600]'
             : 'bg-transparent'
         }`}
         key={item.value}
@@ -255,7 +292,7 @@ const Dropdown = ({
           setDropdownOpen(false);
           setSearchValue('');
         }}>
-        <Styled.Text className="text-[#868782] text-base font-poppins text-center">
+        <Styled.Text className={`text-base font-poppins text-center ${item.label === selectedItem?.label || item.label === companyTitle ? 'text-white' : 'text-[#868782]'}`}>
           {item.label}
         </Styled.Text>
       </Styled.TouchableOpacity>
@@ -339,20 +376,32 @@ const PhoneInput = ({handleInputChange, inputValue, error}) => {
   const [initialFormatDone, setInitialFormatDone] = useState(false);
   const {t} = useTranslation();
 
+  // İlk prefix'i default olarak seç
+  useEffect(() => {
+    if (!selectedPrefix.value && prefixData.length > 0) {
+      setSelectedPrefix(prefixData[0]);
+    }
+  }, []);
+
   const handlePhoneInputChange = (name, value) => {
-    value.length <= 7 && setPhoneInputValue(value);
-    handleInputChange(
-      'phone_number',
-      `+994${selectedPrefix.value}${phoneInputValue}`,
-    );
+    if (value.length <= 7) {
+      setPhoneInputValue(value);
+      if (selectedPrefix.value) {
+        handleInputChange(
+          'phone_number',
+          `+994${selectedPrefix.value}${value}`,
+        );
+      }
+    }
   };
 
   useEffect(() => {
-    initialFormatDone &&
+    if (selectedPrefix.value && phoneInputValue) {
       handleInputChange(
         'phone_number',
         `+994${selectedPrefix.value}${phoneInputValue}`,
       );
+    }
   }, [selectedPrefix, phoneInputValue]);
 
   useEffect(() => {
@@ -384,7 +433,8 @@ const PhoneInput = ({handleInputChange, inputValue, error}) => {
           placeholder={t('prefix')}
           error={error ? 'ref' : null}
         />
-        <Input
+        <PhoneNumberInput
+          inputName="phone_number"
           width="w-[69%]"
           margin="m-0"
           inputValue={phoneInputValue}

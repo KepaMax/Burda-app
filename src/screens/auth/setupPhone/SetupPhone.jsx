@@ -1,29 +1,54 @@
 import Styled from '@common/StyledComponents';
 import Images from '@images/images.js';
 import CustomComponents from '@common/CustomComponents';
-import {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {useState, useEffect} from 'react';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useTranslation} from 'react-i18next';
 import {useMMKVBoolean} from 'react-native-mmkv';
 import {fetchData} from '@utils/fetchData';
 import {API_URL} from '@env';
 
-const SignIn = () => {
+const SetupPhone = () => {
   const {t} = useTranslation();
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useMMKVBoolean('loading');
   const [errors, setErrors] = useState({});
   const navigation = useNavigation();
+  const route = useRoute();
+
+  // Route params'tan telefon numarasını al
+  const phoneFromParams = route.params?.phone;
+  const userId = route.params?.userId;
+
+  // Eğer route params'tan telefon numarası geldiyse, formData'ya ekle
+  useEffect(() => {
+    if (phoneFromParams) {
+      setFormData(prevState => ({...prevState, phone_number: phoneFromParams}));
+    }
+  }, [phoneFromParams]);
 
   const handleInputChange = (name, value) => {
     setFormData(prevState => ({...prevState, [name]: value}));
   };
 
-  const handleLogin = async () => {
+  const handleContinue = async () => {
     // Telefon numarası doğrulama
     if (!formData.phone_number || formData.phone_number.length < 13) {
       setErrors({phone_number: t('phoneNumberRequired')});
+      return;
+    }
+
+    // Email doğrulama
+    if (!formData.email) {
+      setErrors({email: t('fieldRequired')});
+      return;
+    }
+
+    // Email format doğrulama
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setErrors({email: t('invalidEmail')});
       return;
     }
     
@@ -31,56 +56,31 @@ const SignIn = () => {
     setLoading(true);
 
     try {
-      // Check user status API call
+      // Setup phone API call
       const result = await fetchData({
-        url: `${API_URL}/check-status/`,
+        url: `${API_URL}/setup-phone/`,
         method: 'POST',
         body: {
-          identifier: formData.phone_number,
+          phone_number: formData.phone_number,
+          email: formData.email,
         },
       });
-      console.log('Check status result:', result);
+
+      console.log('Setup Phone result:', result);
 
       if (result?.success) {
-        const {user_exists, is_pin_set, user_id, first_name, requires_phone_setup} = result.data;
-
-        // Eğer requires_phone_setup true ise SetupPhone sayfasına yönlendir
-        if (requires_phone_setup) {
-          navigation.navigate('SetupPhone', {
-            phone: formData.phone_number,
-            userId: user_id,
-          });
-          return;
-        }
-
-        if (user_exists) {
-          if (is_pin_set) {
-            // Kullanıcı var ve PIN set edilmiş -> PinLogin sayfasına yönlendir
-            navigation.navigate('PinLogin', {
-              phone: formData.phone_number,
-              userId: user_id,
-              firstName: first_name,
-            });
-          } else {
-            // Kullanıcı var ama PIN set edilmemiş -> OTP sayfasına yönlendir
-            navigation.navigate('OtpLogin', {
-              phone: formData.phone_number,
-              userId: user_id,
-            });
-          }
-        } else {
-          // Kullanıcı yok -> Kayıt sayfasına yönlendir
-          navigation.navigate('SignUp', {
-            phone: formData.phone_number,
-          });
-        }
+        // Başarılı olursa OTP sayfasına yönlendir
+        navigation.navigate('OtpLogin', {
+          phone: formData.phone_number,
+          userId: userId,
+        });
       } else {
         // API hatası
-        setErrors({phone_number: t('somethingWentWrong')});
+        setErrors({general: result?.data?.detail || t('somethingWentWrong')});
       }
     } catch (error) {
-      console.error('Login error:', error);
-      setErrors({phone_number: t('somethingWentWrong')});
+      console.error('Setup Phone error:', error);
+      setErrors({general: t('somethingWentWrong')});
     } finally {
       setLoading(false);
     }
@@ -147,7 +147,7 @@ const SignIn = () => {
         {/* Üst kısım - Başlık ve Input */}
         <Styled.View className="mt-16">
           <Styled.Text className="text-[#184639] text-[32px] font-poppins-semibold mb-4">
-            {t('signIn')}
+            {t('setupPhone')}
           </Styled.Text>
 
           <CustomComponents.PhoneInput
@@ -155,6 +155,21 @@ const SignIn = () => {
             inputValue={formData?.phone_number}
             error={errors?.phone_number}
           />
+
+          <CustomComponents.Input
+            inputName="email"
+            inputValue={formData?.email}
+            handleInputChange={handleInputChange}
+            placeholder={t('cooperativEmail')}
+            error={errors?.email}
+            keyboardType="email-address"
+          />
+
+          {errors?.general && (
+            <Styled.Text className="text-red-500 text-center text-sm font-poppins-medium mt-2">
+              {errors.general}
+            </Styled.Text>
+          )}
         </Styled.View>
 
         {/* Alt kısım - Buton ve Link */}
@@ -165,18 +180,7 @@ const SignIn = () => {
             bgColor="bg-[#66B600]"
             textSize="text-lg"
             title={t('continue')}
-            buttonAction={handleLogin}
-          />
-
-          <CustomComponents.Link
-            textAlign="text-center"
-            title={t('noAccount')}
-            margin="mb-4 mt-6"
-            textColor="text-[#184639]"
-            fontWeight="font-regular"
-            linkAction={() => {
-              navigation.navigate('SignUp');
-            }}
+            buttonAction={handleContinue}
           />
         </Styled.View>
       </Styled.View>
@@ -184,4 +188,5 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SetupPhone;
+

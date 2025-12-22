@@ -58,7 +58,6 @@ const FoodMenu = () => {
       url: `${API_URL}/menu-items/?date=${fullDate}&page_size=100`,
       tokenRequired: true,
     });
-
     const restructureData = items => {
       return items.reduce((acc, item) => {
         const categoryName = item.meal.category.name;

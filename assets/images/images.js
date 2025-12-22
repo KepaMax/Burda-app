@@ -10,7 +10,11 @@ import NoInternet from './noInternet.svg';
 import Banner1 from './banner1.png';
 import Banner2 from './banner2.png';
 import NoCardAdded from './noCardAdded.png';
-
+import SaladBowl from './salad.png';
+import Sandwich from './sandwich.png';
+import BurdaLogo from './burda-logo.png';
+import BackIcon from './back-icon.png';
+import FingerPrint from './finger-print.png';
 const Images = {
   DeleteAccountModal,
   FoodDetailsHeader,
@@ -24,6 +28,11 @@ const Images = {
   Banner1,
   Banner2,
   NoCardAdded,
+  SaladBowl,
+  Sandwich,
+  BurdaLogo,
+  BackIcon,
+  FingerPrint,
 };
 
 export default Images;

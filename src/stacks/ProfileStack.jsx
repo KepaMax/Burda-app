@@ -12,6 +12,7 @@ import PaymentMethods from '@screens/profile/paymentMethods/PaymentMethods';
 import AddNewCard from '@screens/profile/paymentMethods/components/AddNewCard';
 import Receipt from '@screens/profile/paymentMethods/Receipt';
 import PaymentHistory from '@screens/profile/paymentMethods/PaymentHistory';
+import FrequentlyAskedQuestions from '@screens/profile/frequentlyAskedQuestions/FrequentlyAskedQuestions';
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,7 @@ const ProfileStack = () => {
       <Stack.Screen name="AddNewCard" component={AddNewCard} />
       <Stack.Screen name="Receipt" component={Receipt} />
       <Stack.Screen name="PaymentHistory" component={PaymentHistory} />
+      <Stack.Screen name="FrequentlyAskedQuestions" component={FrequentlyAskedQuestions} />
     </Stack.Navigator>
   );
 };

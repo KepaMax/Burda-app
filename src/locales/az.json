@@ -121,6 +121,8 @@
   "resend": "Yenidən göndər",
   "enterOtpCode": "Hesabınızı təsdiqləmək üçün mobil nömrənizə göndərilən 6 rəqəmli kodu daxil edin.",
   "continue": "Davam et",
+  "enterPhoneNumber": "Hesabınıza daxil olmaq üçün əlaqə nömrənizi və e-poçt ünvanınızı daxil edin. Nömrənizə birdəfəlik istifadə üçün 6 rəqəmli kod göndəriləcək",
+  "frequentlyAskedQuestions": "Tez-tez verilən suallar",
   "phoneNumberRequired": "Telefon nömrəsini daxil edin",
   "somethingWentWrong": "Xəta baş verdi, yenidən cəhd edin",
   "incorrectPin": "Yanlış PIN kod, yenidən cəhd edin",

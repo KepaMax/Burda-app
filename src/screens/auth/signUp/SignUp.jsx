@@ -1,8 +1,8 @@
 import Styled from '@common/StyledComponents';
 import Images from '@images/images.js';
 import CustomComponents from '@common/CustomComponents';
-import {useState, useEffect} from 'react';
-import {Dimensions, Modal, FlatList} from 'react-native';
+import {useState, useEffect, useCallback} from 'react';
+import {Dimensions} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useTranslation} from 'react-i18next';
@@ -10,6 +10,7 @@ import {useMMKVBoolean} from 'react-native-mmkv';
 import {fetchData} from '@utils/fetchData';
 import {API_URL} from '@env';
 import Icons from '@icons/icons.js';
+import {prefixData} from '@utils/staticData';
 
 const SignUp = () => {
   const {t} = useTranslation();
@@ -25,17 +26,66 @@ const SignUp = () => {
   const [selectedCompany, setSelectedCompany] = useState({});
   const [companyData, setCompanyData] = useState([]);
   const [companySearchValue, setCompanySearchValue] = useState('');
+  
+  // Prefix modal states
+  const [prefixModalVisible, setPrefixModalVisible] = useState(false);
+  const [selectedPrefix, setSelectedPrefix] = useState({});
+  const [phoneInputValue, setPhoneInputValue] = useState('');
+
+  // İlk prefix'i default olarak seç
+  useEffect(() => {
+    if (!selectedPrefix.value && prefixData.length > 0) {
+      setSelectedPrefix(prefixData[0]);
+    }
+  }, []);
 
   // Route params'dan telefon numarasını al
   useEffect(() => {
     if (route.params?.phone) {
-      setFormData(prev => ({...prev, phone_number: route.params.phone}));
+      const phone = route.params.phone;
+      setFormData(prev => ({...prev, phone_number: phone}));
+      // Telefon numarasını parse et
+      if (phone && phone.startsWith('+994')) {
+        const prefixValue = phone.slice(4, 6);
+        const phoneValue = phone.slice(6);
+        const prefix = prefixData.find(p => p.value === prefixValue);
+        if (prefix) {
+          setSelectedPrefix(prefix);
+          setPhoneInputValue(phoneValue);
+        }
+      }
     }
   }, [route.params?.phone]);
 
   const handleInputChange = (name, value) => {
     setFormData(prevState => ({...prevState, [name]: value}));
   };
+
+  // Handle phone input change
+  const handlePhoneInputChange = (value) => {
+    if (value.length <= 7) {
+      setPhoneInputValue(value);
+      if (selectedPrefix.value) {
+        handleInputChange(
+          'phone_number',
+          `+994${selectedPrefix.value}${value}`,
+        );
+      }
+    }
+  };
+
+  // Update phone number when prefix or phone input changes
+  useEffect(() => {
+    if (selectedPrefix.value && phoneInputValue) {
+      handleInputChange(
+        'phone_number',
+        `+994${selectedPrefix.value}${phoneInputValue}`,
+      );
+    } else if (selectedPrefix.value && !phoneInputValue) {
+      // Clear phone number if phone input is empty
+      handleInputChange('phone_number', '');
+    }
+  }, [selectedPrefix, phoneInputValue]);
 
   // Register API call
   const handleRegister = async () => {
@@ -144,73 +194,26 @@ const SignUp = () => {
     setCompanySearchValue('');
   };
 
-  // Filter companies based on search
-  const filteredCompanies = companyData.filter(company =>
-    company.label.toLowerCase().includes(companySearchValue.toLowerCase())
-  );
 
-  // Company Modal
-  const CompanyModal = () => (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={companyModalVisible}
-      onRequestClose={() => setCompanyModalVisible(false)}>
-      <Styled.View className="flex-1 justify-center items-center bg-black/50">
-        <Styled.View className="bg-white rounded-[16px] w-[90%] max-h-[400px]">
-          {/* Header */}
-          <Styled.View className="flex-row justify-between items-center p-4 border-b border-gray-200">
-            <Styled.Text className="text-[#184639] text-lg font-poppins-semibold">
-              {t('companyName')}
-            </Styled.Text>
-            <Styled.TouchableOpacity
-              onPress={() => {
-                setCompanyModalVisible(false);
-                setCompanySearchValue('');
-              }}>
-              <Icons.X />
-            </Styled.TouchableOpacity>
-          </Styled.View>
-          
-          {/* Search Bar */}
-          <Styled.View className="p-4 border-b border-gray-200">
-            <Styled.TextInput
-              value={companySearchValue}
-              onChangeText={setCompanySearchValue}
-              placeholder={t('searchCompany')}
-              placeholderTextColor="#868782"
-              className="border border-gray-300 rounded-[8px] px-4 py-3 text-[#184639] font-poppins text-left"
-            />
-          </Styled.View>
-          
-          {/* Company List */}
-          <FlatList
-            data={filteredCompanies}
-            keyExtractor={(item) => item.value}
-            renderItem={({item}) => (
-              <Styled.TouchableOpacity
-                className={`p-4 border-b border-gray-100 ${
-                  selectedCompany.value === item.value ? 'bg-[#76F5A4]' : 'bg-transparent'
-                }`}
-                onPress={() => handleCompanySelect(item)}>
-                <Styled.Text className="text-[#868782] text-base font-poppins">
-                  {item.label}
-                </Styled.Text>
-              </Styled.TouchableOpacity>
-            )}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
-              <Styled.View className="p-4">
-                <Styled.Text className="text-gray-500 text-base font-poppins text-center">
-                  {companySearchValue ? t('noCompaniesFound') : t('loadingCompanies')}
-                </Styled.Text>
-              </Styled.View>
-            }
-          />
-        </Styled.View>
-      </Styled.View>
-    </Modal>
-  );
+  // Handle prefix selection
+  const handlePrefixSelect = useCallback((prefix) => {
+    setSelectedPrefix(prefix);
+    setPrefixModalVisible(false);
+    // Update phone number with new prefix
+    if (phoneInputValue) {
+      handleInputChange(
+        'phone_number',
+        `+994${prefix.value}${phoneInputValue}`,
+      );
+    }
+  }, [phoneInputValue]);
+
+  // Memoized close handler
+  const handleCloseCompanyModal = useCallback(() => {
+    setCompanyModalVisible(false);
+    setCompanySearchValue('');
+  }, []);
+
 
   return (
     <KeyboardAwareScrollView
@@ -247,12 +250,45 @@ const SignUp = () => {
           />
         </Styled.View>
 
-        {/* Phone Input */}
-        <CustomComponents.PhoneInput
-          handleInputChange={handleInputChange}
-          inputValue={formData?.phone_number}
-          error={errors?.phone_number}
-        />
+        {/* Phone Input with Prefix Modal */}
+        <Styled.View className="w-full mb-3">
+          <Styled.View className="flex-row justify-between items-center">
+            {/* Prefix Selection Button */}
+            <Styled.TouchableOpacity
+              onPress={() => setPrefixModalVisible(true)}
+              className={`w-[29%] h-[44px] ${
+                errors?.phone_number ? 'border-[1px] border-red-400 bg-red-50' : 'bg-white'
+              } shadow shadow-zinc-300 rounded-[8px] justify-center pl-4`}>
+              <Styled.Text
+                className={`w-full ${
+                  errors?.phone_number ? 'text-[#FF3115]' : 'text-[#868782]'
+                } text-base text-left font-poppins`}>
+                {selectedPrefix.label || t('prefix')}
+              </Styled.Text>
+              <Styled.View className="absolute right-3 top-3">
+                <Icons.ArrowDown />
+              </Styled.View>
+            </Styled.TouchableOpacity>
+            
+            {/* Phone Number Input */}
+            <CustomComponents.PhoneNumberInput
+              inputName="phone_number"
+              width="w-[69%]"
+              margin="m-0"
+              inputValue={phoneInputValue}
+              handleInputChange={(name, value) => handlePhoneInputChange(value)}
+              placeholder={t('phoneNumber')}
+              error={errors?.phone_number ? 'ref' : null}
+            />
+          </Styled.View>
+          
+          <Styled.Text
+            className={`text-red-400 text-xs font-poppins mt-1 ${
+              errors?.phone_number ? 'block' : 'hidden'
+            }`}>
+            {errors?.phone_number}
+          </Styled.Text>
+        </Styled.View>
 
         {/* Company Selection with Modal */}
         <Styled.TouchableOpacity
@@ -295,14 +331,28 @@ const SignUp = () => {
           padding="p-2.5"
           bgColor="bg-[#66B600]"
           textSize="text-lg"
-          title={t('completeSignup')}
+          title={t('continue')}
           extraTxtStyling="text-left"
           buttonAction={handleRegister}
         />
       </Styled.View>
 
       {/* Modals */}
-      <CompanyModal />
+      <CustomComponents.CompanyModal
+        visible={companyModalVisible}
+        onClose={handleCloseCompanyModal}
+        selectedCompany={selectedCompany}
+        onSelect={handleCompanySelect}
+        companyData={companyData}
+        searchValue={companySearchValue}
+        onSearchChange={setCompanySearchValue}
+      />
+      <CustomComponents.PrefixModal
+        visible={prefixModalVisible}
+        onClose={() => setPrefixModalVisible(false)}
+        selectedPrefix={selectedPrefix}
+        onSelect={handlePrefixSelect}
+      />
     </KeyboardAwareScrollView>
   );
 };

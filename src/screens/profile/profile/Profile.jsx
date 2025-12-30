@@ -50,6 +50,11 @@ const Profile = () => {
           route: 'Support',
         },
         {
+          logo: <Icons.Help />,
+          title: t('frequentlyAskedQuestions'),
+          route: 'FrequentlyAskedQuestions',
+        },
+        {
           logo: <Icons.Receipt />,
           title: t('myTransactions'),
           route: 'PaymentHistory',

@@ -77,7 +77,7 @@ const PaymentHistory = () => {
   return (
     <>
       <CustomComponents.Header title={t('myTransactions')} bgColor="bg-white" />
-      <Styled.View className="mt-4">
+      <Styled.View className="mt-4 flex-1">
         {!paymentHistory.length ? (
           <Styled.View className="bg-[#F7F8F9] rounded-[8px] py-6 items-center mx-5">
             <Styled.Text className="text-[#32343E] text-base font-poppins-semibold">
@@ -86,7 +86,6 @@ const PaymentHistory = () => {
           </Styled.View>
         ) : (
           <FlatList
-            scrollEnabled={false}
             keyExtractor={item => item.id}
             data={paymentHistory}
             renderItem={({item}) => <HistoryItem item={item} />}

@@ -520,33 +520,43 @@ const PinLogin = () => {
     if (setupPin) {
       // PIN setup durumunda 2 sıra dots göster
       return (
-        <Styled.View className="items-center mb-12 mt-4">
+        <Styled.View className="items-center mb-6 -mt-8">
           {/* İlk PIN dots */}
-          <Styled.View className="flex-row justify-center items-center gap-4 mb-4">
-            {[0, 1, 2, 3].map((index) => (
-              <Styled.View
-                key={`first-${index}`}
-                className={`w-3 h-3 rounded-full ${
-                  index < pin.length
-                    ? 'bg-[#184639]'
-                    : 'border-2 border-[#184639] bg-transparent'
-                }`}
-              />
-            ))}
-          </Styled.View>
-          {/* İkinci PIN dots - sadece ilk PIN 4 rakam tamamlandığında göster */}
-          {pin.length === 4 && (
+          <Styled.View className="items-center mb-4">
+            <Styled.Text className="text-[#66B600] text-base text-center font-poppins-medium mb-2">
+              {t('setNewPin')}
+            </Styled.Text>
             <Styled.View className="flex-row justify-center items-center gap-4">
               {[0, 1, 2, 3].map((index) => (
                 <Styled.View
-                  key={`second-${index}`}
+                  key={`first-${index}`}
                   className={`w-3 h-3 rounded-full ${
-                    index < confirmPin.length
+                    index < pin.length
                       ? 'bg-[#184639]'
                       : 'border-2 border-[#184639] bg-transparent'
                   }`}
                 />
               ))}
+            </Styled.View>
+          </Styled.View>
+          {/* İkinci PIN dots - sadece ilk PIN 4 rakam tamamlandığında göster */}
+          {pin.length === 4 && (
+            <Styled.View className="items-center">
+              <Styled.Text className="text-[#66B600] text-base text-center font-poppins-medium mb-2">
+                {t('confirmPin')}
+              </Styled.Text>
+              <Styled.View className="flex-row justify-center items-center gap-4">
+                {[0, 1, 2, 3].map((index) => (
+                  <Styled.View
+                    key={`second-${index}`}
+                    className={`w-3 h-3 rounded-full ${
+                      index < confirmPin.length
+                        ? 'bg-[#184639]'
+                        : 'border-2 border-[#184639] bg-transparent'
+                    }`}
+                  />
+                ))}
+              </Styled.View>
             </Styled.View>
           )}
         </Styled.View>
@@ -698,16 +708,10 @@ const PinLogin = () => {
         {/* Logo and Welcome Section */}
         <Styled.View className="items-center mt-10 justify-center">
           {renderLogo()}
-          {setupPin ? (
+          {!setupPin && firstName && (
             <Styled.Text className="text-[#66B600] text-base font-poppins-medium">
-              {isConfirmingPin ? t('confirmPin') : t('setupPin')}
+              {t('welcome')}, {firstName}!
             </Styled.Text>
-          ) : (
-            firstName && (
-              <Styled.Text className="text-[#66B600] text-base font-poppins-medium">
-                {t('welcome')}, {firstName}!
-              </Styled.Text>
-            )
           )}
         </Styled.View>
       </Styled.View>

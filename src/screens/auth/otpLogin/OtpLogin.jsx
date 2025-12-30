@@ -14,7 +14,7 @@ const OtpLogin = () => {
   const {t} = useTranslation();
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [focusedIndex, setFocusedIndex] = useState(0);
-  const [countdown, setCountdown] = useState(30);
+  const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const [otpError, setOtpError] = useState('');
   const [loading, setLoading] = useMMKVBoolean('loading');
@@ -27,7 +27,7 @@ const OtpLogin = () => {
   const phoneNumber = route.params?.phone;
   const userId = route.params?.userId;
 
-  // 30 saniye geri sayım
+  // 60 saniye geri sayım
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => {
@@ -45,7 +45,7 @@ const OtpLogin = () => {
 
     setLoading(true);
     setCanResend(false);
-    setCountdown(30);
+    setCountdown(60);
 
     try {
       const result = await fetchData({
@@ -158,7 +158,7 @@ const OtpLogin = () => {
 
   const renderOtpInputs = () => {
     return (
-      <Styled.View className="w-full flex-row justify-center items-center gap-3 mb-12 mt-10">
+      <Styled.View className="w-full flex-row justify-center items-center gap-3 mb-6 mt-4">
         {otp.map((digit, index) => (
           <Styled.TextInput
             key={index}
@@ -243,55 +243,33 @@ const OtpLogin = () => {
         </Styled.View>
       </Styled.View>
 
-      <Styled.View className="px-5 pt-4 flex-1 justify-between pb-10">
-        <Styled.View className="items-center m-3">
-          <Styled.Text className="text-[#66B600] max-w-[220px] text-center text-sm font-poppins-medium">
+      <Styled.View className="px-5 flex-1 justify-between pb-8">
+        <Styled.View className="mt-16">
+          <Styled.Text className="text-[#184639] text-[32px] font-poppins-semibold mb-4">
+            {t('verifyOtp')}
+          </Styled.Text>
+          <Styled.Text className="text-[#66B600] text-sm font-poppins-medium mb-4">
             {t('enterOtpCode')}
           </Styled.Text>
-          {renderOtpInputs()}
-          
-          {/* Error message */}
-          {otpError ? (
-            <Styled.Text className="text-red-500 text-center text-sm font-poppins-medium mt-2">
+          {otpError && (
+            <Styled.Text className="text-red-500 text-center text-sm font-poppins-medium mb-4">
               {otpError}
             </Styled.Text>
-          ) : null}
-        </Styled.View>
-
-        <Styled.View className="items-center ">
-          <Styled.View className="flex-row items-center gap-1 mb-6">
+          )}
+          {renderOtpInputs()}
+          <Styled.View className="flex-row items-center justify-center gap-1 mb-6">
             <Styled.Text className="text-gray-400 text-sm font-poppins-regular">
               {t('didntReceiveCode')}
             </Styled.Text>
-            {canResend ? (
-              <Styled.TouchableOpacity onPress={handleResendOtp}>
-                <Styled.Text className="text-[#66B600] text-sm font-poppins-medium">
-                  {t('resend')}
-                </Styled.Text>
-              </Styled.TouchableOpacity>
-            ) : (
-              <Styled.Text className="text-gray-400 text-sm font-poppins-medium">
-                {countdown} {t('seconds')}
+            <Styled.TouchableOpacity
+              onPress={handleResendOtp}
+              disabled={!canResend}
+              style={{opacity: canResend ? 1 : 0.5}}>
+              <Styled.Text className="text-[#66B600] text-sm font-poppins-medium">
+                {canResend ? t('resend') : `${countdown} ${t('seconds')}`}
               </Styled.Text>
-            )}
+            </Styled.TouchableOpacity>
           </Styled.View>
-          
-          {/* Continue Button */}
-          <CustomComponents.Button
-            borderRadius="rounded-[24px]"
-            padding="p-3"
-            bgColor="bg-[#66B600]"
-            textSize="text-lg"
-            title={t('continue')}
-            extraBtnStyling="w-full"
-            buttonAction={() => {
-              const otpString = otp.join('');
-              if (otpString.length === 6) {
-                console.log('Continue with OTP:', otpString);
-                // navigation.navigate('NextScreen');
-              }
-            }}
-          />
         </Styled.View>
       </Styled.View>
     </KeyboardAwareScrollView>

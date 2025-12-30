@@ -146,10 +146,12 @@ const SetupPhone = () => {
       <Styled.View className="px-5 flex-1 justify-between pb-8">
         {/* Üst kısım - Başlık ve Input */}
         <Styled.View className="mt-16">
-          <Styled.Text className="text-[#184639] text-[32px] font-poppins-semibold mb-4">
+          <Styled.Text className="text-[#184639] text-[32px] font-poppins-semibold mb-2">
             {t('setupPhone')}
           </Styled.Text>
-
+          <Styled.Text className="text-[#66B600]  text-sm font-poppins-medium mb-4">
+            {t('enterPhoneNumber')}
+          </Styled.Text>
           <CustomComponents.PhoneInput
             handleInputChange={handleInputChange}
             inputValue={formData?.phone_number}

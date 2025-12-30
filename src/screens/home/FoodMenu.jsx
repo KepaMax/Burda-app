@@ -24,14 +24,15 @@ const FoodMenu = () => {
   const sectionListRef = useRef(null);
 
   const scrollToSectionByTitle = title => {
-    const sectionIndex = menu.findIndex(section => section.title === title);
+    const sectionIndex = filteredMenu.findIndex(section => section.title === title);
 
-    if (sectionIndex !== -1) {
+    if (sectionIndex !== -1 && sectionListRef.current) {
       sectionListRef.current.scrollToLocation({
         animated: true,
         sectionIndex: sectionIndex,
         itemIndex: 0,
-        viewPosition: 0.8,
+        viewPosition: 0,
+        viewOffset: 50, // Section header height offset
       });
     }
   };
@@ -58,6 +59,7 @@ const FoodMenu = () => {
       url: `${API_URL}/menu-items/?date=${fullDate}&page_size=100`,
       tokenRequired: true,
     });
+    console.log(result);
     const restructureData = items => {
       return items.reduce((acc, item) => {
         const categoryName = item.meal.category.name;
@@ -89,15 +91,6 @@ const FoodMenu = () => {
     result?.success && setMenu(structuredData);
   };
 
-  const getItemLayout = (data, index) => {
-    const itemHeight = 140; // Adjust this to match your item's height
-    return {
-      length: itemHeight,
-      offset: itemHeight * index,
-      index,
-    };
-  };
-
   const onScrollToIndexFailed = info => {
     console.warn('Scroll to index failed', info);
     // You might want to handle this more gracefully
@@ -112,8 +105,10 @@ const FoodMenu = () => {
   }, [scrollToCategory, categories]);
 
   useEffect(() => {
-    scrollToSectionByTitle(selectedCategory);
-  }, [selectedCategory, menu]);
+    if (selectedCategory && filteredMenu.length) {
+      scrollToSectionByTitle(selectedCategory);
+    }
+  }, [selectedCategory, filteredMenu]);
 
   // Filter menu based on search text
   const filteredMenu = useMemo(() => {
@@ -121,12 +116,15 @@ const FoodMenu = () => {
       return menu;
     }
     
+    const searchLower = searchText.toLowerCase();
     return menu.map(section => ({
       ...section,
-      data: section.data.filter(item => 
-        item.name?.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.description?.toLowerCase().includes(searchText.toLowerCase())
-      )
+      data: section.data.filter(item => {
+        const name = item.meal?.name || item.name || '';
+        const description = item.meal?.description || item.description || '';
+        return name.toLowerCase().includes(searchLower) ||
+               description.toLowerCase().includes(searchLower);
+      })
     })).filter(section => section.data.length > 0);
   }, [menu, searchText]);
 
@@ -139,7 +137,7 @@ const FoodMenu = () => {
       />
 
       {/* Search Bar */}
-      <Styled.View className="bg-white px-4 py-3 border-b border-gray-200">
+      <Styled.View className="bg-white px-4 py-3 ">
         <Styled.View className="relative">
           <Styled.TextInput
             value={searchText}
@@ -170,7 +168,6 @@ const FoodMenu = () => {
           ref={sectionListRef}
           stickySectionHeadersEnabled={false}
           sections={filteredMenu}
-          getItemLayout={getItemLayout}
           onScrollToIndexFailed={onScrollToIndexFailed}
           renderItem={({item}) => <FoodItem showCount={true} item={item} source="WeeklyMenu" />}
           renderSectionHeader={({section: {title}}) => (

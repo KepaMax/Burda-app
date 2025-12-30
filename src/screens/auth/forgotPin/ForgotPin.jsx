@@ -22,7 +22,7 @@ const ForgotPin = () => {
   const [confirmPin, setConfirmPin] = useState('');
   const [isConfirmingPin, setIsConfirmingPin] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(0);
-  const [countdown, setCountdown] = useState(30);
+  const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const [loading, setLoading] = useMMKVBoolean('loading');
   const [errors, setErrors] = useState({});
@@ -65,7 +65,7 @@ const ForgotPin = () => {
 
       if (result?.success) {
         setStep(2);
-        setCountdown(30);
+        setCountdown(60);
         setCanResend(false);
       } else {
         setErrors({general: t('somethingWentWrong')});
@@ -84,7 +84,7 @@ const ForgotPin = () => {
 
     setLoading(true);
     setCanResend(false);
-    setCountdown(30);
+    setCountdown(60);
     setErrors({});
 
     try {
@@ -333,31 +333,41 @@ const ForgotPin = () => {
 
   const renderPinDots = () => {
     return (
-      <Styled.View className="items-center mb-12 mt-4">
-        <Styled.View className="flex-row justify-center items-center gap-4 mb-4">
-          {[0, 1, 2, 3].map((index) => (
-            <Styled.View
-              key={`first-${index}`}
-              className={`w-3 h-3 rounded-full ${
-                index < pin.length
-                  ? 'bg-[#184639]'
-                  : 'border-2 border-[#184639] bg-transparent'
-              }`}
-            />
-          ))}
-        </Styled.View>
-        {pin.length === 4 && (
+      <Styled.View className="items-center mb-6 -mt-8">
+        <Styled.View className="items-center mb-4">
+          <Styled.Text className="text-[#66B600] text-base text-center font-poppins-medium mb-2">
+            {t('setNewPin')}
+          </Styled.Text>
           <Styled.View className="flex-row justify-center items-center gap-4">
             {[0, 1, 2, 3].map((index) => (
               <Styled.View
-                key={`second-${index}`}
+                key={`first-${index}`}
                 className={`w-3 h-3 rounded-full ${
-                  index < confirmPin.length
+                  index < pin.length
                     ? 'bg-[#184639]'
                     : 'border-2 border-[#184639] bg-transparent'
                 }`}
               />
             ))}
+          </Styled.View>
+        </Styled.View>
+        {pin.length === 4 && (
+          <Styled.View className="items-center">
+            <Styled.Text className="text-[#66B600] text-base text-center font-poppins-medium mb-2">
+              {t('confirmPin')}
+            </Styled.Text>
+            <Styled.View className="flex-row justify-center items-center gap-4">
+              {[0, 1, 2, 3].map((index) => (
+                <Styled.View
+                  key={`second-${index}`}
+                  className={`w-3 h-3 rounded-full ${
+                    index < confirmPin.length
+                      ? 'bg-[#184639]'
+                      : 'border-2 border-[#184639] bg-transparent'
+                  }`}
+                />
+              ))}
+            </Styled.View>
           </Styled.View>
         )}
       </Styled.View>
@@ -437,14 +447,6 @@ const ForgotPin = () => {
               {errors.general}
             </Styled.Text>
           )}
-          <CustomComponents.Button
-            borderRadius="rounded-[24px]"
-            padding="p-2.5"
-            bgColor="bg-[#66B600]"
-            textSize="text-lg"
-            title={t('continue')}
-            buttonAction={handleRequestOtp}
-          />
         </>
       );
     } else if (step === 2) {
@@ -482,9 +484,6 @@ const ForgotPin = () => {
       // Step 3: New PIN
       return (
         <>
-          <Styled.Text className="text-[#66B600] text-base text-center font-poppins-medium mb-4">
-            {isConfirmingPin ? t('confirmPin') : t('setNewPin')}
-          </Styled.Text>
           {renderPinDots()}
           {errors?.pin && (
             <Styled.Text className="text-red-500 text-center text-sm font-poppins-medium mb-4">
@@ -517,6 +516,16 @@ const ForgotPin = () => {
         <Styled.View className="mt-16">
           {renderStepContent()}
         </Styled.View>
+        {step === 1 && (
+          <CustomComponents.Button
+            borderRadius="rounded-[24px]"
+            padding="p-2.5"
+            bgColor="bg-[#66B600]"
+            textSize="text-lg"
+            title={t('continue')}
+            buttonAction={handleRequestOtp}
+          />
+        )}
       </Styled.View>
     </KeyboardAwareScrollView>
   );

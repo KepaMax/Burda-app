@@ -1,0 +1,55 @@
+{
+  "faq": [
+    {
+      "id": 1,
+      "question": "Lotereyada necə iştirak edə bilərəm?",
+      "answer": "Lotereyada iştirak etmək üçün tətbiqi yükləmək, qeydiyyatdan keçmək, daha sonra isə çekləri tətbiqdə oxutmaq kifayətdir."
+    },
+    {
+      "id": 2,
+      "question": "Lotereya şansı nədir və harada yerləşir?",
+      "answer": "Lotereya şansı, çekləri tətbiqdə oxutduqdan sonra əldə etdiyiniz xüsusi şanslardır. Şanslarınızı profil bölməsində görə bilərsiniz."
+    },
+    {
+      "id": 3,
+      "question": "Hansı çeklər keçərlidir?",
+      "answer": "BURDA mağazalarından alınan və barkodlu bütün çeklər keçərlidir. Çekin tarixi və məbləği aydın görünməlidir."
+    },
+    {
+      "id": 4,
+      "question": "Aylıq və ya həftəlik neçə şans əldə edə bilərəm?",
+      "answer": "Hər çek oxutduqdan sonra bir şans əldə edirsiniz. Aylıq və ya həftəlik limit yoxdur, nə qədər çek oxutsanız, o qədər şans əldə edərsiniz."
+    },
+    {
+      "id": 5,
+      "question": "Oxutduqdan sonra çeki ata bilərəmmi?",
+      "answer": "Bəli, çeki oxutduqdan və təsdiqləndikdən sonra atabilərsiniz. Lakin qalib olduğunuz halda uduşu təsdiqləmək üçün çekin orijinalını təqdim etməlisiniz."
+    },
+    {
+      "id": 6,
+      "question": "Qaliblər necə seçiləcək?",
+      "answer": "Qaliblər təsadüfi seçim yolu ilə müəyyən ediləcək. Hər lotereya üçün müəyyən edilmiş tarixdə canlı yayım vasitəsilə qaliblər açıqlanacaq."
+    },
+    {
+      "id": 7,
+      "question": "Qalib olduğumu necə biləcəyəm?",
+      "answer": "Qalib olduğunuz halda tətbiq vasitəsilə və ya telefon nömrənizə SMS göndəriləcək. Həmçinin profil bölməsində uduşlarınızı görə bilərsiniz."
+    },
+    {
+      "id": 8,
+      "question": "Uduşlarımı necə əldə edə bilərəm?",
+      "answer": "Uduşlarınızı əldə etmək üçün tətbiqdəki uduşlar bölməsinə daxil olun və təlimatları izləyin. Uduşun məbləğinə görə müxtəlif ödəniş metodları təklif olunur."
+    },
+    {
+      "id": 9,
+      "question": "Şanslarım niyə silinib?",
+      "answer": "Şanslarınız lotereya çəkiləndən sonra avtomatik olaraq sıfırlanır. Yeni lotereya üçün yenidən çek oxutmağa başlaya bilərsiniz."
+    },
+    {
+      "id": 10,
+      "question": "Canlı yayımı harada izləyə bilərəm?",
+      "answer": "Lotereya çəkilməsi zamanı canlı yayım tətbiqin ana səhifəsində və ya profil bölməsindəki xüsusi bölmədə izləyə bilərsiniz."
+    }
+  ]
+}
+

@@ -120,6 +120,8 @@
   "resend": "Resend",
   "enterOtpCode": "Please enter the 6-digit code sent to your mobile number to verify your account.",
   "continue": "Continue",
+  "enterPhoneNumber": "Please enter your phone number and email address to sign in. A 6-digit code will be sent to your phone number for single use.",
+  "frequentlyAskedQuestions": "FAQ",
   "phoneNumberRequired": "Please enter your phone number",
   "somethingWentWrong": "Something went wrong, please try again",
   "incorrectPin": "Incorrect PIN, please try again",

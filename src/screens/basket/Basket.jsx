@@ -108,11 +108,14 @@ const Basket = () => {
         meal: item.meal.id,
       }));
 
+      const menuDate = new Date().toISOString().split('T')[0];
+
       const result = await fetchData({
         url: `${API_URL}/orders/`,
         method: 'POST',
         tokenRequired: true,
         body: {
+          menu_date: menuDate,
           items: transformedData,
         },
       });

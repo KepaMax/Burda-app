@@ -1,8 +1,8 @@
 import Styled from '@common/StyledComponents';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useMemo, useCallback, useRef} from 'react';
 import Icons from '@icons/icons.js';
 import {useNavigation} from '@react-navigation/native';
-import {FlatList} from 'react-native';
+import {FlatList, Modal, TextInput} from 'react-native';
 import {prefixData} from '@utils/staticData';
 import {useTranslation} from 'react-i18next';
 import {fetchData} from '@utils/fetchData';
@@ -370,10 +370,166 @@ const Dropdown = ({
   );
 };
 
+// Prefix Modal Component
+const PrefixModal = ({
+  visible,
+  onClose,
+  selectedPrefix,
+  onSelect,
+}) => {
+  const {t} = useTranslation();
+
+  return (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}>
+      <Styled.View className="flex-1 justify-center items-center bg-black/50">
+        <Styled.View className="bg-white rounded-[16px] w-[90%] max-h-[400px]">
+          {/* Header */}
+          <Styled.View className="flex-row justify-between items-center p-4 border-b border-gray-200">
+            <Styled.Text className="text-[#184639] text-lg font-poppins-semibold">
+              {t('selectPrefix')}
+            </Styled.Text>
+            <Styled.TouchableOpacity onPress={onClose}>
+              <Icons.X />
+            </Styled.TouchableOpacity>
+          </Styled.View>
+          
+          {/* Prefix List */}
+          <FlatList
+            data={prefixData}
+            keyExtractor={(item) => item.value}
+            renderItem={({item}) => (
+              <Styled.TouchableOpacity
+                className={`p-4 border-b border-gray-100 ${
+                  selectedPrefix?.value === item.value ? 'bg-[#66B600]' : 'bg-transparent'
+                }`}
+                onPress={() => onSelect(item)}>
+                <Styled.Text className={`${selectedPrefix?.value === item.value ? 'text-white' : 'text-[#868782]'} text-base font-poppins`}>
+                  {item.label}
+                </Styled.Text>
+              </Styled.TouchableOpacity>
+            )}
+            showsVerticalScrollIndicator={false}
+          />
+        </Styled.View>
+      </Styled.View>
+    </Modal>
+  );
+};
+
+// Company Modal Component - Optimized to prevent TextInput focus loss
+const CompanyModal = ({
+  visible,
+  onClose,
+  selectedCompany,
+  onSelect,
+  companyData = [],
+  searchValue = '',
+  onSearchChange,
+}) => {
+  const {t} = useTranslation();
+  const searchInputRef = useRef(null);
+
+  // Filter companies based on search - memoized to prevent re-renders
+  const filteredCompanies = useMemo(() => {
+    return companyData.filter(company =>
+      company.label.toLowerCase().includes(searchValue.toLowerCase())
+    );
+  }, [companyData, searchValue]);
+
+  // Memoized render item for FlatList
+  const renderCompanyItem = useCallback(({item}) => (
+    <Styled.TouchableOpacity
+      className={`p-4 border-b border-gray-100 ${
+        selectedCompany?.value === item.value ? 'bg-[#66B600]' : 'bg-transparent'
+      }`}
+      onPress={() => onSelect(item)}>
+      <Styled.Text className={`${selectedCompany?.value === item.value ? 'text-white' : 'text-[#868782]'} text-base font-poppins`}>
+        {item.label}
+      </Styled.Text>
+    </Styled.TouchableOpacity>
+  ), [selectedCompany?.value, onSelect]);
+
+  // Memoized key extractor
+  const keyExtractor = useCallback((item) => String(item.value), []);
+
+  // Memoized empty component
+  const listEmptyComponent = useMemo(() => (
+    <Styled.View className="p-4">
+      <Styled.Text className="text-gray-500 text-base font-poppins text-center">
+        {searchValue ? t('noCompaniesFound') : t('loadingCompanies')}
+      </Styled.Text>
+    </Styled.View>
+  ), [searchValue, t]);
+
+  if (!visible) return null;
+
+  return (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}>
+      <Styled.View className="flex-1 justify-center items-center bg-black/50">
+        <Styled.View className="bg-white rounded-[16px] w-[90%] max-h-[400px]">
+          {/* Header */}
+          <Styled.View className="flex-row justify-between items-center p-4 border-b border-gray-200">
+            <Styled.Text className="text-[#184639] text-lg font-poppins-semibold">
+              {t('companyName')}
+            </Styled.Text>
+            <Styled.TouchableOpacity onPress={onClose}>
+              <Icons.X />
+            </Styled.TouchableOpacity>
+          </Styled.View>
+          
+          {/* Search Bar - TextInput has stable key to prevent remounting */}
+          <Styled.View key="search-container" className="p-4 border-b border-gray-200">
+            <TextInput
+              key="company-search-input"
+              ref={searchInputRef}
+              value={searchValue}
+              onChangeText={onSearchChange}
+              placeholder={t('searchCompany')}
+              placeholderTextColor="#868782"
+              style={{
+                borderWidth: 1,
+                borderColor: '#D1D5DB',
+                borderRadius: 8,
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                color: '#184639',
+                fontFamily: 'Poppins-Regular',
+                textAlign: 'left',
+              }}
+              autoCorrect={false}
+              autoCapitalize="none"
+            />
+          </Styled.View>
+          
+          {/* Company List */}
+          <FlatList
+            data={filteredCompanies}
+            keyExtractor={keyExtractor}
+            renderItem={renderCompanyItem}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={listEmptyComponent}
+            removeClippedSubviews={false}
+            keyboardShouldPersistTaps="handled"
+          />
+        </Styled.View>
+      </Styled.View>
+    </Modal>
+  );
+};
+
 const PhoneInput = ({handleInputChange, inputValue, error}) => {
   const [selectedPrefix, setSelectedPrefix] = useState({});
   const [phoneInputValue, setPhoneInputValue] = useState('');
   const [initialFormatDone, setInitialFormatDone] = useState(false);
+  const [prefixModalVisible, setPrefixModalVisible] = useState(false);
   const {t} = useTranslation();
 
   // İlk prefix'i default olarak seç
@@ -421,18 +577,38 @@ const PhoneInput = ({handleInputChange, inputValue, error}) => {
     }
   }, [inputValue]);
 
+  const handlePrefixSelect = (prefix) => {
+    setSelectedPrefix(prefix);
+    setPrefixModalVisible(false);
+    // Update phone number with new prefix
+    if (phoneInputValue) {
+      handleInputChange(
+        'phone_number',
+        `+994${prefix.value}${phoneInputValue}`,
+      );
+    }
+  };
+
   return (
     <Styled.View className="z-30 w-full mb-3">
       <Styled.View className="flex-row justify-between items-center">
-        <Dropdown
-          items={prefixData}
-          inputName="prefix"
-          selectedItem={selectedPrefix}
-          setSelectedItem={setSelectedPrefix}
-          width="w-[29%]"
-          placeholder={t('prefix')}
-          error={error ? 'ref' : null}
-        />
+        {/* Prefix Selection Button */}
+        <Styled.TouchableOpacity
+          onPress={() => setPrefixModalVisible(true)}
+          className={`w-[29%] h-[44px] ${
+            error ? 'border-[1px] border-red-400 bg-red-50' : 'bg-white'
+          } shadow shadow-zinc-300 rounded-[8px] justify-center pl-4`}>
+          <Styled.Text
+            className={`w-full ${
+              error ? 'text-[#FF3115]' : 'text-[#868782]'
+            } text-base text-left font-poppins`}>
+            {selectedPrefix.label || t('prefix')}
+          </Styled.Text>
+          <Styled.View className="absolute right-3 top-3">
+            <Icons.ArrowDown />
+          </Styled.View>
+        </Styled.TouchableOpacity>
+        
         <PhoneNumberInput
           inputName="phone_number"
           width="w-[69%]"
@@ -450,6 +626,14 @@ const PhoneInput = ({handleInputChange, inputValue, error}) => {
         }`}>
         {error}
       </Styled.Text>
+
+      {/* Prefix Modal */}
+      <PrefixModal
+        visible={prefixModalVisible}
+        onClose={() => setPrefixModalVisible(false)}
+        selectedPrefix={selectedPrefix}
+        onSelect={handlePrefixSelect}
+      />
     </Styled.View>
   );
 };
@@ -461,7 +645,10 @@ const CustomComponents = {
   Link: Link,
   Header: Header,
   PhoneInput: PhoneInput,
+  PhoneNumberInput: PhoneNumberInput,
   Dropdown: Dropdown,
+  PrefixModal: PrefixModal,
+  CompanyModal: CompanyModal,
 };
 
 export default CustomComponents;

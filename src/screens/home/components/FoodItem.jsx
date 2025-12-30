@@ -14,7 +14,7 @@ const FoodItem = ({item, showCount, source}) => {
     <Styled.TouchableOpacity
       onPress={() => {
         navigation.navigate('FoodDetails', {
-          item: item.meal ? item.meal : item,
+          item: item, // Tüm item objesini gönder (quantity meal_item seviyesinde)
           source: source,
         });
       }}
@@ -59,9 +59,9 @@ const FoodItem = ({item, showCount, source}) => {
         )}
 
         <Styled.View className="flex-row justify-between items-center">
-           {showCount && (item?.quantity || item?.meal?.quantity) && (         
+           {showCount && (item?.quantity != null || item?.meal?.quantity != null) && (         
                <Styled.Text className="text-[#FF8C03] text-xs font-poppins-semibold">
-                 {item?.quantity || item?.meal?.quantity} ədəd qaldı
+                 {item?.quantity ?? item?.meal?.quantity} ədəd qaldı
                </Styled.Text>
            )}
           <Styled.Text

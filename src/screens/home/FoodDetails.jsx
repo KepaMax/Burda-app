@@ -9,6 +9,7 @@ import {useTranslation} from 'react-i18next';
 import {useEffect} from 'react';
 import {fetchData} from '@utils/fetchData';
 import {API_URL} from '@env';
+import {useMMKVNumber} from 'react-native-mmkv';
 
 const FoodDetails = () => {
   const route = useRoute();
@@ -17,9 +18,14 @@ const FoodDetails = () => {
   const source = route.params?.source;
   const navigation = useNavigation();
   const {t} = useTranslation();
+  const [basketUpdateTrigger, setBasketUpdateTrigger] = useMMKVNumber('basketUpdateTrigger');
+
+  const triggerBasketUpdate = () => {
+    setBasketUpdateTrigger((basketUpdateTrigger || 0) + 1);
+  };
 
   const incrementBasketItemCount = async ({basketItemId, itemQuantity}) => {
-    await fetchData({
+    const result = await fetchData({
       url: `${API_URL}/basket-items/${basketItemId}/`,
       tokenRequired: true,
       method: 'PATCH',
@@ -27,15 +33,17 @@ const FoodDetails = () => {
         quantity: itemQuantity + 1,
       },
     });
+    return result?.success || false;
   };
 
   const setBasketItem = async mealId => {
-    await fetchData({
+    const result = await fetchData({
       url: `${API_URL}/basket-items/`,
       tokenRequired: true,
       method: 'POST',
       body: {meal: mealId},
     });
+    return result?.success || false;
   };
 
   const getBasketItems = async () => {
@@ -55,27 +63,37 @@ const FoodDetails = () => {
     if (basketItems.length) {
       const existingItem = basketItems.find(item => item.meal.id === mealId);
       if (existingItem) {
-        await incrementBasketItemCount({
+        return await incrementBasketItemCount({
           basketItemId: existingItem.id,
           itemQuantity: existingItem.quantity,
         });
       } else {
-        await setBasketItem(mealId);
+        return await setBasketItem(mealId);
       }
     } else {
-      await setBasketItem(mealId);
+      return await setBasketItem(mealId);
     }
   };
 
   const addToBasket = async () => {
     const mealId = item?.meal?.id ? item?.meal?.id : item.id;
     const basketItems = await getBasketItems();
-    await checkForExistingItem(mealId, basketItems);
-    navigation.navigate('Home', {
-      screen: 'Basket',
-    });
+    const success = await checkForExistingItem(mealId, basketItems);
+    
+    if (success) {
+      triggerBasketUpdate();
+      navigation.navigate('Home', {
+        screen: 'Basket',
+      });
+    } else {
+      // Hata durumunda kullanıcıya bilgi ver
+      alert(t('somethingWentWrong'));
+    }
   };
 
+  // Quantity kontrolü - meal_item seviyesinde veya meal seviyesinde olabilir
+  const quantity = item?.quantity != null ? item.quantity : (item?.meal?.quantity != null ? item.meal.quantity : null);
+  const isOutOfStock = quantity === 0;
   return (
     <Styled.ScrollView>
       <CustomComponents.Header
@@ -93,7 +111,7 @@ const FoodDetails = () => {
           }}
         />
       </Styled.View>
-      <FoodProperties item={item} navigationScreen={navigationScreen} />
+      <FoodProperties item={item.meal ? item.meal : item} navigationScreen={navigationScreen} />
 
       <Ingredients
         ingredients={
@@ -103,17 +121,22 @@ const FoodDetails = () => {
 
       <CustomComponents.Button
         title={
-          navigationScreen === 'Basket' 
-            ? t('returnToBasket') 
-            : source === 'WeeklyMenu' 
-              ? t('addToBasket') 
-              : t('goBack')
+          isOutOfStock
+            ? t('outOfStock')
+            : navigationScreen === 'Basket' 
+              ? t('returnToBasket') 
+              : source === 'WeeklyMenu' 
+                ? t('addToBasket') 
+                : t('goBack')
         }
         padding="py-3"
         margin="mx-5 my-5"
         borderRadius="rounded-[24px]"
-        bgColor="bg-[#66B600]"
+        bgColor={isOutOfStock ? 'bg-gray-400' : 'bg-[#66B600]'}
         buttonAction={() => {
+          if (isOutOfStock) {
+            return; // Disabled durumda hiçbir şey yapma
+          }
           if (navigationScreen === 'Basket') {
             navigation.goBack();
           } else if (source === 'WeeklyMenu') {
@@ -122,6 +145,7 @@ const FoodDetails = () => {
             navigation.goBack();
           }
         }}
+        disabled={isOutOfStock}
       />
     </Styled.ScrollView>
   );

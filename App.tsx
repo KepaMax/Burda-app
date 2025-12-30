@@ -7,6 +7,7 @@
 
 // @ts-nocheck
 import 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Navigation from '@stacks/Navigation';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {useEffect, useState} from 'react';
@@ -111,7 +112,7 @@ function App(): JSX.Element {
   }, [initBasket]);
 
   return (
-    <>
+    <GestureHandlerRootView style={{flex: 1}}>
       <SafeAreaProvider style={{flex: 1, backgroundColor: '#F8F8F8'}}>
         {/* <StatusBar backgroundColor="#7658F2" barStyle="light-content" /> */}
         <SafeAreaView style={{flex: 1}} edges={['right', 'top', 'left']}>
@@ -120,7 +121,7 @@ function App(): JSX.Element {
       </SafeAreaProvider>
 
       <SuperAlert customStyle={alertStyle} />
-    </>
+    </GestureHandlerRootView>
   );
 }
 

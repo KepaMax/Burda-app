@@ -149,6 +149,9 @@ const SignIn = () => {
           <Styled.Text className="text-[#184639] text-[32px] font-poppins-semibold mb-4">
             {t('signIn')}
           </Styled.Text>
+          <Styled.Text className="text-[#66B600]  text-sm font-poppins-medium mb-4">
+            {t('enterYourPhoneNumber')}
+          </Styled.Text>
 
 
           <CustomComponents.PhoneInput

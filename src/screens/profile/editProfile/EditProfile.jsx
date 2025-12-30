@@ -8,6 +8,7 @@ import {API_URL} from '@env';
 const EditProfile = () => {
   const [formData, setFormData] = useState({});
   const [userId, setUserId] = useState(null);
+  const [loadError, setLoadError] = useState(false);
   const {t} = useTranslation();
 
   const handleInputChange = (name, value) => {
@@ -16,6 +17,7 @@ const EditProfile = () => {
   };
 
   const getUserData = async () => {
+    setLoadError(false);
     const result = await fetchData({
       url: `${API_URL}/users/me/`,
       tokenRequired: true,
@@ -30,6 +32,8 @@ const EditProfile = () => {
         first_name: result.data.first_name,
         last_name: result.data.last_name,
       });
+    } else {
+      setLoadError(true);
     }
   };
 
@@ -67,6 +71,20 @@ const EditProfile = () => {
     <>
       <CustomComponents.Header bgColor="bg-white" title={t('editProfile')} />
       <Styled.ScrollView className="bg-[#F8F8F8] h-full px-4 pt-5">
+        {loadError && (
+          <Styled.View className="bg-red-50 p-4 rounded-lg mb-4">
+            <Styled.Text className="text-red-600 text-center font-poppins-medium mb-2">
+              {t('somethingWentWrong')}
+            </Styled.Text>
+            <Styled.TouchableOpacity
+              onPress={getUserData}
+              className="bg-red-500 py-2 px-4 rounded-lg self-center">
+              <Styled.Text className="text-white font-poppins-medium">
+                {t('resend')}
+              </Styled.Text>
+            </Styled.TouchableOpacity>
+          </Styled.View>
+        )}
         <Styled.View className="flex-row justify-between">
           <CustomComponents.Input
             inputName="first_name"

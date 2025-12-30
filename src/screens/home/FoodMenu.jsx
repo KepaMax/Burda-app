@@ -60,6 +60,14 @@ const FoodMenu = () => {
       tokenRequired: true,
     });
     console.log(result);
+
+    if (!result?.success || !result?.data?.results?.[0]?.meal_items) {
+      // API hatası veya boş veri
+      setMenu([]);
+      setCategories([]);
+      return;
+    }
+
     const restructureData = items => {
       return items.reduce((acc, item) => {
         const categoryName = item.meal.category.name;
@@ -87,8 +95,7 @@ const FoodMenu = () => {
     };
 
     const structuredData = restructureData(result.data.results[0].meal_items);
-
-    result?.success && setMenu(structuredData);
+    setMenu(structuredData);
   };
 
   const onScrollToIndexFailed = info => {

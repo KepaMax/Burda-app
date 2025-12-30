@@ -122,6 +122,7 @@
   "enterOtpCode": "Hesabınızı təsdiqləmək üçün mobil nömrənizə göndərilən 6 rəqəmli kodu daxil edin.",
   "continue": "Davam et",
   "enterPhoneNumber": "Hesabınıza daxil olmaq üçün əlaqə nömrənizi və e-poçt ünvanınızı daxil edin. Nömrənizə birdəfəlik istifadə üçün 6 rəqəmli kod göndəriləcək",
+  "enterYourPhoneNumber": "*Qeydiyyatdan keçən zaman istifadə etdiyiniz əlaqə nömrənizi daxil edin.",
   "frequentlyAskedQuestions": "Tez-tez verilən suallar",
   "phoneNumberRequired": "Telefon nömrəsini daxil edin",
   "somethingWentWrong": "Xəta baş verdi, yenidən cəhd edin",
@@ -153,5 +154,7 @@
   "error": "Xəta",
   "biometricLogin": "Barmaq izi ilə giriş",
   "disableBiometric": "Barmaq izi ilə girişi deaktiv et",
-  "disableBiometricMessage": "Barmaq izi ilə girişi deaktiv etmək istəyirsiniz?"
+  "disableBiometricMessage": "Barmaq izi ilə girişi deaktiv etmək istəyirsiniz?",
+  "processing": "Emal olunur...",
+  "outOfStock": "Məhsul bitib"
 }

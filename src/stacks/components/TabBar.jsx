@@ -1,12 +1,9 @@
 import Icons from '@icons/icons.js';
 import { Dimensions, Platform } from 'react-native';
 import Styled from '@common/StyledComponents';
-import ViewBasket from '@common/ViewBasket';
-import { useMMKVBoolean } from 'react-native-mmkv';
 
 const TabBar = ({ state, descriptors, navigation }) => {
   const width = Dimensions.get('screen').width;
-  const [basketVisible, setBasketVisible] = useMMKVBoolean('basketVisible');
 
   return (
     <Styled.View
@@ -33,13 +30,6 @@ const TabBar = ({ state, descriptors, navigation }) => {
         }
 
         const onPress = () => {
-          // Control ViewBasket visibility based on the selected tab
-          if (label === 'Scan') {
-            setBasketVisible(false);
-          } else {
-            setBasketVisible(true);
-          }
-
           // Reset to the initial screen of the current tab's stack
           navigation.reset({
             index: 0,
@@ -82,8 +72,6 @@ const TabBar = ({ state, descriptors, navigation }) => {
           </Styled.TouchableOpacity>
         );
       })}
-
-      {Boolean(basketVisible) && <ViewBasket navigation={navigation} />}
     </Styled.View>
   );
 };

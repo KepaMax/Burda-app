@@ -9,6 +9,8 @@ import Styled from '@common/StyledComponents';
 import {fetchData} from '@utils/fetchData';
 import {useMMKVBoolean, useMMKVNumber} from 'react-native-mmkv';
 import {API_URL} from '@env';
+import PaymentSuccessModal from '../profile/paymentMethods/components/PaymentSuccessModal';
+import PaymentFailureModal from '../profile/paymentMethods/components/PaymentFailureModal';
 
 const Basket = () => {
   const isFocused = useIsFocused();
@@ -19,6 +21,14 @@ const Basket = () => {
   const [totalPrice, setTotalPrice] = useState(null);
   const navigation = useNavigation();
   const [basketVisible, setBasketVisible] = useMMKVBoolean('basketVisible');
+  const [basketUpdateTrigger, setBasketUpdateTrigger] = useMMKVNumber('basketUpdateTrigger');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showFailureModal, setShowFailureModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const triggerBasketUpdate = () => {
+    setBasketUpdateTrigger((basketUpdateTrigger || 0) + 1);
+  };
 
   const getBasketItems = async () => {
     const result = await fetchData({
@@ -75,7 +85,10 @@ const Basket = () => {
       },
     });
 
-    getBasketItems();
+    if (result?.success) {
+      getBasketItems();
+      triggerBasketUpdate();
+    }
   };
 
   const decrementBasketItemCount = async ({basketItemId, itemQuantity}) => {
@@ -88,7 +101,10 @@ const Basket = () => {
       },
     });
 
-    getBasketItems();
+    if (result?.success) {
+      getBasketItems();
+      triggerBasketUpdate();
+    }
   };
 
   const removeBasketItem = async ({basketItemId}) => {
@@ -98,40 +114,101 @@ const Basket = () => {
       method: 'DELETE',
     });
 
-    getBasketItems();
+    if (result?.success) {
+      getBasketItems();
+      triggerBasketUpdate();
+    }
+  };
+
+  const getPaymentMethods = async () => {
+    const result = await fetchData({
+      url: `${API_URL}/payment-methods/`,
+      tokenRequired: true,
+    });
+    return result?.success ? result.data.results : [];
+  };
+
+  const payWithCard = async (orderId, paymentMethodId) => {
+    const result = await fetchData({
+      url: `${API_URL}/orders/${orderId}/pay/`,
+      method: 'POST',
+      tokenRequired: true,
+      body: {
+        payment_method: paymentMethodId,
+      },
+    });
+
+    if (result?.success) {
+      if (result.data.status === 'APPROVED') {
+        setShowSuccessModal(true);
+        triggerBasketUpdate();
+      } else {
+        setShowFailureModal(true);
+      }
+    } else {
+      setShowFailureModal(true);
+    }
   };
 
   const createOrder = async () => {
     if (basketItems?.length) {
+      setIsProcessing(true);
+      
       const transformedData = basketItems.map(item => ({
         quantity: item.quantity,
         meal: item.meal.id,
       }));
-
-      const menuDate = new Date().toISOString().split('T')[0];
 
       const result = await fetchData({
         url: `${API_URL}/orders/`,
         method: 'POST',
         tokenRequired: true,
         body: {
-          menu_date: menuDate,
           items: transformedData,
         },
       });
 
       if (result?.success) {
-        navigation.navigate('Profile', {
-          screen: 'PaymentMethods',
-          params: {pay: true, orderId: result.data.id},
-          navigationScreen: 'Basket',
-        });
+        const orderId = result.data.id;
+        
+        // Kartları kontrol et
+        const cards = await getPaymentMethods();
+        
+        if (cards.length === 1) {
+          // Tek kart varsa direkt ödeme yap
+          await payWithCard(orderId, cards[0].id);
+        } else {
+          // Birden fazla kart veya hiç kart yoksa kart seçme ekranına git
+          navigation.navigate('Profile', {
+            screen: 'PaymentMethods',
+            params: {pay: true, orderId: orderId},
+            navigationScreen: 'Basket',
+          });
+        }
       } else {
-        alert(result.data[0].detail);
+        alert(result?.data?.[0]?.detail || t('somethingWentWrong'));
       }
+      
+      setIsProcessing(false);
     } else {
       alert('Basket is empty');
     }
+  };
+
+  const handleSuccessClose = () => {
+    setShowSuccessModal(false);
+    navigation.navigate('HomePage');
+  };
+
+  const handleSuccessGoToTransactions = () => {
+    setShowSuccessModal(false);
+    navigation.navigate('Profile', {
+      screen: 'PaymentHistory',
+    });
+  };
+
+  const handleFailureClose = () => {
+    setShowFailureModal(false);
   };
 
   useEffect(() => {
@@ -203,15 +280,29 @@ const Basket = () => {
         </Styled.View>
 
         <CustomComponents.Button
-          title={t('proceedToPayment')}
-          bgColor="bg-[#66B600]"
+          title={isProcessing ? t('processing') : t('proceedToPayment')}
+          bgColor={isProcessing ? 'bg-gray-400' : 'bg-[#66B600]'}
           borderRadius="rounded-[24px]"
           padding="p-[10px]"
           textColor="text-white"
           textSize="text-lg"
           buttonAction={createOrder}
+          disabled={isProcessing}
         />
       </Styled.View>
+
+      {/* Payment Success Modal */}
+      <PaymentSuccessModal
+        visible={showSuccessModal}
+        onClose={handleSuccessClose}
+        onGoToTransactions={handleSuccessGoToTransactions}
+      />
+
+      {/* Payment Failure Modal */}
+      <PaymentFailureModal
+        visible={showFailureModal}
+        onClose={handleFailureClose}
+      />
     </>
   );
 };

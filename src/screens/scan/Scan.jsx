@@ -9,7 +9,7 @@ import {
 } from 'react-native-vision-camera';
 import {codeTypes} from '@utils/staticData';
 import {useTranslation} from 'react-i18next';
-import {useMMKVBoolean} from 'react-native-mmkv';
+import {useMMKVBoolean, useMMKVNumber} from 'react-native-mmkv';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {fetchData} from '@utils/fetchData';
 import Icons from '@icons/icons';
@@ -24,6 +24,11 @@ const Scan = () => {
   const isFocused = useIsFocused();
   const {t} = useTranslation();
   const [basketVisible, setBasketVisible] = useMMKVBoolean('basketVisible');
+  const [basketUpdateTrigger, setBasketUpdateTrigger] = useMMKVNumber('basketUpdateTrigger');
+
+  const triggerBasketUpdate = () => {
+    setBasketUpdateTrigger((basketUpdateTrigger || 0) + 1);
+  };
 
   const device = useCameraDevice('back', {
     physicalDevices: [
@@ -46,7 +51,7 @@ const Scan = () => {
   });
 
   const incrementBasketItemCount = async ({basketItemId, itemQuantity}) => {
-    await fetchData({
+    const result = await fetchData({
       url: `${API_URL}/basket-items/${basketItemId}/`,
       tokenRequired: true,
       method: 'PATCH',
@@ -54,17 +59,17 @@ const Scan = () => {
         quantity: itemQuantity + 1,
       },
     });
+    return result?.success || false;
   };
 
   const setBasketItem = async mealId => {
-    await fetchData({
+    const result = await fetchData({
       url: `${API_URL}/basket-items/`,
       tokenRequired: true,
       method: 'POST',
       body: {meal: mealId},
     });
-
-    getBasketItems();
+    return result?.success || false;
   };
 
   const getBasketItems = async () => {
@@ -82,18 +87,17 @@ const Scan = () => {
 
   const checkForExistingItem = async (mealId, basketItems) => {
     if (basketItems.length) {
-      basketItems.map(item => {
-        if (item.meal.id === mealId) {
-          incrementBasketItemCount({
-            basketItemId: item.id,
-            itemQuantity: item.quantity,
-          });
-        } else {
-          setBasketItem(mealId);
-        }
-      });
+      const existingItem = basketItems.find(item => item.meal.id === mealId);
+      if (existingItem) {
+        return await incrementBasketItemCount({
+          basketItemId: existingItem.id,
+          itemQuantity: existingItem.quantity,
+        });
+      } else {
+        return await setBasketItem(mealId);
+      }
     } else {
-      setBasketItem(mealId);
+      return await setBasketItem(mealId);
     }
   };
 
@@ -105,23 +109,33 @@ const Scan = () => {
 
     if (result?.success) {
       const data = await getBasketItems();
+      let success = false;
+      
       if (data.length !== 0) {
-        await checkForExistingItem(result.data.id, data);
+        success = await checkForExistingItem(result.data.id, data);
       } else {
-        await setBasketItem(result.data.id);
+        success = await setBasketItem(result.data.id);
       }
-      navigation.navigate('Home', {
-        screen: 'Basket',
-      });
-    }
-    else{
-      console.log(result.data[0].detail);
+      
+      if (success) {
+        triggerBasketUpdate();
+        navigation.navigate('Home', {
+          screen: 'Basket',
+        });
+      } else {
+        alert(
+          t("error"),
+          t('somethingWentWrong'),
+          {
+            textConfirm: 'Ok'
+          },
+        );
+      }
+    } else {
+      console.log(result?.data?.[0]?.detail);
       alert(
         t("error"),
-        `${result.data[0].detail}`,
-        // t('attributes.error'),
-        // t('attributes.galleryErrorMessage'),
-
+        result?.data?.[0]?.detail || t('somethingWentWrong'),
         {
           textConfirm: 'Ok'
         },

@@ -90,7 +90,7 @@ const TodaysMenu = () => {
           {selectedLanguage === 'en' && 'From '}
           <Styled.Text className="font-poppins-bold">
             {' '}
-            {category.starting_price} AZN
+            {category.starting_price} ₼
           </Styled.Text>
           {selectedLanguage === undefined  && '-dən başlayaraq'}
           {selectedLanguage === "az"  && '-dən başlayaraq'}

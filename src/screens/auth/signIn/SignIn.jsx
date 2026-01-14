@@ -14,6 +14,10 @@ const SignIn = () => {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useMMKVBoolean('loading');
   const [errors, setErrors] = useState({});
+  const [userNotFoundCount, setUserNotFoundCount] = useState(0);
+  const [useEmail, setUseEmail] = useState(false);
+  const [requiresPhoneSetup, setRequiresPhoneSetup] = useState(false);
+  const [userIdForSetup, setUserIdForSetup] = useState(null);
   const navigation = useNavigation();
 
   const handleInputChange = (name, value) => {
@@ -21,10 +25,74 @@ const SignIn = () => {
   };
 
   const handleLogin = async () => {
-    // Telefon numarası doğrulama
-    if (!formData.phone_number || formData.phone_number.length < 13) {
-      setErrors({phone_number: t('phoneNumberRequired')});
+    // Eğer requiresPhoneSetup modundaysa, setup-phone API'sini çağır
+    if (requiresPhoneSetup) {
+      // Telefon numarası doğrulama
+      if (!formData.phone_number || formData.phone_number.length < 13) {
+        setErrors({phone_number: t('phoneNumberRequired')});
+        return;
+      }
+
+      // Email doğrulama
+      if (!formData.email) {
+        setErrors({email: t('fieldRequired')});
+        return;
+      }
+
+      // Email format doğrulama
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        setErrors({email: t('invalidEmail')});
+        return;
+      }
+      
+      setErrors({});
+      setLoading(true);
+
+      try {
+        // Setup phone API call
+        const result = await fetchData({
+          url: `${API_URL}/setup-phone/`,
+          method: 'POST',
+          body: {
+            phone_number: formData.phone_number,
+            email: formData.email,
+          },
+        });
+
+        console.log('Setup Phone result:', result);
+
+        if (result?.success) {
+          // Başarılı olursa OTP sayfasına yönlendir
+          navigation.navigate('OtpLogin', {
+            phone: formData.phone_number,
+            userId: userIdForSetup,
+          });
+        } else {
+          // API hatası
+          setErrors({general: result?.data?.detail || t('somethingWentWrong')});
+        }
+      } catch (error) {
+        console.error('Setup Phone error:', error);
+        setErrors({general: t('somethingWentWrong')});
+      } finally {
+        setLoading(false);
+      }
       return;
+    }
+
+    // Normal login flow
+    // Input doğrulama
+    if (useEmail) {
+      if (!formData.email || !formData.email.includes('@')) {
+        setErrors({email: t('invalidEmail')});
+        return;
+      }
+    } else {
+      if (!formData.phone_number || formData.phone_number.length < 13) {
+        setErrors({phone_number: t('phoneNumberRequired')});
+        return;
+      }
     }
     
     setErrors({});
@@ -32,24 +100,29 @@ const SignIn = () => {
 
     try {
       // Check user status API call
+      const identifier = useEmail ? formData.email : formData.phone_number;
       const result = await fetchData({
         url: `${API_URL}/check-status/`,
         method: 'POST',
         body: {
-          identifier: formData.phone_number,
+          identifier: identifier,
         },
       });
       console.log('Check status result:', result);
 
       if (result?.success) {
+        // Başarılı olduğunda sayacı sıfırla
+        setUserNotFoundCount(0);
+        
         const {user_exists, is_pin_set, user_id, first_name, requires_phone_setup} = result.data;
 
-        // Eğer requires_phone_setup true ise SetupPhone sayfasına yönlendir
+        // Eğer requires_phone_setup true ise phone ve email inputlarını göster
         if (requires_phone_setup) {
-          navigation.navigate('SetupPhone', {
-            phone: formData.phone_number,
-            userId: user_id,
-          });
+          setRequiresPhoneSetup(true);
+          setUserIdForSetup(user_id);
+          // Eğer email ile giriş yapıldıysa, email zaten formData'da
+          // Eğer phone ile giriş yapıldıysa, phone zaten formData'da
+          setLoading(false);
           return;
         }
 
@@ -57,33 +130,55 @@ const SignIn = () => {
           if (is_pin_set) {
             // Kullanıcı var ve PIN set edilmiş -> PinLogin sayfasına yönlendir
             navigation.navigate('PinLogin', {
-              phone: formData.phone_number,
+              phone: useEmail ? formData.email : formData.phone_number,
               userId: user_id,
               firstName: first_name,
             });
           } else {
             // Kullanıcı var ama PIN set edilmemiş -> OTP sayfasına yönlendir
             navigation.navigate('OtpLogin', {
-              phone: formData.phone_number,
+              phone: useEmail ? formData.email : formData.phone_number,
               userId: user_id,
             });
           }
         } else {
           // Kullanıcı yok -> Kayıt sayfasına yönlendir
           navigation.navigate('SignUp', {
-            phone: formData.phone_number,
+            phone: useEmail ? formData.email : formData.phone_number,
           });
         }
       } else {
-        // API hatası
-        setErrors({phone_number: t('somethingWentWrong')});
+        // API hatası kontrolü
+        const errorDetail = result?.data?.[0]?.detail || '';
+        const isUserNotFound = errorDetail.toLowerCase().includes('user not found');
+        
+        if (isUserNotFound && !useEmail) {
+          const newCount = userNotFoundCount + 1;
+          setUserNotFoundCount(newCount);
+          
+          if (newCount >= 3) {
+            // 3 denemede mesaj göster
+            setErrors({phone_number: t('forgotPhoneNumber')});
+          } else {
+            setErrors({phone_number: t('invalidPhoneNumber')});
+          }
+        } else {
+          setErrors(useEmail ? {email: t('invalidEmail')} : {phone_number: t('invalidPhoneNumber')});
+        }
       }
     } catch (error) {
       console.error('Login error:', error);
-      setErrors({phone_number: t('somethingWentWrong')});
+      setErrors(useEmail ? {email: t('invalidEmail')} : {phone_number: t('invalidPhoneNumber')});
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleForgotPhoneClick = () => {
+    setUseEmail(true);
+    setUserNotFoundCount(0);
+    setErrors({});
+    setFormData(prev => ({...prev, phone_number: ''}));
   };
 
   const renderLogo = () => {
@@ -150,15 +245,63 @@ const SignIn = () => {
             {t('signIn')}
           </Styled.Text>
           <Styled.Text className="text-[#66B600]  text-sm font-poppins-medium mb-4">
-            {t('enterYourPhoneNumber')}
+            {requiresPhoneSetup 
+              ? useEmail ? t('enterEmail') : t('enterPhoneNumber') 
+              : useEmail 
+                ? t('enterYourEmail') 
+                : t('enterYourPhoneNumber')}
           </Styled.Text>
 
-
-          <CustomComponents.PhoneInput
-            handleInputChange={handleInputChange}
-            inputValue={formData?.phone_number}
-            error={errors?.phone_number}
-          />
+          {requiresPhoneSetup ? (
+            <>
+              <CustomComponents.PhoneInput
+                handleInputChange={handleInputChange}
+                inputValue={formData?.phone_number}
+                error={errors?.phone_number}
+              />
+              <CustomComponents.Input
+                inputName="email"
+                inputValue={formData?.email}
+                handleInputChange={handleInputChange}
+                placeholder={t('cooperativEmail')}
+                error={errors?.email}
+                keyboardType="email-address"
+                margin="mt-4"
+              />
+              {errors?.general && (
+                <Styled.Text className="text-red-500 text-center text-sm font-poppins-medium mt-2">
+                  {errors.general}
+                </Styled.Text>
+              )}
+            </>
+          ) : useEmail ? (
+            <CustomComponents.Input
+              inputName="email"
+              inputValue={formData?.email}
+              handleInputChange={handleInputChange}
+              placeholder={t('email')}
+              error={errors?.email}
+              keyboardType="email-address"
+            />
+          ) : (
+            <>
+              <CustomComponents.PhoneInput
+                handleInputChange={handleInputChange}
+                inputValue={formData?.phone_number}
+                error={errors?.phone_number}
+              />
+              {errors?.phone_number === t('forgotPhoneNumber') && (
+                <CustomComponents.Link
+                  title={t('forgotPhoneNumber')}
+                  textColor="text-[#FF8C03]"
+                  textSize="text-sm"
+                  fontWeight="font-poppins-medium"
+                  margin="mt-2"
+                  linkAction={handleForgotPhoneClick}
+                />
+              )}
+            </>
+          )}
         </Styled.View>
 
         {/* Alt kısım - Buton ve Link */}
@@ -172,16 +315,18 @@ const SignIn = () => {
             buttonAction={handleLogin}
           />
 
-          <CustomComponents.Link
-            textAlign="text-center"
-            title={t('noAccount')}
-            margin="mb-4 mt-6"
-            textColor="text-[#184639]"
-            fontWeight="font-regular"
-            linkAction={() => {
-              navigation.navigate('SignUp');
-            }}
-          />
+          {!requiresPhoneSetup && (
+            <CustomComponents.Link
+              textAlign="text-center"
+              title={t('noAccount')}
+              margin="mb-4 mt-6"
+              textColor="text-[#184639]"
+              fontWeight="font-regular"
+              linkAction={() => {
+                navigation.navigate('SignUp');
+              }}
+            />
+          )}
         </Styled.View>
       </Styled.View>
     </KeyboardAwareScrollView>

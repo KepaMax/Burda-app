@@ -66,9 +66,34 @@ const FoodProperties = ({item, navigationScreen}) => {
             </Styled.View>
           </Styled.View>
 
-          <Styled.Text className="text-base text-[#42C2E5] font-poppins-bold">
-            {item?.meal?.price ? item?.meal?.price : item.price} AZN
-          </Styled.Text>
+          <Styled.View className="flex-row items-center gap-2">
+            {(() => {
+              const mealData = item?.meal ? item.meal : item;
+              const hasDiscount = mealData?.has_discount;
+              
+              if (hasDiscount) {
+                return (
+                  <>
+                    <Styled.Text
+                      className="text-base text-[#BF4E30] font-poppins-bold"
+                      style={{textDecorationLine: 'line-through', textDecorationColor: '#C53030'}}>
+                      {mealData?.original_price} ₼
+                    </Styled.Text>
+                    
+                    <Styled.Text className="text-base text-[#42C2E5] font-poppins-bold">
+                      {mealData?.discounted_price} ₼
+                    </Styled.Text>
+                  </>
+                );
+              } else {
+                return (
+                  <Styled.Text className="text-base text-[#42C2E5] font-poppins-bold">
+                    {mealData?.price} ₼
+                  </Styled.Text>
+                );
+              }
+            })()}
+          </Styled.View>
         </Styled.View>
       </Styled.View>
     </>

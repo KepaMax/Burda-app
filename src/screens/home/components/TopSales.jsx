@@ -53,11 +53,36 @@ const TopSales = () => {
             className="text-xs mt-2 font-poppins text-black">
             {item.description}
           </Styled.Text>
-          <Styled.Text
-            numberOfLines={2}
-            className="text-sm text-right mt-3 text-[#42C2E5] font-poppins-bold">
-            {item.price} AZN
-          </Styled.Text>
+          <Styled.View className="flex-row items-center gap-2 justify-end mt-3">
+            {(() => {
+              const hasDiscount = item?.has_discount;
+              
+              if (hasDiscount) {
+                return (
+                  <>
+                    <Styled.Text
+                      className="font-poppins-bold text-md text-[#BF4E30]"
+                      style={{textDecorationLine: 'line-through', textDecorationColor: '#C53030'}}>
+                      {item?.original_price} ₼
+                    </Styled.Text>
+                    <Styled.Text
+                      className="font-poppins-bold text-sm text-[#42C2E5]"
+                      numberOfLines={2}>
+                      {item?.discounted_price} ₼
+                    </Styled.Text>
+                  </>
+                );
+              } else {
+                return (
+                  <Styled.Text
+                    className="font-poppins-bold text-sm text-[#42C2E5]"
+                    numberOfLines={2}>
+                    {item?.price} ₼
+                  </Styled.Text>
+                );
+              }
+            })()}
+          </Styled.View>
         </Styled.View>
       </Styled.TouchableOpacity>
     );

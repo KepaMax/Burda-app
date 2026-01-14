@@ -265,7 +265,7 @@ const OtpLogin = () => {
               onPress={handleResendOtp}
               disabled={!canResend}
               style={{opacity: canResend ? 1 : 0.5}}>
-              <Styled.Text className="text-[#66B600] text-sm font-poppins-medium">
+                <Styled.Text className="text-[#66B600] text-sm font-poppins-medium">
                 {canResend ? t('resend') : `${countdown} ${t('seconds')}`}
               </Styled.Text>
             </Styled.TouchableOpacity>

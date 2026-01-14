@@ -267,131 +267,119 @@ const PinLogin = () => {
           console.log('Set PIN result:', result);
 
           if (result?.success) {
-            // PIN başarıyla set edildi, otomatik login yap
-            // Login API call
-            if (userId) {
-              const loginResult = await fetchData({
-                url: `${API_URL}/login/`,
-                method: 'POST',
-                body: {
-                  user_id: userId,
-                  pin_code: pin,
-                },
-              });
-
-              if (loginResult?.success) {
-                // Token'ları kaydet
-                const {access, refresh, user} = loginResult.data;
+            // PIN başarıyla set edildi
+            // set-pin API'si zaten token'ları döndürüyor, tekrar login API'sine çağrı yapmaya gerek yok
+            const {access, refresh, user} = result.data;
+            
+            if (access && refresh && user) {
+              // Token'ları kaydet
                 
-                storage.set('accessToken', access);
-                storage.set('refreshToken', refresh);
-                storage.set('user', JSON.stringify(user));
-                storage.set('isLoggedIn', true);
-                storage.set('isPinVerified', true);
-                setIsPinVerified(true); // Hook'u manuel olarak güncelle - Navigation.jsx otomatik olarak TabStack'e geçecek
+              storage.set('accessToken', access);
+              storage.set('refreshToken', refresh);
+              storage.set('user', JSON.stringify(user));
+              storage.set('isLoggedIn', true);
+              storage.set('isPinVerified', true);
+              setIsPinVerified(true); // Hook'u manuel olarak güncelle - Navigation.jsx otomatik olarak TabStack'e geçecek
 
-                // Parmak izi ile giriş isteyip istemediğini sor
-                Alert.alert(
-                  t('enableBiometric'),
-                  t('enableBiometricMessage'),
-                  [
-                    {
-                      text: t('no'),
-                      style: 'cancel',
-                      onPress: () => {
-                        // Parmak izi istemedi, direkt ana sayfaya yönlendir
-                        navigation.reset({
-                          index: 0,
-                          routes: [{name: 'TabStack'}],
-                        });
-                      },
+              // Parmak izi ile giriş isteyip istemediğini sor
+              Alert.alert(
+                t('enableBiometric'),
+                t('enableBiometricMessage'),
+                [
+                  {
+                    text: t('no'),
+                    style: 'cancel',
+                    onPress: () => {
+                      // Parmak izi istemedi, direkt ana sayfaya yönlendir
+                      navigation.reset({
+                        index: 0,
+                        routes: [{name: 'TabStack'}],
+                      });
                     },
-                    {
-                      text: t('yes'),
-                      onPress: async () => {
-                        // Parmak izi istedi, önce cihazın parmak izi modalını aç
-                        try {
-                          if (ReactNativeBiometrics) {
-                            const rnBiometrics = new ReactNativeBiometrics({
-                              allowDeviceCredentials: true,
-                            });
+                  },
+                  {
+                    text: t('yes'),
+                    onPress: async () => {
+                      // Parmak izi istedi, önce cihazın parmak izi modalını aç
+                      try {
+                        if (ReactNativeBiometrics) {
+                          const rnBiometrics = new ReactNativeBiometrics({
+                            allowDeviceCredentials: true,
+                          });
 
-                            // Önce sensor'ın mevcut olup olmadığını kontrol et
-                            const resultObject = await rnBiometrics.isSensorAvailable();
+                          // Önce sensor'ın mevcut olup olmadığını kontrol et
+                          const resultObject = await rnBiometrics.isSensorAvailable();
+                          
+                          if (resultObject && resultObject.available) {
+                            // Biyometrik kimlik doğrulama mevcut, kullanıcıdan parmak izi iste
+                            const promptResult = await rnBiometrics.simplePrompt({
+                              promptMessage: t('biometricPrompt'),
+                              cancelButtonText: t('cancel'),
+                            });
                             
-                            if (resultObject && resultObject.available) {
-                              // Biyometrik kimlik doğrulama mevcut, kullanıcıdan parmak izi iste
-                              const promptResult = await rnBiometrics.simplePrompt({
-                                promptMessage: t('biometricPrompt'),
-                                cancelButtonText: t('cancel'),
+                            console.log('Biometric prompt result:', promptResult);
+                            
+                            if (promptResult?.success) {
+                              // Parmak izi doğrulandı, biyometrik kimlik doğrulamayı etkinleştir
+                              storage.set('biometricEnabled', true);
+                              storage.set('biometricPin', pin);
+                              
+                              // Ana sayfaya yönlendir
+                              navigation.reset({
+                                index: 0,
+                                routes: [{name: 'TabStack'}],
                               });
-                              
-                              console.log('Biometric prompt result:', promptResult);
-                              
-                              if (promptResult?.success) {
-                                // Parmak izi doğrulandı, biyometrik kimlik doğrulamayı etkinleştir
-                                storage.set('biometricEnabled', true);
-                                storage.set('biometricPin', pin);
-                                
-                                // Ana sayfaya yönlendir
-                                navigation.reset({
-                                  index: 0,
-                                  routes: [{name: 'TabStack'}],
-                                });
-                              } else {
-                                // Kullanıcı parmak izi doğrulamasını iptal etti veya başarısız oldu
-                                // Biyometrik kimlik doğrulamayı etkinleştirmeden ana sayfaya yönlendir
-                                navigation.reset({
-                                  index: 0,
-                                  routes: [{name: 'TabStack'}],
-                                });
-                              }
                             } else {
-                              // Biyometrik kimlik doğrulama mevcut değil
-                              Alert.alert(
-                                t('error'),
-                                t('biometricNotAvailable'),
-                                [
-                                  {
-                                    text: t('confirm'),
-                                    onPress: () => {
-                                      navigation.reset({
-                                        index: 0,
-                                        routes: [{name: 'TabStack'}],
-                                      });
-                                    },
-                                  },
-                                ],
-                              );
+                              // Kullanıcı parmak izi doğrulamasını iptal etti veya başarısız oldu
+                              // Biyometrik kimlik doğrulamayı etkinleştirmeden ana sayfaya yönlendir
+                              navigation.reset({
+                                index: 0,
+                                routes: [{name: 'TabStack'}],
+                              });
                             }
                           } else {
-                            // ReactNativeBiometrics mevcut değil
-                            navigation.reset({
-                              index: 0,
-                              routes: [{name: 'TabStack'}],
-                            });
+                            // Biyometrik kimlik doğrulama mevcut değil
+                            Alert.alert(
+                              t('error'),
+                              t('biometricNotAvailable'),
+                              [
+                                {
+                                  text: t('confirm'),
+                                  onPress: () => {
+                                    navigation.reset({
+                                      index: 0,
+                                      routes: [{name: 'TabStack'}],
+                                    });
+                                  },
+                                },
+                              ],
+                            );
                           }
-                        } catch (error) {
-                          console.error('Biometric setup error:', error);
-                          // Hata durumunda da ana sayfaya yönlendir
+                        } else {
+                          // ReactNativeBiometrics mevcut değil
                           navigation.reset({
                             index: 0,
                             routes: [{name: 'TabStack'}],
                           });
                         }
-                      },
+                      } catch (error) {
+                        console.error('Biometric setup error:', error);
+                        // Hata durumunda da ana sayfaya yönlendir
+                        navigation.reset({
+                          index: 0,
+                          routes: [{name: 'TabStack'}],
+                        });
+                      }
                     },
-                  ],
-                );
-              } else {
-                setError(t('somethingWentWrong'));
-                setPin('');
-                setConfirmPin('');
-                setIsConfirmingPin(false);
-              }
+                  },
+                ],
+              );
             } else {
-              // PIN set edildi ama userId yok, SignIn'e yönlendir
-              navigation.navigate('SignIn');
+              // set-pin API'sinden token'lar gelmedi, hata göster
+              setError(t('somethingWentWrong'));
+              setPin('');
+              setConfirmPin('');
+              setIsConfirmingPin(false);
             }
           } else {
             // Hata durumu

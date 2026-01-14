@@ -21,10 +21,12 @@ import NoInternet from '@common/NoInternet';
 import {useMMKVString} from 'react-native-mmkv';
 import {useMMKVBoolean} from 'react-native-mmkv';
 import {fetchData} from '@utils/fetchData';
-import {API_URL} from '@env';
+import {BASE_URL} from '@env';
 import {useIsFocused} from '@react-navigation/native';
 import Styled from './src/common/StyledComponents';
 import Receipt from './src/screens/profile/paymentMethods/Receipt';
+import ForceUpdateModal from './src/common/ForceUpdateModal';
+import {APP_VERSION, getPlatform} from './src/utils/appVersion';
 
 function App(): JSX.Element {
   const [selectedLanguage, setSelectedLanguage] =
@@ -35,6 +37,13 @@ function App(): JSX.Element {
   const [buttonType, setButtonType] = useMMKVString('buttonType');
   const [basketVisible, setBasketVisible] = useMMKVBoolean('basketVisible');
   const [initBasket, setInitBakset] = useMMKVBoolean('initBasket');
+  const [showForceUpdate, setShowForceUpdate] = useState(false);
+  const [updateInfo, setUpdateInfo] = useState({
+    latestVersion: null,
+    releaseNotes: '',
+    deepLink: null,
+    isForceUpdate: true,
+  });
   const getBasketItems = async () => {
     const result = await fetchData({
       url: `${API_URL}/basket-items/`,
@@ -88,9 +97,40 @@ function App(): JSX.Element {
     },
   };
 
+  const checkAppVersion = async () => {
+    try {
+      const result = await fetchData({
+        url: `${BASE_URL}/check-app-version/`,
+        method: 'POST',
+        tokenRequired: false,
+        body: {
+          version: APP_VERSION,
+          platform: getPlatform(),
+        },
+      });
+      console.log(result);
+      if (result?.success && result?.data) {
+        const {has_update, is_force_update, deep_link, latest_version, release_notes} = result.data;
+        
+        if (has_update) {
+          setUpdateInfo({
+            latestVersion: latest_version,
+            releaseNotes: release_notes || '',
+            deepLink: deep_link,
+            isForceUpdate: is_force_update,
+          });
+          setShowForceUpdate(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking app version:', error);
+    }
+  };
+
   useEffect(() => {
     storage.set('buttonType', '#FF8C03');
     refreshTokens();
+    checkAppVersion();
 
     const unsubscribe = NetInfo.addEventListener(state => {
       setConnected(state.isConnected);
@@ -121,6 +161,16 @@ function App(): JSX.Element {
       </SafeAreaProvider>
 
       <SuperAlert customStyle={alertStyle} />
+      
+      {/* Force Update Modal */}
+      <ForceUpdateModal
+        visible={showForceUpdate}
+        latestVersion={updateInfo.latestVersion}
+        releaseNotes={updateInfo.releaseNotes}
+        deepLink={updateInfo.deepLink}
+        isForceUpdate={updateInfo.isForceUpdate}
+        onClose={() => setShowForceUpdate(false)}
+      />
     </GestureHandlerRootView>
   );
 }

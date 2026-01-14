@@ -64,11 +64,37 @@ const FoodItem = ({item, showCount, source}) => {
                  {item?.quantity ?? item?.meal?.quantity} ədəd qaldı
                </Styled.Text>
            )}
-          <Styled.Text
-            className="font-poppins-bold text-base text-[#42C2E5]"
-            numberOfLines={2}>
-            {item.meal ? item?.meal?.price : item.price} AZN
-          </Styled.Text>
+          <Styled.View className="flex-row items-center gap-2">
+            {(() => {
+              const mealData = item.meal ? item.meal : item;
+              const hasDiscount = mealData?.has_discount;
+              
+              if (hasDiscount) {
+                return (
+                  <Styled.View>
+                    <Styled.Text
+                      className="font-poppins-bold text-md text-[#BF4E30]"
+                      style={{textDecorationLine: 'line-through', textDecorationColor: '#C53030'}}>
+                      {mealData?.original_price} ₼
+                    </Styled.Text>
+                    <Styled.Text
+                      className="font-poppins-bold text-base text-[#42C2E5]"
+                      numberOfLines={2}>
+                      {mealData?.discounted_price} ₼
+                    </Styled.Text>
+                  </Styled.View>
+                );
+              } else {
+                return (
+                  <Styled.Text
+                    className="font-poppins-bold text-base text-[#42C2E5]"
+                    numberOfLines={2}>
+                    {mealData?.price} ₼
+                  </Styled.Text>
+                );
+              }
+            })()}
+          </Styled.View>
         </Styled.View>
       </Styled.View>
     </Styled.TouchableOpacity>

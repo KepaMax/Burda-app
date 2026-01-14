@@ -17,16 +17,20 @@ const SetupPhone = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  // Route params'tan telefon numarasını al
+  // Route params'tan telefon numarası ve email'i al
   const phoneFromParams = route.params?.phone;
+  const emailFromParams = route.params?.email;
   const userId = route.params?.userId;
 
-  // Eğer route params'tan telefon numarası geldiyse, formData'ya ekle
+  // Eğer route params'tan telefon numarası veya email geldiyse, formData'ya ekle
   useEffect(() => {
     if (phoneFromParams) {
       setFormData(prevState => ({...prevState, phone_number: phoneFromParams}));
     }
-  }, [phoneFromParams]);
+    if (emailFromParams) {
+      setFormData(prevState => ({...prevState, email: emailFromParams}));
+    }
+  }, [phoneFromParams, emailFromParams]);
 
   const handleInputChange = (name, value) => {
     setFormData(prevState => ({...prevState, [name]: value}));

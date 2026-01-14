@@ -6,7 +6,7 @@ import PaymentHistory from './PaymentHistory';
 import PaymentSuccessModal from './components/PaymentSuccessModal';
 import PaymentFailureModal from './components/PaymentFailureModal';
 import {fetchData} from '@utils/fetchData';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useCallback} from 'react';
 import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
 import {FlatList} from 'react-native';
 import Icons from '@icons/icons';
@@ -16,6 +16,7 @@ import {
   deletePaymentMethod,
 } from './utils/paymentMethodUtils';
 import {API_URL} from '@env';
+import {useMMKVNumber} from 'react-native-mmkv';
 
 const PaymentMethods = () => {
   const pay = useRoute().params?.pay;
@@ -25,31 +26,47 @@ const PaymentMethods = () => {
   const [selectPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showFailureModal, setShowFailureModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const navigation = useNavigation();
   const {t} = useTranslation();
+  const [basketUpdateTrigger, setBasketUpdateTrigger] = useMMKVNumber('basketUpdateTrigger');
 
-  const handlePayment = async () => {
-    if (selectPaymentMethod) {
+  const triggerBasketUpdate = useCallback(() => {
+    setBasketUpdateTrigger((basketUpdateTrigger || 0) + 1);
+  }, [basketUpdateTrigger, setBasketUpdateTrigger]);
+
+  const handlePayment = useCallback(async (paymentMethodId = null) => {
+    // Eğer paymentMethodId bir object ise (event objesi olabilir), ignore et
+    const methodId = (typeof paymentMethodId === 'number' ? paymentMethodId : null) || selectPaymentMethod;
+    
+    if (methodId && orderId) {
+      setIsProcessing(true);
       const result = await fetchData({
         url: `${API_URL}/orders/${orderId}/pay/`,
         method: 'POST',
         tokenRequired: true,
         body: {
-          payment_method: selectPaymentMethod,
+          payment_method: methodId,
         },
       });
-
+      console.log(result);
       if (result.success) {
         if (result.data.status === 'APPROVED') {
           setShowSuccessModal(true);
+          triggerBasketUpdate();
         } else {
           setShowFailureModal(true);
         }
+      } else {
+        setShowFailureModal(true);
       }
+      setIsProcessing(false);
     } else {
-      alert(t('choosePaymentMethod'));
+      if (!methodId) {
+        alert(t('choosePaymentMethod'));
+      }
     }
-  };
+  }, [selectPaymentMethod, orderId, t, triggerBasketUpdate]);
 
   const handleSuccessClose = () => {
     setShowSuccessModal(false);
@@ -103,8 +120,17 @@ const PaymentMethods = () => {
   };
 
   useEffect(() => {
-    isFocused && getPaymentMethods({setPaymentMethods});
+    if (isFocused) {
+      getPaymentMethods({setPaymentMethods});
+    }
   }, [isFocused]);
+
+  // Otomatik kart seçimi: Eğer pay true ise ve 1 kart varsa otomatik olarak seç
+  useEffect(() => {
+    if (pay && paymentMethods.length === 1 && !selectPaymentMethod) {
+      setSelectedPaymentMethod(paymentMethods[0].id);
+    }
+  }, [pay, paymentMethods, selectPaymentMethod]);
 
   return (
     <>
@@ -130,7 +156,7 @@ const PaymentMethods = () => {
         )}
 
         <CustomComponents.Link
-          title={`+ ${t('addNewCard')}`}
+          title={!paymentMethods.length ? `+ ${t('addCard')}` : `+ ${t('addNewCard')}`}
           textColor="text-[#FF8C03]"
           textSize="text-[20px]"
           fontWeight="font-poppins-semibold"
@@ -142,14 +168,15 @@ const PaymentMethods = () => {
 
 
 
-        {pay && (
+        {pay && paymentMethods.length > 0 && selectPaymentMethod && (
           <CustomComponents.Button
-            title={t('confirmPayment')}
-            bgColor="bg-[#66B600]"
+            title={isProcessing ? t('processing') : t('confirmPayment')}
+            bgColor={isProcessing ? 'bg-gray-400' : 'bg-[#66B600]'}
             padding="py-3"
             margin="mx-5 mt-10"
             borderRadius="rounded-[24px]"
-            buttonAction={handlePayment}
+            buttonAction={() => handlePayment()}
+            disabled={isProcessing}
           />
         )}
       </Styled.ScrollView>

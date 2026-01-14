@@ -51,7 +51,7 @@ const EditProfile = () => {
         body: {...formData, company: formData.company.id},
       });
 
-      result?.success && alert('User successfully updated');
+      result?.success && alert(t('userSuccessfullyUpdated'));
     }
     const result = await fetchData({
       url: `${API_URL}/users/${userId}/`,
@@ -60,7 +60,7 @@ const EditProfile = () => {
       body: {...formData, company: formData.company},
     });
 
-    result?.success && alert('User successfully updated');
+    result?.success && alert(t('userSuccessfullyUpdated'));
   };
 
   useEffect(() => {

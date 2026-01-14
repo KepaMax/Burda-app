@@ -232,11 +232,14 @@ const ForgotPin = () => {
           {
             text: t('confirm'),
             onPress: () => {
-              // Eğer Profile sayfasından geldiyse ProfileScreen'e, değilse SignIn'e yönlendir
+              // Eğer Profile sayfasından geldiyse doğrudan home page'e yönlendir
               if (fromProfile) {
                 navigation.navigate('ProfileScreen');
               } else {
-                navigation.navigate('SignIn');
+                // PinLogin sayfasına yönlendir ve telefon numarasını geçir
+                navigation.navigate('PinLogin', {
+                  phone: formData.phone_number,
+                });
               }
             },
           },

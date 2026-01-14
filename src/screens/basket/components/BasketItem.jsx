@@ -100,11 +100,37 @@ const BasketItem = ({item, incrementBasketItemCount, decrementBasketItemCount, r
           )}
         </Styled.View>
 
-        <Styled.Text
-          className="font-poppins-semibold text-base text-[#42C2E5]"
-          numberOfLines={2}>
-          {item.meal.price} AZN
-        </Styled.Text>
+        <Styled.View className="flex-row items-center gap-2">
+          {(() => {
+            const mealData = item.meal;
+            const hasDiscount = mealData?.has_discount;
+            
+            if (hasDiscount) {
+              return (
+                <>
+                  <Styled.Text
+                    className="font-poppins-semibold text-md text-[#BF4E30]"
+                    style={{textDecorationLine: 'line-through', textDecorationColor: '#C53030'}}>
+                    {mealData?.original_price} ₼
+                  </Styled.Text>
+                  <Styled.Text
+                    className="font-poppins-semibold text-base text-[#42C2E5]"
+                    numberOfLines={2}>
+                    {mealData?.discounted_price} ₼
+                  </Styled.Text>
+                </>
+              );
+            } else {
+              return (
+                <Styled.Text
+                  className="font-poppins-semibold text-base text-[#42C2E5]"
+                  numberOfLines={2}>
+                  {mealData?.price} ₼
+                </Styled.Text>
+              );
+            }
+          })()}
+        </Styled.View>
       </Styled.View>
     </Styled.TouchableOpacity>
   );

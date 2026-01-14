@@ -2,54 +2,48 @@
   "faq": [
     {
       "id": 1,
-      "question": "Lotereyada necə iştirak edə bilərəm?",
-      "answer": "Lotereyada iştirak etmək üçün tətbiqi yükləmək, qeydiyyatdan keçmək, daha sonra isə çekləri tətbiqdə oxutmaq kifayətdir."
+      "question": "Öncədən növbəti günlər üçün sifariş edə bilərəm?",
+      "answer": "Bəli. Tətbiqdən növbəti günlər üçün öncədən sifariş etmək mümkündür. Bunun üçün cari gün saat 15:00-dək növbəti gün sifarişini tamamlamaq lazımdır."
     },
     {
       "id": 2,
-      "question": "Lotereya şansı nədir və harada yerləşir?",
-      "answer": "Lotereya şansı, çekləri tətbiqdə oxutduqdan sonra əldə etdiyiniz xüsusi şanslardır. Şanslarınızı profil bölməsində görə bilərsiniz."
+      "question": "Cari gün üçün öncədən tətbiqdən ödəniş edib məhsulu sonra götürə bilərəm?",
+      "answer": "Xeyr. Məhsulların alışı mexanizmi məhsul soyuducudan götürülən zaman yerində ödənişə əsaslanır. Məhsul üçün öncədən və ya sonradan ödəniş mümkün deyil."
     },
     {
       "id": 3,
-      "question": "Hansı çeklər keçərlidir?",
-      "answer": "BURDA mağazalarından alınan və barkodlu bütün çeklər keçərlidir. Çekin tarixi və məbləği aydın görünməlidir."
+      "question": "Cari gün məhsulu soyuducudan götürüb ödənişini sonra edə bilərəm?",
+      "answer": "Xeyr. Məhsulların alışı mexanizmi məhsul soyuducudan götürülən zaman yerində ödənişə əsaslanır. Sonradan ödəniş məqbul deyil."
     },
     {
       "id": 4,
-      "question": "Aylıq və ya həftəlik neçə şans əldə edə bilərəm?",
-      "answer": "Hər çek oxutduqdan sonra bir şans əldə edirsiniz. Aylıq və ya həftəlik limit yoxdur, nə qədər çek oxutsanız, o qədər şans əldə edərsiniz."
+      "question": "Kart məlumatlarımı əlavə etmək mütləqdir?",
+      "answer": "Bəli. Məhsulların satışı e-com vasitəsilə həyata keçirildiyi üçün kart əlavə edilməsi vacibdir. Kartı bir dəfə yaddaşda saxlayaraq növbəti alışları 1 kliklə edə bilərsiniz."
     },
     {
       "id": 5,
-      "question": "Oxutduqdan sonra çeki ata bilərəmmi?",
-      "answer": "Bəli, çeki oxutduqdan və təsdiqləndikdən sonra atabilərsiniz. Lakin qalib olduğunuz halda uduşu təsdiqləmək üçün çekin orijinalını təqdim etməlisiniz."
+      "question": "Abunəlik formasında həftəlik və aylıq sifariş etmək mümkündür?",
+      "answer": "Yaxın zamanlarda həftəlik və aylıq abunəlik formatında məhsulların əldə edilməsi mümkün olacaq."
     },
     {
       "id": 6,
-      "question": "Qaliblər necə seçiləcək?",
-      "answer": "Qaliblər təsadüfi seçim yolu ilə müəyyən ediləcək. Hər lotereya üçün müəyyən edilmiş tarixdə canlı yayım vasitəsilə qaliblər açıqlanacaq."
+      "question": "Məhsul üçün öncədən ödəniş etmişəm, lakin soyuducuda məhsulu tapa bilmirəm. Nə etməliyəm?",
+      "answer": "Bu cür halların qarşısını almaq üçün ödənişi yalnız məhsulu həm soyuducuda, həm də tətbiqdə gördükdən sonra etmək tövsiyə olunur. Belə vəziyyətlərdə dəstək xidməti ödənişin qaytarılması və ya alternativ məhsul seçimi ilə kömək edəcək."
     },
     {
       "id": 7,
-      "question": "Qalib olduğumu necə biləcəyəm?",
-      "answer": "Qalib olduğunuz halda tətbiq vasitəsilə və ya telefon nömrənizə SMS göndəriləcək. Həmçinin profil bölməsində uduşlarınızı görə bilərsiniz."
+      "question": "Soyuducudan məhsulu götürmüşəm, lakin ödənişi etməmişəm. Sonradan səbətdə tapa bilmirəm. Nə etməliyəm?",
+      "answer": "Ödənişi yalnız məhsulu həm soyuducuda, həm də tətbiqdə gördükdən sonra yerində etmək lazımdır. Bu cür hallarda dəstək xidməti ödənişin qaytarılması və ya alternativ məhsul seçimi ilə kömək edəcək."
     },
     {
       "id": 8,
-      "question": "Uduşlarımı necə əldə edə bilərəm?",
-      "answer": "Uduşlarınızı əldə etmək üçün tətbiqdəki uduşlar bölməsinə daxil olun və təlimatları izləyin. Uduşun məbləğinə görə müxtəlif ödəniş metodları təklif olunur."
+      "question": "Soyuducuda gördüyüm məhsulu səbətə əlavə etmək istəyirəm, lakin tətbiqdə bitmiş göstərilir. Nə etməliyəm?",
+      "answer": "Bu cür hallarda müştəri xidmətimizlə əlaqə saxlayın. Müvafiq dəstək göstərilərək məhsul menyuya əlavə ediləcək və alışı tamamlaya biləcəksiniz."
     },
     {
       "id": 9,
-      "question": "Şanslarım niyə silinib?",
-      "answer": "Şanslarınız lotereya çəkiləndən sonra avtomatik olaraq sıfırlanır. Yeni lotereya üçün yenidən çek oxutmağa başlaya bilərsiniz."
-    },
-    {
-      "id": 10,
-      "question": "Canlı yayımı harada izləyə bilərəm?",
-      "answer": "Lotereya çəkilməsi zamanı canlı yayım tətbiqin ana səhifəsində və ya profil bölməsindəki xüsusi bölmədə izləyə bilərsiniz."
+      "question": "Kart əlavə edərkən 1 qəpik tutuldu, lakin ödəniş alınmadı. Nə etməliyəm?",
+      "answer": "Kart əlavə edilərkən tutulan 1 qəpik kartın yaddaşda saxlanılması üçündür və bank tərəfindən geri qaytarılır. Məhsul ödənişi üçün əlavə etdiyiniz kartı seçib ödənişi təsdiqləməyiniz kifayətdir."
     }
   ]
 }
-

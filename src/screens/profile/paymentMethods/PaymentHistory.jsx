@@ -35,7 +35,7 @@ const PaymentHistory = () => {
               {item.company.name}
             </Styled.Text>
             <Styled.Text className="text-[#42C2E5] font-poppins-medium text-lg">
-              {item.transaction.amount} AZN
+              {item.transaction.amount} ₼
             </Styled.Text>
           </Styled.View>
         </Styled.View>

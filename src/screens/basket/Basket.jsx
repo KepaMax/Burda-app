@@ -167,24 +167,15 @@ const Basket = () => {
           items: transformedData,
         },
       });
-
       if (result?.success) {
         const orderId = result.data.id;
         
-        // Kartları kontrol et
-        const cards = await getPaymentMethods();
-        
-        if (cards.length === 1) {
-          // Tek kart varsa direkt ödeme yap
-          await payWithCard(orderId, cards[0].id);
-        } else {
-          // Birden fazla kart veya hiç kart yoksa kart seçme ekranına git
-          navigation.navigate('Profile', {
-            screen: 'PaymentMethods',
-            params: {pay: true, orderId: orderId},
-            navigationScreen: 'Basket',
-          });
-        }
+        // Her zaman kart seçme ekranına git
+        navigation.navigate('Profile', {
+          screen: 'PaymentMethods',
+          params: {pay: true, orderId: orderId},
+          navigationScreen: 'Basket',
+        });
       } else {
         alert(result?.data?.[0]?.detail || t('somethingWentWrong'));
       }
@@ -224,7 +215,6 @@ const Basket = () => {
       <CustomComponents.Header
         title={t('basket')}
         bgColor="bg-white"
-        navigationScreen="HomePage"
       />
 
       <Styled.View className="flex-1">
@@ -275,7 +265,7 @@ const Basket = () => {
             {t('totalPrice')}:
           </Styled.Text>
           <Styled.Text className="text-[#42C2E5] text-[20px] font-poppins-semibold">
-            {totalPrice} AZN
+            {totalPrice} ₼
           </Styled.Text>
         </Styled.View>
 

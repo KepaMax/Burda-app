@@ -122,11 +122,11 @@ const BasketItem = ({item, incrementBasketItemCount, decrementBasketItemCount, r
               );
             } else {
               return (
-                <Styled.Text
-                  className="font-poppins-semibold text-base text-[#42C2E5]"
-                  numberOfLines={2}>
+        <Styled.Text
+          className="font-poppins-semibold text-base text-[#42C2E5]"
+          numberOfLines={2}>
                   {mealData?.price} ₼
-                </Styled.Text>
+        </Styled.Text>
               );
             }
           })()}

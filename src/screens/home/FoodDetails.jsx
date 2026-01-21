@@ -16,6 +16,7 @@ const FoodDetails = () => {
   const item = route.params?.item;
   const navigationScreen = route.params?.navigationScreen;
   const source = route.params?.source;
+  const menuDateFromParams = route.params?.menuDate;
   const navigation = useNavigation();
   const {t} = useTranslation();
   const [basketUpdateTrigger, setBasketUpdateTrigger] = useMMKVNumber('basketUpdateTrigger');
@@ -36,13 +37,18 @@ const FoodDetails = () => {
     return result?.success || false;
   };
 
-  const setBasketItem = async mealId => {
+  const setBasketItem = async (mealId, menuDate) => {
     const result = await fetchData({
       url: `${API_URL}/basket-items/`,
       tokenRequired: true,
       method: 'POST',
-      body: {meal: mealId},
+      body: {
+        meal: mealId,
+        quantity: 1,
+        menu_date: menuDate,
+      },
     });
+    console.log(result);
     return result?.success || false;
   };
 
@@ -59,7 +65,7 @@ const FoodDetails = () => {
     }
   };
 
-  const checkForExistingItem = async (mealId, basketItems) => {
+  const checkForExistingItem = async (mealId, basketItems, menuDate) => {
     if (basketItems.length) {
       const existingItem = basketItems.find(item => item.meal.id === mealId);
       if (existingItem) {
@@ -68,17 +74,19 @@ const FoodDetails = () => {
           itemQuantity: existingItem.quantity,
         });
       } else {
-        return await setBasketItem(mealId);
+        return await setBasketItem(mealId, menuDate);
       }
     } else {
-      return await setBasketItem(mealId);
+      return await setBasketItem(mealId, menuDate);
     }
   };
 
   const addToBasket = async () => {
     const mealId = item?.meal?.id ? item?.meal?.id : item.id;
+    // menu_date'i önce params'tan, sonra item'dan al, yoksa bugünün tarihini kullan
+    const menuDate = menuDateFromParams || item?.menu_date || item?.meal?.menu_date || new Date().toISOString().split('T')[0];
     const basketItems = await getBasketItems();
-    const success = await checkForExistingItem(mealId, basketItems);
+    const success = await checkForExistingItem(mealId, basketItems, menuDate);
     
     if (success) {
       triggerBasketUpdate();
@@ -124,10 +132,10 @@ const FoodDetails = () => {
           isOutOfStock
             ? t('outOfStock')
             : navigationScreen === 'Basket' 
-              ? t('returnToBasket') 
-              : source === 'WeeklyMenu' 
-                ? t('addToBasket') 
-                : t('goBack')
+            ? t('returnToBasket') 
+            : source === 'WeeklyMenu' 
+              ? t('addToBasket') 
+              : t('goBack')
         }
         padding="py-3"
         margin="mx-5 my-5"

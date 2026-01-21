@@ -43,11 +43,17 @@ const Basket = () => {
   };
 
   const setBasketItem = async () => {
+    // Bugünün tarihini YYYY-MM-DD formatında al
+    const menuDate = new Date().toISOString().split('T')[0];
     await fetchData({
       url: `${API_URL}/basket-items/`,
       tokenRequired: true,
       method: 'POST',
-      body: {meal: mealId},
+      body: {
+        meal: mealId,
+        quantity: 1,
+        menu_date: menuDate,
+      },
     });
 
     getBasketItems();
@@ -154,30 +160,58 @@ const Basket = () => {
     if (basketItems?.length) {
       setIsProcessing(true);
       
-      const transformedData = basketItems.map(item => ({
-        quantity: item.quantity,
-        meal: item.meal.id,
-      }));
+      // Basket items'ı menu_date'e göre grupla
+      const groupedByDate = basketItems.reduce((acc, item) => {
+        const date = item.menu_date || 'no_date';
+        if (!acc[date]) {
+          acc[date] = [];
+        }
+        acc[date].push(item);
+        return acc;
+      }, {});
 
-      const result = await fetchData({
-        url: `${API_URL}/orders/`,
-        method: 'POST',
-        tokenRequired: true,
-        body: {
-          items: transformedData,
-        },
+      // Her menu_date için ayrı order oluştur
+      const orderPromises = Object.entries(groupedByDate).map(async ([menuDate, items]) => {
+        const transformedData = items.map(item => ({
+          quantity: item.quantity,
+          meal: item.meal.id,
+        }));
+
+        return await fetchData({
+          url: `${API_URL}/orders/`,
+          method: 'POST',
+          tokenRequired: true,
+          body: {
+            items: transformedData,
+            ...(menuDate !== 'no_date' && { menu_date: menuDate }),
+          },
+        });
       });
-      if (result?.success) {
-        const orderId = result.data.id;
+
+      // Tüm orderları bekle
+      const results = await Promise.all(orderPromises);
+      
+      // Tüm orderlar başarılı mı kontrol et
+      const allSuccessful = results.every(result => result?.success);
+      
+      if (allSuccessful) {
+        // İlk order'ın ID'sini al (ödeme için)
+        const firstOrderId = results[0].data.id;
         
         // Her zaman kart seçme ekranına git
         navigation.navigate('Profile', {
           screen: 'PaymentMethods',
-          params: {pay: true, orderId: orderId},
+          params: {
+            pay: true, 
+            orderId: firstOrderId,
+            multipleOrders: results.length > 1,
+            orderIds: results.map(r => r.data.id),
+          },
           navigationScreen: 'Basket',
         });
       } else {
-        alert(result?.data?.[0]?.detail || t('somethingWentWrong'));
+        const failedResult = results.find(r => !r?.success);
+        alert(failedResult?.data?.[0]?.detail || t('somethingWentWrong'));
       }
       
       setIsProcessing(false);

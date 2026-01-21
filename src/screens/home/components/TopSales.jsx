@@ -74,11 +74,11 @@ const TopSales = () => {
                 );
               } else {
                 return (
-                  <Styled.Text
+          <Styled.Text
                     className="font-poppins-bold text-sm text-[#42C2E5]"
                     numberOfLines={2}>
                     {item?.price} ₼
-                  </Styled.Text>
+          </Styled.Text>
                 );
               }
             })()}

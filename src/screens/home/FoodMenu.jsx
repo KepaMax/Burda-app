@@ -176,7 +176,7 @@ const FoodMenu = () => {
           stickySectionHeadersEnabled={false}
           sections={filteredMenu}
           onScrollToIndexFailed={onScrollToIndexFailed}
-          renderItem={({item}) => <FoodItem showCount={true} item={item} source="WeeklyMenu" />}
+          renderItem={({item}) => <FoodItem showCount={true} item={item} source="WeeklyMenu" menuDate={fullDate} />}
           renderSectionHeader={({section: {title}}) => (
             <Styled.Text className="text-[#414141] font-poppins-medium text-[20px] mx-5 mt-5 mb-3">
               {title}

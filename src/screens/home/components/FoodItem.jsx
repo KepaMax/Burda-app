@@ -5,7 +5,7 @@ import {Dimensions} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import InfoPill from './InfoPill';
 
-const FoodItem = ({item, showCount, source}) => {
+const FoodItem = ({item, showCount, source, menuDate}) => {
   const navigation = useNavigation();
   const {t} = useTranslation();
   const screenWidth = Dimensions.get('screen').width;
@@ -16,6 +16,7 @@ const FoodItem = ({item, showCount, source}) => {
         navigation.navigate('FoodDetails', {
           item: item, // Tüm item objesini gönder (quantity meal_item seviyesinde)
           source: source,
+          menuDate: menuDate, // Menünün ait olduğu tarih
         });
       }}
       style={{width: screenWidth - 40}}

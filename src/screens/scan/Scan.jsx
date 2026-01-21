@@ -63,11 +63,17 @@ const Scan = () => {
   };
 
   const setBasketItem = async mealId => {
+    // Bugünün tarihini YYYY-MM-DD formatında al
+    const menuDate = new Date().toISOString().split('T')[0];
     const result = await fetchData({
       url: `${API_URL}/basket-items/`,
       tokenRequired: true,
       method: 'POST',
-      body: {meal: mealId},
+      body: {
+        meal: mealId,
+        quantity: 1,
+        menu_date: menuDate,
+      },
     });
     return result?.success || false;
   };
@@ -92,10 +98,10 @@ const Scan = () => {
         return await incrementBasketItemCount({
           basketItemId: existingItem.id,
           itemQuantity: existingItem.quantity,
-        });
-      } else {
+          });
+        } else {
         return await setBasketItem(mealId);
-      }
+        }
     } else {
       return await setBasketItem(mealId);
     }
@@ -119,9 +125,9 @@ const Scan = () => {
       
       if (success) {
         triggerBasketUpdate();
-        navigation.navigate('Home', {
-          screen: 'Basket',
-        });
+      navigation.navigate('Home', {
+        screen: 'Basket',
+      });
       } else {
         alert(
           t("error"),

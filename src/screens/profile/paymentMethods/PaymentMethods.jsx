@@ -63,7 +63,7 @@ const PaymentMethods = () => {
       setIsProcessing(false);
     } else {
       if (!methodId) {
-        alert(t('choosePaymentMethod'));
+      alert(t('choosePaymentMethod'));
       }
     }
   }, [selectPaymentMethod, orderId, t, triggerBasketUpdate]);

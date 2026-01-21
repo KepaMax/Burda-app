@@ -35,24 +35,21 @@ const Navigation = () => {
   const linking = {
     prefixes: ['burda://'],
     config: {
-      initialRouteName: 'HomePage',
       screens: {
-        HomePage: {
-          path: 'home',
-        },
-        ResetPasswordSignIn: {
-          path: 'reset/:uuid/:token',
-        },
-        Account: {
-          path: 'profile/',
+        Home: {
           screens: {
-            SubscriptionStack: {
-              path: 'subscription/',
-              screens: {
-                PaymentSuccess: 'success/',
-                PaymentFail: 'fail/',
-              },
-            },
+            HomePage: 'home',
+          },
+        },
+        Profile: {
+          screens: {
+            PaymentMethods: 'payment-methods',
+          },
+        },
+        Subscription: {
+          screens: {
+            PaymentSuccess: 'subscription/success',
+            PaymentFail: 'subscription/fail',
           },
         },
       },

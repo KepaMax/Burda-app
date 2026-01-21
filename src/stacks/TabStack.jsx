@@ -20,42 +20,42 @@ const TabStack = () => {
 
   return (
     <View style={{flex: 1, position: 'relative'}}>
-      <Tab.Navigator
-        screenOptions={{headerShown: false}}
+    <Tab.Navigator
+      screenOptions={{headerShown: false}}
         screenListeners={{
           state: (e) => {
             const routeName = e.data.state.routes[e.data.state.index].name;
             setCurrentTab(routeName);
           },
         }}
-        tabBar={({state, descriptors, navigation}) => (
-          <TabBar
-            state={state}
-            descriptors={descriptors}
-            navigation={navigation}
-          />
-        )}>
-        <Tab.Screen
-          name="Home"
-          component={HomeStack}
-          options={{tabBarLabel: t('home')}}
+      tabBar={({state, descriptors, navigation}) => (
+        <TabBar
+          state={state}
+          descriptors={descriptors}
+          navigation={navigation}
         />
-        <Tab.Screen
-          name="Subscription"
-          component={SubscriptionStack}
-          options={{tabBarLabel: t('subscription')}}
-        />
-        <Tab.Screen
-          name="Scan"
-          component={ScanStack}
-          options={{tabBarLabel: t('scan')}}
-        />
-        <Tab.Screen
-          name="Profile"
-          component={ProfileStack}
-          options={{tabBarLabel: t('menu')}}
-        />
-      </Tab.Navigator>
+      )}>
+      <Tab.Screen
+        name="Home"
+        component={HomeStack}
+        options={{tabBarLabel: t('home')}}
+      />
+      <Tab.Screen
+        name="Subscription"
+        component={SubscriptionStack}
+        options={{tabBarLabel: t('subscription')}}
+      />
+      <Tab.Screen
+        name="Scan"
+        component={ScanStack}
+        options={{tabBarLabel: t('scan')}}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileStack}
+        options={{tabBarLabel: t('menu')}}
+      />
+    </Tab.Navigator>
       {currentTab === 'Home' && <ViewBasket navigation={navigation} />}
     </View>
   );

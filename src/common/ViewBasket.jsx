@@ -96,9 +96,9 @@ const ViewBasket = ({navigation}) => {
   });
 
   const handlePress = () => {
-    navigation.navigate('Home', {
-      screen: 'Basket',
-    });
+            navigation.navigate('Home', {
+              screen: 'Basket',
+            });
   };
 
   if (itemCount === 0) {
@@ -138,7 +138,7 @@ const ViewBasket = ({navigation}) => {
               className="absolute -top-1 -right-1 bg-[#66B600] rounded-full min-w-[20px] h-[20px] items-center justify-center px-1">
               <Styled.Text className="text-white text-xs font-poppins-bold">
                 {itemCount}
-              </Styled.Text>
+        </Styled.Text>
             </Styled.View>
           )}
         </Styled.TouchableOpacity>

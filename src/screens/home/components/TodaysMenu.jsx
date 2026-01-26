@@ -61,11 +61,10 @@ const TodaysMenu = () => {
     const originalPrice = item.meal.original_price;
     const discountedPrice = item.meal.discounted_price;
     
-    // İndirim yüzdesini hesapla
-    const discountPercent = hasDiscount && originalPrice && discountedPrice
-      ? Math.round(((originalPrice - discountedPrice) / originalPrice) * 100)
+    // İndirim yüzdesini API response'dan al (max_discount)
+    const discountPercent = hasDiscount 
+      ? (item.meal?.category?.max_discount ?? 0)
       : 0;
-
     return (
       <Styled.TouchableOpacity
         onPress={() => {

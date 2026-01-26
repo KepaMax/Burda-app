@@ -81,13 +81,33 @@ const FoodDetails = () => {
     }
   };
 
+  const normalizeDate = (dateString) => {
+    if (!dateString) return null;
+    
+    // Eğer zaten YYYY-MM-DD formatındaysa direkt döndür
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      return dateString;
+    }
+    
+    // Date objesine çevirip normalize et
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return null;
+    
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
+  };
+
   const addToBasket = async () => {
     const mealId = item?.meal?.id ? item?.meal?.id : item.id;
     // menu_date'i önce params'tan, sonra item'dan al, yoksa bugünün tarihini kullan
-    const menuDate = menuDateFromParams || item?.menu_date || item?.meal?.menu_date || new Date().toISOString().split('T')[0];
+    const rawMenuDate = menuDateFromParams || item?.menu_date || item?.meal?.menu_date || new Date().toISOString().split('T')[0];
+    const menuDate = normalizeDate(rawMenuDate) || new Date().toISOString().split('T')[0];
     const basketItems = await getBasketItems();
+    console.log(menuDate);
     const success = await checkForExistingItem(mealId, basketItems, menuDate);
-    
     if (success) {
       triggerBasketUpdate();
       navigation.navigate('Home', {

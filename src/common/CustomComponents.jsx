@@ -2,7 +2,7 @@ import Styled from '@common/StyledComponents';
 import {useEffect, useState, useMemo, useCallback, useRef} from 'react';
 import Icons from '@icons/icons.js';
 import {useNavigation} from '@react-navigation/native';
-import {FlatList, Modal, TextInput} from 'react-native';
+import {FlatList, Modal, TextInput, Animated, TouchableOpacity} from 'react-native';
 import {prefixData} from '@utils/staticData';
 import {useTranslation} from 'react-i18next';
 import {fetchData} from '@utils/fetchData';
@@ -638,6 +638,91 @@ const PhoneInput = ({handleInputChange, inputValue, error}) => {
   );
 };
 
+const CustomSwitch = ({
+  value = false,
+  onValueChange = () => {},
+  disabled = false,
+  activeColor = '#66B600',
+  inactiveColor = '#E5E7EB',
+  thumbColor = '#FFFFFF',
+  size = {width: 51, height: 31},
+}) => {
+  const [isEnabled, setIsEnabled] = useState(value);
+  const translateX = useRef(new Animated.Value(value ? 1 : 0)).current;
+
+  useEffect(() => {
+    setIsEnabled(value);
+    Animated.spring(translateX, {
+      toValue: value ? 1 : 0,
+      useNativeDriver: true,
+      tension: 100,
+      friction: 8,
+    }).start();
+  }, [value, translateX]);
+
+  const handleToggle = () => {
+    if (disabled) return;
+    const newValue = !isEnabled;
+    setIsEnabled(newValue);
+    onValueChange(newValue);
+    
+    Animated.spring(translateX, {
+      toValue: newValue ? 1 : 0,
+      useNativeDriver: true,
+      tension: 100,
+      friction: 8,
+    }).start();
+  };
+
+  const trackWidth = size.width;
+  const trackHeight = size.height;
+  const thumbSize = trackHeight - 6;
+  const thumbTranslateX = translateX.interpolate({
+    inputRange: [0, 1],
+    outputRange: [2, trackWidth - thumbSize - 2],
+  });
+
+  const trackColor = isEnabled ? activeColor : inactiveColor;
+
+  return (
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={handleToggle}
+      disabled={disabled}
+      style={{
+        opacity: disabled ? 0.5 : 1,
+      }}>
+      <Styled.View
+        style={{
+          width: trackWidth,
+          height: trackHeight,
+          borderRadius: trackHeight / 2,
+          backgroundColor: trackColor,
+          justifyContent: 'center',
+          paddingHorizontal: 2,
+        }}>
+        <Animated.View
+          style={{
+            width: thumbSize,
+            height: thumbSize,
+            borderRadius: thumbSize / 2,
+            backgroundColor: thumbColor,
+            transform: [{translateX: thumbTranslateX}],
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 2,
+            elevation: 2,
+          }}
+        />
+      </Styled.View>
+    </TouchableOpacity>
+  );
+};
+
 const CustomComponents = {
   Button: Button,
   Input: Input,
@@ -649,6 +734,7 @@ const CustomComponents = {
   Dropdown: Dropdown,
   PrefixModal: PrefixModal,
   CompanyModal: CompanyModal,
+  Switch: CustomSwitch,
 };
 
 export default CustomComponents;

@@ -421,7 +421,8 @@ const PinLogin = () => {
             pin_code: pin,
           },
         });
-
+        console.log('User ID:', userId);
+        console.log('PIN:', pin);
         console.log('PIN Login result:', result);
 
         if (result?.success) {

@@ -1,6 +1,6 @@
 import Styled from '@common/StyledComponents';
 import Icons from '@icons/icons.js';
-import {FlatList, Switch, Alert, Platform} from 'react-native';
+import {FlatList, Alert} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import CustomComponents from '@common/CustomComponents';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
@@ -169,12 +169,12 @@ const Settings = () => {
               {item.title}
             </Styled.Text>
           </Styled.View>
-          <Switch
+          <CustomComponents.Switch
             value={item.value}
             onValueChange={item.onToggle}
-            trackColor={{false: '#767577', true: '#66B600'}}
-            thumbColor={item.value ? '#fff' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
+            activeColor="#66B600"
+            inactiveColor="#E5E7EB"
+            thumbColor="#FFFFFF"
           />
         </Styled.View>
       );

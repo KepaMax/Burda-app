@@ -113,7 +113,7 @@ const FoodMenu = () => {
 
   useEffect(() => {
     if (selectedCategory && filteredMenu.length) {
-      scrollToSectionByTitle(selectedCategory);
+    scrollToSectionByTitle(selectedCategory);
     }
   }, [selectedCategory, filteredMenu]);
 

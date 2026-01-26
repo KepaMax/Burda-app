@@ -190,7 +190,6 @@ const Basket = () => {
 
       // Tüm orderları bekle
       const results = await Promise.all(orderPromises);
-      
       // Tüm orderlar başarılı mı kontrol et
       const allSuccessful = results.every(result => result?.success);
       
@@ -216,7 +215,7 @@ const Basket = () => {
       
       setIsProcessing(false);
     } else {
-      alert('Basket is empty');
+      alert(t('basketIsEmpty'));
     }
   };
 

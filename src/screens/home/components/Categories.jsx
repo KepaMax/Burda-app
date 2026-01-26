@@ -24,6 +24,7 @@ const Categories = () => {
       url: `${API_URL}/meals/?category=${categoryId}&page_size=100`,
       tokenRequired: true,
     });
+    console.log(result ,categoryName,categoryId);
 
     result?.success &&
       navigation.navigate('FoodList', {

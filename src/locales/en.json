@@ -164,6 +164,7 @@
   "updateRequiredMessage": "You need to update to the latest version to use the app.",
   "latestVersion": "Latest Version",
   "updateApp": "Update",
+  "basketIsEmpty": "Basket is empty",
   "later": "Later",
   "userSuccessfullyUpdated": "User successfully updated"
 }

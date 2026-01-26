@@ -165,6 +165,7 @@
   "updateRequiredMessage": "Tətbiqi istifadə etmək üçün ən son versiyaya yeniləməlisiniz.",
   "latestVersion": "Ən son versiya",
   "updateApp": "Yenilə",
+  "basketIsEmpty": "Səbət boşdur",
   "later": "Sonra",
   "userSuccessfullyUpdated": "İstifadəçi məlumatları uğurla yeniləndi"
 }

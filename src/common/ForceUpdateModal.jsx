@@ -12,7 +12,7 @@ const ForceUpdateModal = ({visible, latestVersion, releaseNotes, deepLink, isFor
     } else {
       // App Store veya Play Store'a yönlendir
       const appStoreUrl = Platform.OS === 'ios' 
-        ? 'https://apps.apple.com/app/idYOUR_APP_ID' // iOS App Store URL'i
+        ? 'https://apps.apple.com/az/app/burda-food/id6737226531' // iOS App Store URL'i
         : 'https://play.google.com/store/apps/details?id=com.myburda.burda'; // Android Play Store URL'i
       
       Linking.openURL(appStoreUrl);

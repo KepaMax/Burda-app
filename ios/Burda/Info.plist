@@ -56,6 +56,8 @@
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>We need access to your camera in order for you to scan the food</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>We need access to Face ID to enable secure biometric authentication for your account</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-Black.ttf</string>

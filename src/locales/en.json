@@ -166,5 +166,7 @@
   "updateApp": "Update",
   "basketIsEmpty": "Basket is empty",
   "later": "Later",
-  "userSuccessfullyUpdated": "User successfully updated"
+  "userSuccessfullyUpdated": "User successfully updated",
+  "sessionExpired": "Session expired",
+  "sessionExpiredMessage": "Session expired, please login again."
 }

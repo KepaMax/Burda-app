@@ -167,5 +167,7 @@
   "updateApp": "Yenilə",
   "basketIsEmpty": "Səbət boşdur",
   "later": "Sonra",
-  "userSuccessfullyUpdated": "İstifadəçi məlumatları uğurla yeniləndi"
+  "userSuccessfullyUpdated": "İstifadəçi məlumatları uğurla yeniləndi",
+  "sessionExpired": "Sessiya zamanı bitdi",
+  "sessionExpiredMessage": "Sessiya zamanı bitdi, yenidən daxil olun."
 }

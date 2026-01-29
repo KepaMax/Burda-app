@@ -26,6 +26,31 @@ const PinLogin = () => {
   const route = useRoute();
   const screenWidth = Dimensions.get('screen').width;
 
+  const isUserNotFoundError = result => {
+    const data = result?.data;
+    if (Array.isArray(data)) {
+      return data.some(
+        item => item?.detail === 'User not found' || item?.code === 'user_not_found',
+      );
+    }
+    if (data && typeof data === 'object') {
+      return (
+        data?.detail === 'User not found' ||
+        data?.code === 'user_not_found'
+      );
+    }
+    return false;
+  };
+
+  const handleUserNotFoundLogout = () => {
+    const selectedLanguage = storage.getString('selectedLanguage');
+    storage.clearAll();
+    if (selectedLanguage) {
+      storage.set('selectedLanguage', selectedLanguage);
+    }
+    Alert.alert(t('sessionExpired'), t('sessionExpiredMessage'));
+  };
+
   // Route params
   const userIdFromParams = route.params?.userId;
   const firstNameFromParams = route.params?.firstName || route.params?.userName || '';
@@ -167,7 +192,11 @@ const PinLogin = () => {
             storage.set('isPinVerified', true);
             setIsPinVerified(true); // Hook'u manuel olarak güncelle - Navigation.jsx otomatik olarak TabStack'e geçecek
           } else {
-            setError(t('incorrectPin'));
+            if (isUserNotFoundError(result)) {
+              handleUserNotFoundLogout();
+            } else {
+              setError(t('incorrectPin'));
+            }
           }
         } catch (loginError) {
           console.error('Biometric login error:', loginError);
@@ -480,9 +509,13 @@ const PinLogin = () => {
           // Navigation.jsx'te isPinVerified hook'u otomatik olarak güncellenecek ve TabStack gösterilecek
           // Bu yüzden burada navigation.reset yapmaya gerek yok
         } else {
-          // Hatalı PIN
-          setError(t('incorrectPin'));
-          setPin('');
+          // Hatalı PIN veya kullanıcı bulunamadı
+          if (isUserNotFoundError(result)) {
+            handleUserNotFoundLogout();
+          } else {
+            setError(t('incorrectPin'));
+            setPin('');
+          }
         }
       } catch (err) {
         console.error('PIN error:', err);

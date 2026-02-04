@@ -2,6 +2,69 @@ import {API_URL} from '@env';
 import storage from './MMKVStore';
 import {openInbox} from 'react-native-email-link';
 
+// JWT token decode fonksiyonu
+export const decodeJWT = (token) => {
+  try {
+    const base64Url = token.split('.')[1];
+    if (!base64Url) return null;
+    
+    // Base64URL decode
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    
+    // React Native için base64 decode
+    // atob polyfill veya manuel decode
+    let decodedString;
+    if (typeof atob !== 'undefined') {
+      // atob mevcut ise kullan
+      decodedString = atob(base64);
+    } else {
+      // Manuel base64 decode (React Native için)
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+      let str = '';
+      let i = 0;
+      
+      // Padding ekle
+      base64 = base64.replace(/[^A-Za-z0-9\+\/]/g, '');
+      
+      while (i < base64.length) {
+        const encoded1 = chars.indexOf(base64.charAt(i++));
+        const encoded2 = chars.indexOf(base64.charAt(i++));
+        const encoded3 = chars.indexOf(base64.charAt(i++));
+        const encoded4 = chars.indexOf(base64.charAt(i++));
+        
+        const bitmap = (encoded1 << 18) | (encoded2 << 12) | (encoded3 << 6) | encoded4;
+        
+        if (encoded3 === 64) {
+          str += String.fromCharCode((bitmap >> 16) & 255);
+        } else if (encoded4 === 64) {
+          str += String.fromCharCode((bitmap >> 16) & 255, (bitmap >> 8) & 255);
+        } else {
+          str += String.fromCharCode(
+            (bitmap >> 16) & 255,
+            (bitmap >> 8) & 255,
+            bitmap & 255
+          );
+        }
+      }
+      
+      decodedString = str;
+    }
+    
+    // URI decode
+    const jsonPayload = decodeURIComponent(
+      decodedString
+        .split('')
+        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Error decoding JWT:', error);
+    return null;
+  }
+};
+
 export const refreshTokens = async () => {
   const refreshToken = storage.getString('refreshToken');
 

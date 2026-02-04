@@ -60,7 +60,7 @@ const TodaysMenu = () => {
     const hasDiscount = item.meal.has_discount;
     const originalPrice = item.meal.original_price;
     const discountedPrice = item.meal.discounted_price;
-    
+
     // İndirim yüzdesini API response'dan al (max_discount)
     const discountPercent = hasDiscount 
       ? (item.meal?.category?.max_discount ?? 0)
@@ -79,10 +79,10 @@ const TodaysMenu = () => {
         }}
         className="w-[226px] h-[280px] px-4 py-2.5 bg-white rounded-[10px] shadow shadow-zinc-300">
         <Styled.View style={{position: 'relative'}}>
-          <FastImage
-            source={{uri: category.thumbnail}}
-            style={{height: 144, borderRadius: 18}}
-          />
+        <FastImage
+          source={{uri: category.thumbnail}}
+          style={{height: 144, borderRadius: 18}}
+        />
           {hasDiscount && discountPercent > 0 && (
             <Styled.View
               style={{

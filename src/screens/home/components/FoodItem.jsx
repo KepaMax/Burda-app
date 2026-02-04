@@ -87,11 +87,11 @@ const FoodItem = ({item, showCount, source, menuDate}) => {
                 );
               } else {
                 return (
-                  <Styled.Text
-                    className="font-poppins-bold text-base text-[#42C2E5]"
-                    numberOfLines={2}>
+          <Styled.Text
+            className="font-poppins-bold text-base text-[#42C2E5]"
+            numberOfLines={2}>
                     {mealData?.price} ₼
-                  </Styled.Text>
+          </Styled.Text>
                 );
               }
             })()}

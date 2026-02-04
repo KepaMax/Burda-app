@@ -115,8 +115,9 @@ const Navigation = () => {
   // PIN doğrulama gerekiyorsa PinLogin veya SignIn göster
   // accessToken varsa ve boş string değilse ve PIN doğrulanmamışsa
   if (accessToken && accessToken.trim() !== '' && !isPinVerified) {
-    // Eğer is_pin_set false ise SignIn göster, true ise PinLogin göster
-    if (shouldShowSignIn) {
+    // Local storage'da user yoksa veya is_pin_set false ise SignIn göster
+    const userString = storage.getString('user');
+    if (!userString || userString.trim() === '' || shouldShowSignIn) {
       return (
         <NavigationContainer linking={linking}>
           <Layout>
@@ -124,18 +125,19 @@ const Navigation = () => {
           </Layout>
         </NavigationContainer>
       );
-    } else {
-      return (
-        <NavigationContainer linking={linking}>
-          <Layout>
-            <Stack.Navigator screenOptions={{headerShown: false}}>
-              <Stack.Screen name="PinLogin" component={PinLogin} />
-              <Stack.Screen name="ForgotPin" component={ForgotPin} />
-            </Stack.Navigator>
-          </Layout>
-        </NavigationContainer>
-      );
     }
+    
+    // User var ve is_pin_set true ise PinLogin göster
+    return (
+      <NavigationContainer linking={linking}>
+        <Layout>
+          <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name="PinLogin" component={PinLogin} />
+            <Stack.Screen name="ForgotPin" component={ForgotPin} />
+          </Stack.Navigator>
+        </Layout>
+      </NavigationContainer>
+    );
   }
 
   return (

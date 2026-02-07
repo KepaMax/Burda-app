@@ -161,6 +161,7 @@
   "processing": "Emal olunur...",
   "outOfStock": "Məhsul bitib",
   "forgotPhoneNumber": "Telefon nömrənizi unutmusunuz?",
+  "accountNotFoundForNumber": "Bu nömrəyə bağlı hesab tapılmadı",
   "updateRequired": "Yeniləmə tələb olunur",
   "updateRequiredMessage": "Tətbiqi istifadə etmək üçün ən son versiyaya yeniləməlisiniz.",
   "latestVersion": "Ən son versiya",

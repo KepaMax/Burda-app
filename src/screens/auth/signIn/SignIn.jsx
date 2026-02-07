@@ -14,7 +14,6 @@ const SignIn = () => {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useMMKVBoolean('loading');
   const [errors, setErrors] = useState({});
-  const [userNotFoundCount, setUserNotFoundCount] = useState(0);
   const [useEmail, setUseEmail] = useState(false);
   const [requiresPhoneSetup, setRequiresPhoneSetup] = useState(false);
   const [userIdForSetup, setUserIdForSetup] = useState(null);
@@ -111,9 +110,6 @@ const SignIn = () => {
       console.log('Check status result:', result);
 
       if (result?.success) {
-        // Başarılı olduğunda sayacı sıfırla
-        setUserNotFoundCount(0);
-        
         const {user_exists, is_pin_set, user_id, first_name, requires_phone_setup} = result.data;
 
         // Eğer requires_phone_setup true ise phone ve email inputlarını göster
@@ -153,15 +149,7 @@ const SignIn = () => {
         const isUserNotFound = errorDetail.toLowerCase().includes('user not found');
         
         if (isUserNotFound && !useEmail) {
-          const newCount = userNotFoundCount + 1;
-          setUserNotFoundCount(newCount);
-          
-          if (newCount >= 3) {
-            // 3 denemede mesaj göster
-            setErrors({phone_number: t('forgotPhoneNumber')});
-          } else {
-            setErrors({phone_number: t('invalidPhoneNumber')});
-          }
+          setErrors({phone_number: t('accountNotFoundForNumber')});
         } else {
           setErrors(useEmail ? {email: t('invalidEmail')} : {phone_number: t('invalidPhoneNumber')});
         }
@@ -176,7 +164,6 @@ const SignIn = () => {
 
   const handleForgotPhoneClick = () => {
     setUseEmail(true);
-    setUserNotFoundCount(0);
     setErrors({});
     setFormData(prev => ({...prev, phone_number: ''}));
   };
@@ -290,7 +277,7 @@ const SignIn = () => {
                 inputValue={formData?.phone_number}
                 error={errors?.phone_number}
               />
-              {errors?.phone_number === t('forgotPhoneNumber') && (
+              {(errors?.phone_number === t('forgotPhoneNumber') || errors?.phone_number === t('accountNotFoundForNumber')) && (
                 <CustomComponents.Link
                   title={t('forgotPhoneNumber')}
                   textColor="text-[#FF8C03]"

@@ -160,6 +160,7 @@
   "processing": "Processing...",
   "outOfStock": "Out of stock",
   "forgotPhoneNumber": "Forgot your phone number?",
+  "accountNotFoundForNumber": "No account found for this number",
   "updateRequired": "Update Required",
   "updateRequiredMessage": "You need to update to the latest version to use the app.",
   "latestVersion": "Latest Version",

@@ -15,6 +15,7 @@ import TabProfile from './tabProfile.svg';
 import TabProfileActive from './tabProfileActive.svg';
 import TabScan from './tabScan.svg';
 import TabScanActive from './tabScanActive.svg';
+import TabScanWhite from './tabScanWhite.svg';
 import TabSubscription from './tabSubscription.svg';
 import TabSubscriptionActive from './tabSubscriptionActive.svg';
 import TermsConditions from './termsConditions.svg';
@@ -33,6 +34,7 @@ import X from './x.svg';
 import Barcode from './barcode.svg';
 import Receipt from './receipt.svg';
 import Basket from './basket.svg';
+import Map from './map.svg';
 
 const Icons = {
   AddLocations,
@@ -52,6 +54,7 @@ const Icons = {
   TabProfileActive,
   TabScan,
   TabScanActive,
+  TabScanWhite,
   TabSubscription,
   TabSubscriptionActive,
   TermsConditions,
@@ -70,6 +73,7 @@ const Icons = {
   Barcode,
   Receipt,
   Basket,
+  Map,
 };
 
 export default Icons;

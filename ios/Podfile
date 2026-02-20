@@ -36,6 +36,9 @@ target 'burda' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+    # Firebase: GoogleUtilities needs modular headers for Swift pods
+    pod 'GoogleUtilities', :modular_headers => true
+
     # Add the permissions pods here
     permissions_path = '../node_modules/react-native-permissions/ios'
     pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"

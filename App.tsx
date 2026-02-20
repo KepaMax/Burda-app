@@ -27,6 +27,15 @@ import Styled from './src/common/StyledComponents';
 import Receipt from './src/screens/profile/paymentMethods/Receipt';
 import ForceUpdateModal from './src/common/ForceUpdateModal';
 import {APP_VERSION, getPlatform} from './src/utils/appVersion';
+import {
+  requestUserPermissionAndGetToken,
+  requestNotificationPermissionAndCreateChannel,
+  onForegroundMessage,
+  onNotificationOpenedApp,
+  onTokenRefresh,
+  getInitialNotification,
+  displayNotificationFromRemoteMessage,
+} from './src/utils/pushNotifications';
 
 function App(): JSX.Element {
   const [selectedLanguage, setSelectedLanguage] =
@@ -138,6 +147,36 @@ function App(): JSX.Element {
 
     return () => {
       unsubscribe();
+    };
+  }, []);
+
+  // Firebase push notifications
+  useEffect(() => {
+    requestNotificationPermissionAndCreateChannel();
+    requestUserPermissionAndGetToken().then(token => {
+      if (token) {
+        console.log('FCM device token:', token);
+      }
+    });
+    const unsubTokenRefresh = onTokenRefresh(token => {
+      console.log('FCM device token (refreshed):', token);
+    });
+
+    const unsubForeground = onForegroundMessage(remoteMessage => {
+      console.log('Foreground notification:', remoteMessage);
+      displayNotificationFromRemoteMessage(remoteMessage);
+    });
+    const unsubOpened = onNotificationOpenedApp(remoteMessage => {
+      console.log('Notification opened app:', remoteMessage);
+    });
+    getInitialNotification().then(remoteMessage => {
+      if (remoteMessage) console.log('App opened from quit by notification:', remoteMessage);
+    });
+
+    return () => {
+      unsubTokenRefresh();
+      unsubForeground();
+      unsubOpened();
     };
   }, []);
 

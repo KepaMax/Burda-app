@@ -11,12 +11,16 @@
   },
   "reactNativePermissionsIOS": [
     "PhotoLibrary",
-    "LocationWhenInUse"
+    "LocationWhenInUse",
+    "Notifications"
   ],
   "dependencies": {
     "@gorhom/bottom-sheet": "^4.6.1",
+    "@notifee/react-native": "^7.8.2",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-community/netinfo": "^9.5.0",
+    "@react-native-firebase/app": "^21.6.1",
+    "@react-native-firebase/messaging": "^21.6.1",
     "@react-navigation/bottom-tabs": "^6.6.0",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.4.0",

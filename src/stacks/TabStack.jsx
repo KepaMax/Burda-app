@@ -5,6 +5,7 @@ import '@locales/index';
 import TabBar from './components/TabBar';
 import SubscriptionStack from '@stacks/SubscriptionStack';
 import ScanStack from '@stacks/ScanStack';
+import BranchesStack from '@stacks/BranchesStack';
 import {useTranslation} from 'react-i18next';
 import {useNavigation} from '@react-navigation/native';
 import {View} from 'react-native';
@@ -49,6 +50,11 @@ const TabStack = () => {
         name="Scan"
         component={ScanStack}
         options={{tabBarLabel: t('scan')}}
+      />
+      <Tab.Screen
+        name="Branches"
+        component={BranchesStack}
+        options={{tabBarLabel: t('branches')}}
       />
       <Tab.Screen
         name="Profile"

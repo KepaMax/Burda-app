@@ -1,78 +1,198 @@
 import Icons from '@icons/icons.js';
-import { Dimensions, Platform } from 'react-native';
+import {Dimensions, Platform, View} from 'react-native';
 import Styled from '@common/StyledComponents';
 
-const TabBar = ({ state, descriptors, navigation }) => {
+const TAB_BAR_HEIGHT = 56;
+const CENTER_BUTTON_SIZE = 56;
+const NOTCH_RADIUS = 36;
+const CENTER_WIDTH = 80;
+const SAFE_BOTTOM = Platform.OS === 'ios' ? 24 : 8;
+
+const TabBar = ({state, descriptors, navigation}) => {
   const width = Dimensions.get('screen').width;
+  const sideWidth = (width - CENTER_WIDTH) / 2;
+
+  const renderTab = (route, index) => {
+    const {options} = descriptors[route.key];
+    const visibleLabel = options.tabBarLabel;
+    const label = route.name;
+    const isFocused = state.index === index;
+
+    let icon;
+    if (label === 'Home') {
+      icon = isFocused ? <Icons.TabHomeActive /> : <Icons.TabHome />;
+    } else if (label === 'Subscription') {
+      icon = isFocused ? (
+        <Icons.TabSubscriptionActive />
+      ) : (
+        <Icons.TabSubscription />
+      );
+    } else if (label === 'Profile') {
+      icon = isFocused ? <Icons.TabProfileActive /> : <Icons.TabProfile />;
+    } else if (label === 'Scan') {
+      icon = isFocused ? <Icons.TabScanActive /> : <Icons.TabScan />;
+    } else if (label === 'Branches') {
+      icon = (
+        <Icons.Map color={isFocused ? '#66B600' : '#757575'} />
+      );
+    }
+
+    const onPress = () => {
+      navigation.reset({
+        index: 0,
+        routes: [{name: route.name}],
+      });
+      navigation.emit({
+        type: 'tabPress',
+        target: route.key,
+      });
+    };
+
+    const onLongPress = () => {
+      navigation.emit({
+        type: 'tabLongPress',
+        target: route.key,
+      });
+    };
+
+    return (
+      <Styled.TouchableOpacity
+        key={route.key}
+        accessibilityRole="button"
+        accessibilityState={isFocused ? {selected: true} : {}}
+        accessibilityLabel={options.tabBarAccessibilityLabel}
+        testID={options.tabBarTestID}
+        onPress={onPress}
+        onLongPress={onLongPress}
+        className="flex-1 items-center justify-center">
+        <Styled.View className="items-center">
+          {icon}
+          <Styled.Text
+            className={`${
+              isFocused ? 'text-[#66B600]' : 'text-[#757575]'
+            } mt-1 text-xs font-poppins-medium`}
+            numberOfLines={1}>
+            {visibleLabel}
+          </Styled.Text>
+        </Styled.View>
+      </Styled.TouchableOpacity>
+    );
+  };
+
+  const scanIndex = state.routes.findIndex(r => r.name === 'Scan');
+  const isScanFocused = state.index === scanIndex;
+
+  const onScanPress = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'Scan'}],
+    });
+    navigation.emit({
+      type: 'tabPress',
+      target: state.routes[scanIndex].key,
+    });
+  };
 
   return (
-    <Styled.View
-      className={`border-t-[1px] border-zinc-100 flex-row bg-white justify-between items-center px-[30px] py-[5px] ${
-        Platform.OS === 'ios' && width > 375 ? 'pb-[25px]' : ''
-      }`}>
-      {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
-        const visibleLabel = options.tabBarLabel;
-        const label = route.name;
-        const isFocused = state.index === index;
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        paddingBottom: SAFE_BOTTOM,
+        backgroundColor: 'transparent',
+      }}>
+      {/* Sol bölüm: Ana səhifə, Abunəlik */}
+      <View
+        style={{
+          width: sideWidth,
+          height: TAB_BAR_HEIGHT,
+          backgroundColor: '#FFFFFF',
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 0,
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingTop: 6,
+          borderTopWidth: 1,
+          borderColor: '#f4f4f5',
+        }}>
+        {state.routes.slice(0, 2).map((route, i) => renderTab(route, i))}
+      </View>
 
-        let icon;
+      {/* Orta: Dışa doğru kubbe + Skan butonu */}
+      <View
+        style={{
+          width: CENTER_WIDTH,
+          minHeight: TAB_BAR_HEIGHT,
+          alignItems: 'center',
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 1,
+          borderLeftWidth: 1,
+          borderRightWidth: 1,
+          borderColor: '#FFFFFF',
+          overflow: 'visible',
+        }}>
+        {/* Yukarı doğru kavis (dışa bakan çentik) */}
+        <View
+          style={{
+            position: 'absolute',
+            top: -NOTCH_RADIUS + 10,
+            left: 0,
+            width: CENTER_WIDTH,
+            height: NOTCH_RADIUS + 2,
+            borderTopLeftRadius: 999,
+            borderTopRightRadius: 999,
+            backgroundColor: '#FFFFFF',
+            borderTopWidth: 1,
+            borderLeftWidth: 1,
+            borderRightWidth: 1,
+            borderColor: '#FFFFFF',
+          }}
+        />
+        <Styled.TouchableOpacity
+          onPress={onScanPress}
+          onLongPress={() =>
+            navigation.emit({
+              type: 'tabLongPress',
+              target: state.routes[scanIndex].key,
+            })
+          }
+          accessibilityRole="button"
+          accessibilityState={isScanFocused ? {selected: true} : {}}
+          style={{
+            width: CENTER_BUTTON_SIZE,
+            height: CENTER_BUTTON_SIZE,
+            borderRadius: CENTER_BUTTON_SIZE / 2,
+            backgroundColor: '#184639',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: -NOTCH_RADIUS + 20,
+            shadowColor: '#000',
+            shadowOffset: {width: 0, height: 2},
+            shadowOpacity: 0.12,
+            shadowRadius: 6,
+            elevation: 6,
+          }}>
+          <Icons.TabScanWhite />
+        </Styled.TouchableOpacity>
+      </View>
 
-        // Set icons based on the label
-        if (label === 'Home') {
-          icon = isFocused ? <Icons.TabHomeActive /> : <Icons.TabHome />;
-        } else if (label === 'Subscription') {
-          icon = isFocused ? <Icons.TabSubscriptionActive /> : <Icons.TabSubscription />;
-        } else if (label === 'Profile') {
-          icon = isFocused ? <Icons.TabProfileActive /> : <Icons.TabProfile />;
-        } else if (label === 'Scan') {
-          icon = isFocused ? <Icons.TabScanActive /> : <Icons.TabScan />;
-        }
-
-        const onPress = () => {
-          // Reset to the initial screen of the current tab's stack
-          navigation.reset({
-            index: 0,
-            routes: [{ name: route.name }],
-          });
-
-          // Emit tab press event to handle other listeners
-          navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-          });
-        };
-
-        const onLongPress = () => {
-          navigation.emit({
-            type: 'tabLongPress',
-            target: route.key,
-          });
-        };
-
-        return (
-          <Styled.TouchableOpacity
-            key={index}
-            accessibilityRole="button"
-            accessibilityStates={isFocused ? ['selected'] : []}
-            accessibilityLabel={options.tabBarAccessibilityLabel}
-            testID={options.tabBarTestID}
-            onPress={onPress}
-            onLongPress={onLongPress}
-          >
-            <Styled.View className="items-center">
-              {icon}
-              <Styled.Text
-                className={`${
-                  isFocused ? 'text-[#66B600]' : 'text-[#757575]'
-                } mt-1 text-xs font-poppins-medium`}>
-                {visibleLabel}
-              </Styled.Text>
-            </Styled.View>
-          </Styled.TouchableOpacity>
-        );
-      })}
-    </Styled.View>
+      {/* Sağ bölüm: Branches, Hesabım */}
+      <View
+        style={{
+          width: sideWidth,
+          height: TAB_BAR_HEIGHT,
+          backgroundColor: '#FFFFFF',
+          borderTopLeftRadius: 0,
+          borderTopRightRadius: 20,
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingTop: 6,
+          borderTopWidth: 1,
+          borderColor: '#f4f4f5',
+        }}>
+        {state.routes.slice(3, 5).map((route, i) => renderTab(route, i + 3))}
+      </View>
+    </View>
   );
 };
 

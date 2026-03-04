@@ -35,6 +35,7 @@ import Barcode from './barcode.svg';
 import Receipt from './receipt.svg';
 import Basket from './basket.svg';
 import Map from './map.svg';
+import NotificationBell from './notificationBell.svg';
 
 const Icons = {
   AddLocations,
@@ -74,6 +75,7 @@ const Icons = {
   Receipt,
   Basket,
   Map,
+  NotificationBell,
 };
 
 export default Icons;

@@ -39,9 +39,14 @@ export const fetchData = async ({
     if (returnsData && response.status !== 204) {
       try {
         const text = await response.text();
-        data = text ? JSON.parse(text) : null;
+        const isJson = text && (text.trim().startsWith('{') || text.trim().startsWith('['));
+        data = text && isJson ? JSON.parse(text) : null;
       } catch (parseError) {
-        console.warn('JSON parse warning:', parseError.message);
+        if (response.status >= 500) {
+          console.warn(`Server error ${response.status}: response is not JSON (e.g. HTML error page)`);
+        } else {
+          console.warn('JSON parse warning:', parseError.message);
+        }
         data = null;
       }
     }
@@ -74,7 +79,7 @@ export const fetchData = async ({
         };
       }
     } else {
-      console.error(`Fetch error: ${response.status} ${response.statusText}`);
+      console.error(`Fetch error: ${url} ${response.status} ${response.statusText}`);
       return {
         success: false,
         status: response.status,

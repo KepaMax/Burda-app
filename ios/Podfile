@@ -36,8 +36,9 @@ target 'burda' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-    # Firebase: GoogleUtilities needs modular headers for Swift pods
+    # Firebase: modular headers so FirebaseCoreInternal can find FirebaseCore module
     pod 'GoogleUtilities', :modular_headers => true
+    pod 'FirebaseCore', :modular_headers => true
 
     # Add the permissions pods here
     permissions_path = '../node_modules/react-native-permissions/ios'
@@ -57,5 +58,23 @@ target 'burda' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+    
+    # Fix for jsinspector-modern/ReactCdp.h file not found error with react-native-image-picker
+    installer.pods_project.targets.each do |target|
+      if target.name == 'React-jsinspector-modern' || target.name == 'React-jsinspector'
+        target.build_configurations.each do |config|
+          config.build_settings['HEADER_SEARCH_PATHS'] ||= ['$(inherited)']
+          config.build_settings['HEADER_SEARCH_PATHS'] << '"$(PODS_TARGET_SRCROOT)/"'
+          config.build_settings['HEADER_SEARCH_PATHS'] << '"$(PODS_TARGET_SRCROOT)/cdp"'
+          config.build_settings['DEFINES_MODULE'] = 'YES'
+        end
+      end
+      # Fix "Module 'FirebaseCore' not found" for FirebaseMessaging
+      if target.name.start_with?('Firebase')
+        target.build_configurations.each do |config|
+          config.build_settings['DEFINES_MODULE'] = 'YES'
+        end
+      end
+    end
   end
 end

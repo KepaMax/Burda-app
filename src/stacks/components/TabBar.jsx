@@ -1,14 +1,17 @@
 import Icons from '@icons/icons.js';
 import {Dimensions, Platform, View} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Styled from '@common/StyledComponents';
 
 const TAB_BAR_HEIGHT = 56;
 const CENTER_BUTTON_SIZE = 56;
-const NOTCH_RADIUS = 36;
 const CENTER_WIDTH = 80;
-const SAFE_BOTTOM = Platform.OS === 'ios' ? 24 : 8;
+/** Tam yarım daire kubbe: yükseklik = genişliğin yarısı, border radius aynı */
+const DOME_HEIGHT = CENTER_WIDTH / 2;
 
 const TabBar = ({state, descriptors, navigation}) => {
+  const insets = useSafeAreaInsets();
+  const safeBottom = Platform.OS === 'ios' ? insets.bottom : 8;
   const width = Dimensions.get('screen').width;
   const sideWidth = (width - CENTER_WIDTH) / 2;
 
@@ -98,8 +101,8 @@ const TabBar = ({state, descriptors, navigation}) => {
       style={{
         flexDirection: 'row',
         alignItems: 'flex-end',
-        paddingBottom: SAFE_BOTTOM,
-        backgroundColor: 'transparent',
+        paddingBottom: safeBottom,
+        backgroundColor: '#FFFFFF',
       }}>
       {/* Sol bölüm: Ana səhifə, Abunəlik */}
       <View
@@ -131,16 +134,15 @@ const TabBar = ({state, descriptors, navigation}) => {
           borderColor: '#FFFFFF',
           overflow: 'visible',
         }}>
-        {/* Yukarı doğru kavis (dışa bakan çentik) */}
+        {/* Tam yarım daire kubbe (dışa bakan çentik) */}
         <View
           style={{
             position: 'absolute',
-            top: -NOTCH_RADIUS + 10,
+            top: -DOME_HEIGHT + 4,
             left: 0,
             width: CENTER_WIDTH,
-            height: NOTCH_RADIUS + 2,
-            borderTopLeftRadius: 999,
-            borderTopRightRadius: 999,
+            height: CENTER_WIDTH,
+            borderRadius: 100,
             backgroundColor: '#FFFFFF',
             borderTopWidth: 1,
             borderLeftWidth: 1,
@@ -162,10 +164,10 @@ const TabBar = ({state, descriptors, navigation}) => {
             width: CENTER_BUTTON_SIZE,
             height: CENTER_BUTTON_SIZE,
             borderRadius: CENTER_BUTTON_SIZE / 2,
-            backgroundColor: '#184639',
+            backgroundColor: '#66B600',
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop: -NOTCH_RADIUS + 20,
+            marginTop: -DOME_HEIGHT + 16,
             shadowColor: '#000',
             shadowOffset: {width: 0, height: 2},
             shadowOpacity: 0.12,

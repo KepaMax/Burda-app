@@ -1,23 +1,76 @@
 import messaging from '@react-native-firebase/messaging';
-import notifee, {AndroidImportance} from '@notifee/react-native';
+import notifee, {
+  AndroidImportance,
+  AuthorizationStatus,
+} from '@notifee/react-native';
 import {Platform} from 'react-native';
 import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {API_URL} from '@env';
+import {fetchData} from '@utils/fetchData';
 import storage from '@utils/MMKVStore';
 
 const FCM_TOKEN_KEY = 'fcmToken';
 const ANDROID_CHANNEL_ID = 'burda_default';
+const DEVICE_TYPE = Platform.OS === 'ios' ? 'ios' : 'android';
+
+/**
+ * Register FCM token on backend so push notifications can be sent to this device.
+ */
+export async function registerFcmTokenWithBackend(token) {
+  try {
+    if (!token) {
+      return;
+    }
+
+    const result = await fetchData({
+      url: `${API_URL}/notifications/fcm/register/`,
+      method: 'POST',
+      tokenRequired: true,
+      body: {
+        registration_token: token,
+        device_type: DEVICE_TYPE,
+      },
+      returnsData: false,
+    });
+    if(result?.success){
+      console.log('FCM token registered successfully');
+    }
+    if (!result.success) {
+      console.warn(
+        'FCM token register failed:',
+        result.status,
+        result.data || '',
+      );
+    }
+    
+  } catch (e) {
+    console.warn('FCM token register error:', e?.message || e);
+  }
+}
 
 /**
  * Request notification permission and create channel. Call once at app start.
- * Android 13+ requires runtime POST_NOTIFICATIONS permission.
+ * Android 13+ (API 33+) requires runtime POST_NOTIFICATIONS permission.
+ * On Android 12 and below, no runtime permission is needed for notifications.
  */
 export async function requestNotificationPermissionAndCreateChannel() {
   try {
     if (Platform.OS === 'android') {
-      const {status} = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
-      if (status !== RESULTS.GRANTED && status !== RESULTS.LIMITED) {
-        console.warn('Notification permission not granted:', status);
-        return false;
+      const apiLevel = typeof Platform.Version === 'number' ? Platform.Version : parseInt(Platform.Version, 10) || 0;
+      if (apiLevel >= 33) {
+        const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
+        const status = result?.status;
+        const granted = status === RESULTS.GRANTED || status === RESULTS.LIMITED;
+        const denied = status === RESULTS.DENIED || status === RESULTS.BLOCKED;
+        if (denied) {
+          console.warn('Notification permission not granted:', status);
+          return false;
+        }
+        if (!granted && status !== undefined) {
+          console.warn('Notification permission not granted:', status);
+          return false;
+        }
+        // status undefined can happen on some devices; don't block, continue to create channel
       }
       await notifee.createChannel({
         id: ANDROID_CHANNEL_ID,
@@ -27,7 +80,10 @@ export async function requestNotificationPermissionAndCreateChannel() {
       });
     } else {
       const settings = await notifee.requestPermission();
-      if (settings.authorizationStatus < 2) {
+      const granted =
+        settings.authorizationStatus === AuthorizationStatus.AUTHORIZED ||
+        settings.authorizationStatus === AuthorizationStatus.PROVISIONAL;
+      if (!granted) {
         console.warn('iOS notification permission not granted');
         return false;
       }
@@ -72,7 +128,10 @@ export async function displayNotificationFromRemoteMessage(remoteMessage) {
       });
     } else {
       const settings = await notifee.requestPermission();
-      if (settings.authorizationStatus >= 2) {
+      const granted =
+        settings.authorizationStatus === AuthorizationStatus.AUTHORIZED ||
+        settings.authorizationStatus === AuthorizationStatus.PROVISIONAL;
+      if (granted) {
         await notifee.displayNotification({
           id: String(Date.now()),
           title,
@@ -104,10 +163,18 @@ export async function requestUserPermissionAndGetToken() {
     const token = await messaging().getToken();
     if (token) {
       storage.set(FCM_TOKEN_KEY, token);
+       await registerFcmTokenWithBackend(token);
     }
     return token;
   } catch (e) {
-    console.warn('Push permission/token error:', e);
+    const msg = e?.message || String(e);
+    if (Platform.OS === 'ios' && (msg.includes('aps-environment') || msg.includes('unregistered'))) {
+      console.warn(
+        'Push token unavailable: Add "Push Notifications" capability in Xcode (Target → Signing & Capabilities → + Capability).',
+      );
+    } else {
+      console.warn('Push permission/token error:', e);
+    }
     return null;
   }
 }
@@ -134,6 +201,8 @@ export async function getFCMToken() {
 export function onTokenRefresh(callback) {
   return messaging().onTokenRefresh(token => {
     storage.set(FCM_TOKEN_KEY, token);
+    // fire and forget – backend registration shouldn't block app flow
+    registerFcmTokenWithBackend(token);
     callback?.(token);
   });
 }

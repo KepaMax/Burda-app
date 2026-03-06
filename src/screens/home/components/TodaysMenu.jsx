@@ -45,8 +45,8 @@ const TodaysMenu = () => {
 
       return Array.from(uniqueItemsMap.values());
     };
-
-    const uniqueItems = getUniqueByCategoryId(result.data.results[0].meal_items);
+    const allMealItems = result.data.results.flatMap(item => item.meal_items);
+    const uniqueItems = getUniqueByCategoryId(allMealItems);
 
     result?.success && setMenuItems(uniqueItems);
   };

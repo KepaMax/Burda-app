@@ -94,7 +94,8 @@ const FoodMenu = () => {
       }, []);
     };
 
-    const structuredData = restructureData(result.data.results[0].meal_items);
+    const allMealItems = result.data.results.flatMap(item => item.meal_items);
+    const structuredData = restructureData(allMealItems);
     setMenu(structuredData);
   };
 

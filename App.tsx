@@ -7,26 +7,26 @@
 
 // @ts-nocheck
 import 'react-native-gesture-handler';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Navigation from '@stacks/Navigation';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
-import {useEffect, useState} from 'react';
-import {Dimensions, StatusBar} from 'react-native';
-import {useTranslation} from 'react-i18next';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useEffect, useState } from 'react';
+import { Dimensions, StatusBar } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import storage from '@utils/MMKVStore';
-import {refreshTokens} from '@utils/authUtils';
+import { refreshTokens } from '@utils/authUtils';
 import SuperAlert from 'react-native-super-alert';
 import NetInfo from '@react-native-community/netinfo';
 import NoInternet from '@common/NoInternet';
-import {useMMKVString} from 'react-native-mmkv';
-import {useMMKVBoolean} from 'react-native-mmkv';
-import {fetchData} from '@utils/fetchData';
-import {BASE_URL} from '@env';
-import {useIsFocused} from '@react-navigation/native';
+import { useMMKVString } from 'react-native-mmkv';
+import { useMMKVBoolean } from 'react-native-mmkv';
+import { fetchData } from '@utils/fetchData';
+import { BASE_URL } from '@env';
+import { useIsFocused } from '@react-navigation/native';
 import Styled from './src/common/StyledComponents';
 import Receipt from './src/screens/profile/paymentMethods/Receipt';
 import ForceUpdateModal from './src/common/ForceUpdateModal';
-import {APP_VERSION, getPlatform} from './src/utils/appVersion';
+import { APP_VERSION, getPlatform } from './src/utils/appVersion';
 import {
   requestUserPermissionAndGetToken,
   requestNotificationPermissionAndCreateChannel,
@@ -41,7 +41,7 @@ function App(): JSX.Element {
   const [selectedLanguage, setSelectedLanguage] =
     useMMKVString('selectedLanguage');
   const [connected, setConnected] = useState();
-  const {i18n} = useTranslation();
+  const { i18n } = useTranslation();
   const screenWidth = Dimensions.get('screen').width;
   const [buttonType, setButtonType] = useMMKVString('buttonType');
   const [basketVisible, setBasketVisible] = useMMKVBoolean('basketVisible');
@@ -119,8 +119,8 @@ function App(): JSX.Element {
       });
       console.log(result);
       if (result?.success && result?.data) {
-        const {has_update, is_force_update, deep_link, latest_version, release_notes} = result.data;
-        
+        const { has_update, is_force_update, deep_link, latest_version, release_notes } = result.data;
+
         if (has_update) {
           setUpdateInfo({
             latestVersion: latest_version,
@@ -191,16 +191,16 @@ function App(): JSX.Element {
   }, [initBasket]);
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
-      <SafeAreaProvider style={{flex: 1, backgroundColor: '#F8F8F8'}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider style={{ flex: 1, backgroundColor: '#F8F8F8' }}>
         {/* <StatusBar backgroundColor="#7658F2" barStyle="light-content" /> */}
-        <SafeAreaView style={{flex: 1}} edges={['right', 'top', 'left']}>
+        <SafeAreaView style={{ flex: 1 }} edges={['right', 'top', 'left']}>
           {connected ? <Navigation /> : <NoInternet />}
         </SafeAreaView>
       </SafeAreaProvider>
 
       <SuperAlert customStyle={alertStyle} />
-      
+
       {/* Force Update Modal */}
       <ForceUpdateModal
         visible={showForceUpdate}

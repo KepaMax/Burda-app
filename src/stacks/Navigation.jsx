@@ -1,16 +1,16 @@
-import {NavigationContainer} from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import TabStack from '@stacks/TabStack';
 import AuthStack from '@stacks/AuthStack';
-import {useMMKVString, useMMKVBoolean} from 'react-native-mmkv';
+import { useMMKVString, useMMKVBoolean } from 'react-native-mmkv';
 import Layout from '@common/Layout';
-import {useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
 import storage from '@utils/MMKVStore';
 import PinLogin from '@screens/auth/pinLogin/PinLogin';
 import ForgotPin from '@screens/auth/forgotPin/ForgotPin';
-import {createStackNavigator} from '@react-navigation/stack';
-import {decodeJWT} from '@utils/authUtils';
-import {fetchData} from '@utils/fetchData';
-import {API_URL} from '@env';
+import { createStackNavigator } from '@react-navigation/stack';
+import { decodeJWT } from '@utils/authUtils';
+import { fetchData } from '@utils/fetchData';
+import { API_URL } from '@env';
 import LoadingScreen from '@common/LoadingScreen';
 
 const Stack = createStackNavigator();
@@ -28,7 +28,7 @@ const Navigation = () => {
     if (!hasInitialized.current && accessToken && accessToken.trim() !== '') {
       setIsPinVerified(false);
       hasInitialized.current = true;
-      
+
       // JWT token'dan user_id'yi al ve check-status endpoint'ine gönder
       const checkPinStatus = async () => {
         setIsCheckingPinStatus(true);
@@ -45,7 +45,7 @@ const Navigation = () => {
             });
             console.log('Check status resultTTT:', result);
             if (result?.success && result?.data) {
-              const {is_pin_set} = result.data;
+              const { is_pin_set } = result.data;
               // Eğer is_pin_set false ise SignIn göster, true ise PinLogin göster
               setShouldShowSignIn(!is_pin_set);
             } else {
@@ -84,7 +84,8 @@ const Navigation = () => {
         Home: {
           screens: {
             HomePage: 'home',
-        },
+            Notifications: 'notifications',
+          },
         },
         Profile: {
           screens: {
@@ -92,7 +93,7 @@ const Navigation = () => {
           },
         },
         Subscription: {
-              screens: {
+          screens: {
             PaymentSuccess: 'subscription/success',
             PaymentFail: 'subscription/fail',
           },
@@ -126,12 +127,12 @@ const Navigation = () => {
         </NavigationContainer>
       );
     }
-    
+
     // User var ve is_pin_set true ise PinLogin göster
     return (
       <NavigationContainer linking={linking}>
         <Layout>
-          <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="PinLogin" component={PinLogin} />
             <Stack.Screen name="ForgotPin" component={ForgotPin} />
           </Stack.Navigator>

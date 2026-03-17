@@ -11,7 +11,11 @@ const DOME_HEIGHT = CENTER_WIDTH / 2;
 
 const TabBar = ({state, descriptors, navigation}) => {
   const insets = useSafeAreaInsets();
-  const safeBottom = Platform.OS === 'ios' ? insets.bottom : 8;
+  // Navigation/gesture bar altında kalmaması için: iOS'ta inset, Android'de en az 24 (gesture bar)
+  const safeBottom =
+    Platform.OS === 'ios'
+      ? insets.bottom
+      : Math.max(insets.bottom, 24);
   const width = Dimensions.get('screen').width;
   const sideWidth = (width - CENTER_WIDTH) / 2;
 
@@ -138,7 +142,7 @@ const TabBar = ({state, descriptors, navigation}) => {
         <View
           style={{
             position: 'absolute',
-            top: -DOME_HEIGHT + 4,
+            top: -DOME_HEIGHT + 18,
             left: 0,
             width: CENTER_WIDTH,
             height: CENTER_WIDTH,
@@ -167,7 +171,7 @@ const TabBar = ({state, descriptors, navigation}) => {
             backgroundColor: '#66B600',
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop: -DOME_HEIGHT + 16,
+            marginTop: -DOME_HEIGHT + 30,
             shadowColor: '#000',
             shadowOffset: {width: 0, height: 2},
             shadowOpacity: 0.12,

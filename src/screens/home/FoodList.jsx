@@ -11,6 +11,7 @@ const FoodList = () => {
   const title = route.params?.title;
   const items = route.params?.items;
   const navigationScreen = route.params?.navigationScreen;
+  const fromCategory = route.params?.fromCategory;
   
   const [searchText, setSearchText] = useState('');
 
@@ -59,7 +60,13 @@ const FoodList = () => {
           paddingVertical: 10,
         }}
         data={filteredItems}
-        renderItem={({item}) => <FoodItem showCount={false} item={item} />}
+        renderItem={({item}) => (
+          <FoodItem
+            showCount={false}
+            item={item}
+            source={fromCategory ? 'Category' : undefined}
+          />
+        )}
         ListEmptyComponent={() => <NoItemsFound />}
       />
     </>

@@ -10,6 +10,7 @@ import ForgotPin from '@screens/auth/forgotPin/ForgotPin';
 import { createStackNavigator } from '@react-navigation/stack';
 import { decodeJWT } from '@utils/authUtils';
 import { fetchData } from '@utils/fetchData';
+import { registerStoredFcmTokenIfLoggedIn } from '@utils/pushNotifications';
 import { API_URL } from '@env';
 import LoadingScreen from '@common/LoadingScreen';
 
@@ -76,6 +77,13 @@ const Navigation = () => {
       setShouldShowSignIn(false);
     }
   }, [accessToken, setIsPinVerified]);
+
+  // Giriş yapılmış ve ana uygulama gösteriliyorsa FCM token'ı backend'e kaydet (403 önlenir)
+  useEffect(() => {
+    if (accessToken && accessToken.trim() !== '' && isPinVerified) {
+      registerStoredFcmTokenIfLoggedIn();
+    }
+  }, [accessToken, isPinVerified]);
 
   const linking = {
     prefixes: ['burda://'],

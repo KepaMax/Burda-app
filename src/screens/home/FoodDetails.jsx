@@ -151,11 +151,13 @@ const FoodDetails = () => {
         title={
           isOutOfStock
             ? t('outOfStock')
-            : navigationScreen === 'Basket' 
-            ? t('returnToBasket') 
-            : source === 'WeeklyMenu' 
-              ? t('addToBasket') 
-              : t('goBack')
+            : navigationScreen === 'Basket'
+            ? t('returnToBasket')
+            : source === 'WeeklyMenu'
+            ? t('addToBasket')
+            : source === 'Category'
+            ? t('goToTodaysMenuForOrder')
+            : t('goBack')
         }
         padding="py-3"
         margin="mx-5 my-5"
@@ -169,6 +171,8 @@ const FoodDetails = () => {
             navigation.goBack();
           } else if (source === 'WeeklyMenu') {
             addToBasket();
+          } else if (source === 'Category') {
+            navigation.navigate('HomePage');
           } else {
             navigation.goBack();
           }

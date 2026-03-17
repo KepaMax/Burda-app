@@ -30,6 +30,7 @@ const Categories = () => {
       navigation.navigate('FoodList', {
         items: result.data.results,
         title: categoryName,
+        fromCategory: true,
       });
   };
 

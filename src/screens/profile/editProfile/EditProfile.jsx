@@ -1,15 +1,25 @@
 import Styled from '@common/StyledComponents';
 import CustomComponents from '@common/CustomComponents';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {useTranslation} from 'react-i18next';
 import {fetchData} from '@utils/fetchData';
 import {API_URL} from '@env';
+import Icons from '@icons/icons.js';
 
 const EditProfile = () => {
   const [formData, setFormData] = useState({});
   const [userId, setUserId] = useState(null);
   const [loadError, setLoadError] = useState(false);
   const {t} = useTranslation();
+
+  // Company modal (same as SignUp)
+  const [companyModalVisible, setCompanyModalVisible] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState({});
+  const [companyData, setCompanyData] = useState([]);
+  const [companySearchValue, setCompanySearchValue] = useState('');
+  const [companyPage, setCompanyPage] = useState(1);
+  const [companyHasMore, setCompanyHasMore] = useState(true);
+  const [companyLoadingMore, setCompanyLoadingMore] = useState(false);
 
   const handleInputChange = (name, value) => {
     setFormData(prevState => ({...prevState, [name]: value}));
@@ -59,12 +69,66 @@ const EditProfile = () => {
       method: 'PATCH',
       body: {...formData, company: formData.company},
     });
-
     result?.success && alert(t('userSuccessfullyUpdated'));
   };
 
   useEffect(() => {
     getUserData();
+  }, []);
+
+  // Sync selectedCompany from formData when user data is loaded (company can be object { id, name })
+  useEffect(() => {
+    const company = formData?.company;
+    if (company && typeof company === 'object' && !Array.isArray(company) && company.id != null) {
+      setSelectedCompany({ label: company.name ?? '', value: company.id });
+    }
+  }, [formData?.company]);
+
+  // Fetch companies (paginated) for modal
+  const fetchCompaniesPage = useCallback(async (page = 1, append = false) => {
+    try {
+      if (page === 1) setCompanyData([]);
+      if (append) setCompanyLoadingMore(true);
+      const result = await fetchData({
+        url: `${API_URL}/companies/?page=${page}&page_size=50`,
+      });
+      if (append) setCompanyLoadingMore(false);
+      if (result?.success && result?.data?.results) {
+        const formatted = result.data.results.map(company => ({
+          label: company.name,
+          value: company.id,
+        }));
+        setCompanyData(prev => (append ? [...prev, ...formatted] : formatted));
+        setCompanyHasMore(!!result.data.next);
+        setCompanyPage(page + 1);
+      }
+    } catch (error) {
+      if (append) setCompanyLoadingMore(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    setCompanyPage(1);
+    setCompanyHasMore(true);
+    fetchCompaniesPage(1, false);
+  }, [fetchCompaniesPage]);
+
+  const loadMoreCompanies = useCallback(() => {
+    if (!companyHasMore || companyLoadingMore) return;
+    setCompanyLoadingMore(true);
+    fetchCompaniesPage(companyPage, true);
+  }, [companyHasMore, companyLoadingMore, companyPage, fetchCompaniesPage]);
+
+  const handleCompanySelect = (company) => {
+    setSelectedCompany(company);
+    handleInputChange('company', company.value);
+    setCompanyModalVisible(false);
+    setCompanySearchValue('');
+  };
+
+  const handleCloseCompanyModal = useCallback(() => {
+    setCompanyModalVisible(false);
+    setCompanySearchValue('');
   }, []);
 
   return (
@@ -107,16 +171,17 @@ const EditProfile = () => {
           handleInputChange={handleInputChange}
         />
 
-        <CustomComponents.Dropdown
-          margin="mb-3"
-          inputName="company"
-          placeholder={t('companyName')}
-          selectedItem={{
-            label: formData?.company?.name,
-            value: formData?.company?.id,
-          }}
-          setSelectedItem={handleInputChange}
-        />
+        {/* Company Selection with Modal (same as SignUp) */}
+        <Styled.TouchableOpacity
+          onPress={() => setCompanyModalVisible(true)}
+          className="w-full h-[44px] mb-3 bg-white shadow shadow-zinc-300 rounded-[8px] justify-center pl-4">
+          <Styled.Text className="w-full text-[#868782] text-base text-left font-poppins">
+            {selectedCompany.label || formData?.company?.name || t('companyName')}
+          </Styled.Text>
+          <Styled.View className="absolute right-3 top-3">
+            <Icons.ArrowDown />
+          </Styled.View>
+        </Styled.TouchableOpacity>
 
         <CustomComponents.Input
           inputName="email"
@@ -135,6 +200,19 @@ const EditProfile = () => {
           buttonAction={editProfile}
         />
       </Styled.ScrollView>
+
+      <CustomComponents.CompanyModal
+        visible={companyModalVisible}
+        onClose={handleCloseCompanyModal}
+        selectedCompany={selectedCompany}
+        onSelect={handleCompanySelect}
+        companyData={companyData}
+        searchValue={companySearchValue}
+        onSearchChange={setCompanySearchValue}
+        onLoadMore={loadMoreCompanies}
+        hasMore={companyHasMore}
+        loadingMore={companyLoadingMore}
+      />
     </>
   );
 };

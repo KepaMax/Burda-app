@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import Styled from '@common/StyledComponents';
 import Icons from '@icons/icons.js';
 import {useNavigation, useIsFocused} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native';
+import {useMMKVNumber} from 'react-native-mmkv';
 import {fetchData} from '@utils/fetchData';
 import {API_URL} from '@env';
 
@@ -10,8 +11,9 @@ const HomeHeader = () => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadCountRefreshTrigger] = useMMKVNumber('unreadCountRefreshTrigger');
 
-  const getUnreadCount = async () => {
+  const getUnreadCount = useCallback(async () => {
     try {
       const result = await fetchData({
         url: `${API_URL}/notifications/unread-count/`,
@@ -24,13 +26,20 @@ const HomeHeader = () => {
     } catch (error) {
       console.error('Error fetching unread count:', error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (isFocused) {
       getUnreadCount();
     }
-  }, [isFocused]);
+  }, [isFocused, getUnreadCount]);
+
+  // Refresh unread count when a push notification is received (foreground or background)
+  useEffect(() => {
+    if (unreadCountRefreshTrigger != null && unreadCountRefreshTrigger > 0) {
+      getUnreadCount();
+    }
+  }, [unreadCountRefreshTrigger, getUnreadCount]);
 
   return (
     <Styled.View className="px-4 py-5 border-b-[1px] border-[#E4E4E4] flex-row items-center justify-between">

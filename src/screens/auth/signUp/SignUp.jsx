@@ -11,6 +11,7 @@ import {fetchData} from '@utils/fetchData';
 import {API_URL} from '@env';
 import Icons from '@icons/icons.js';
 import {prefixData} from '@utils/staticData';
+import AcceptTermsAndConditions from './components/AcceptTermsAndConditions';
 
 const SignUp = () => {
   const {t} = useTranslation();
@@ -26,7 +27,13 @@ const SignUp = () => {
   const [selectedCompany, setSelectedCompany] = useState({});
   const [companyData, setCompanyData] = useState([]);
   const [companySearchValue, setCompanySearchValue] = useState('');
+  const [companyPage, setCompanyPage] = useState(1);
+  const [companyHasMore, setCompanyHasMore] = useState(true);
+  const [companyLoadingMore, setCompanyLoadingMore] = useState(false);
   
+  // Terms & Conditions
+  const [termsAccepted, setTermsAccepted] = useState(false);
+
   // Prefix modal states
   const [prefixModalVisible, setPrefixModalVisible] = useState(false);
   const [selectedPrefix, setSelectedPrefix] = useState({});
@@ -107,6 +114,9 @@ const SignUp = () => {
     if (!formData.company) {
       newErrors.company = t('fieldRequired');
     }
+    if (!termsAccepted) {
+      newErrors.terms = t('acceptTermsRequired');
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -154,27 +164,40 @@ const SignUp = () => {
     }
   };
 
-  // Fetch company data
-  useEffect(() => {
-    const getCompanyData = async () => {
-      try {
-        const result = await fetchData({
-          url: `${API_URL}/companies/`,
-        });
-
-        if (result?.success) {
-          const formattedCompanyData = result?.data.results.map(company => ({
-            label: company.name,
-            value: company.id,
-          }));
-          setCompanyData(formattedCompanyData);
-        }
-      } catch (error) {
-        console.error('Error fetching companies:', error);
+  // Fetch company data (paginated)
+  const fetchCompaniesPage = useCallback(async (page = 1, append = false) => {
+    try {
+      if (page === 1) setCompanyData([]);
+      if (append) setCompanyLoadingMore(true);
+      const result = await fetchData({
+        url: `${API_URL}/companies/?page=${page}&page_size=50`,
+      });
+      if (append) setCompanyLoadingMore(false);
+      if (result?.success && result?.data?.results) {
+        const formatted = result.data.results.map(company => ({
+          label: company.name,
+          value: company.id,
+        }));
+        setCompanyData(prev => (append ? [...prev, ...formatted] : formatted));
+        setCompanyHasMore(!!result.data.next);
+        setCompanyPage(page + 1);
       }
-    };
-    getCompanyData();
+    } catch (error) {
+      console.error('Error fetching companies:', error);
+      if (append) setCompanyLoadingMore(false);
+    }
   }, []);
+
+  useEffect(() => {
+    setCompanyPage(1);
+    setCompanyHasMore(true);
+    fetchCompaniesPage(1, false);
+  }, [fetchCompaniesPage]);
+
+  const loadMoreCompanies = useCallback(() => {
+    if (!companyHasMore || companyLoadingMore) return;
+    fetchCompaniesPage(companyPage, true);
+  }, [companyHasMore, companyLoadingMore, companyPage, fetchCompaniesPage]);
 
   // Handle initial company selection
   useEffect(() => {
@@ -316,6 +339,11 @@ const SignUp = () => {
           keyboardType="email-address"
         />
 
+        <AcceptTermsAndConditions
+          accepted={termsAccepted}
+          setAccepted={setTermsAccepted}
+        />
+
         <CustomComponents.Link
           title={t('alreadyHaveAccount')}
           margin="mb-4 mt-2"
@@ -334,6 +362,7 @@ const SignUp = () => {
           title={t('continue')}
           extraTxtStyling="text-left"
           buttonAction={handleRegister}
+          disabled={!termsAccepted}
         />
       </Styled.View>
 
@@ -346,6 +375,9 @@ const SignUp = () => {
         companyData={companyData}
         searchValue={companySearchValue}
         onSearchChange={setCompanySearchValue}
+        onLoadMore={loadMoreCompanies}
+        hasMore={companyHasMore}
+        loadingMore={companyLoadingMore}
       />
       <CustomComponents.PrefixModal
         visible={prefixModalVisible}

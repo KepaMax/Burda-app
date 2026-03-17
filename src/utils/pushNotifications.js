@@ -10,17 +10,19 @@ import {fetchData} from '@utils/fetchData';
 import storage from '@utils/MMKVStore';
 
 const FCM_TOKEN_KEY = 'fcmToken';
+const UNREAD_COUNT_REFRESH_TRIGGER_KEY = 'unreadCountRefreshTrigger';
 const ANDROID_CHANNEL_ID = 'burda_default';
 const DEVICE_TYPE = Platform.OS === 'ios' ? 'ios' : 'android';
 
 /**
  * Register FCM token on backend so push notifications can be sent to this device.
+ * Only sends request when user is logged in (has accessToken). Avoids 403 when called before login.
  */
 export async function registerFcmTokenWithBackend(token) {
   try {
-    if (!token) {
-      return;
-    }
+    if (!token) return;
+    const accessToken = storage.getString('accessToken');
+    if (!accessToken) return; // Kullanıcı giriş yapmamışsa backend'e gönderme (403 önlenir)
 
     const result = await fetchData({
       url: `${API_URL}/notifications/fcm/register/`,
@@ -32,7 +34,7 @@ export async function registerFcmTokenWithBackend(token) {
       },
       returnsData: false,
     });
-    if(result?.success){
+    if (result?.success) {
       console.log('FCM token registered successfully');
     }
     if (!result.success) {
@@ -42,10 +44,17 @@ export async function registerFcmTokenWithBackend(token) {
         result.data || '',
       );
     }
-    
   } catch (e) {
     console.warn('FCM token register error:', e?.message || e);
   }
+}
+
+/**
+ * Call after login so the stored FCM token is registered with the backend.
+ */
+export async function registerStoredFcmTokenIfLoggedIn() {
+  const token = storage.getString(FCM_TOKEN_KEY);
+  if (token) await registerFcmTokenWithBackend(token);
 }
 
 /**
@@ -142,8 +151,25 @@ export async function displayNotificationFromRemoteMessage(remoteMessage) {
         });
       }
     }
+    triggerUnreadCountRefresh();
   } catch (e) {
     console.warn('displayNotificationFromRemoteMessage error:', e?.message || e);
+  }
+}
+
+/**
+ * Increment trigger so HomeHeader (and any listener) can refresh unread count.
+ * Call when a push notification is received (foreground or background).
+ */
+export function triggerUnreadCountRefresh() {
+  try {
+    const raw = typeof storage.getNumber === 'function'
+      ? storage.getNumber(UNREAD_COUNT_REFRESH_TRIGGER_KEY)
+      : parseInt(storage.getString(UNREAD_COUNT_REFRESH_TRIGGER_KEY) || '0', 10);
+    const current = Number(raw) || 0;
+    storage.set(UNREAD_COUNT_REFRESH_TRIGGER_KEY, current + 1);
+  } catch (e) {
+    console.warn('triggerUnreadCountRefresh error:', e?.message || e);
   }
 }
 

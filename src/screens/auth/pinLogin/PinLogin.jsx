@@ -10,6 +10,7 @@ import Images from '@images/images.js';
 import {fetchData} from '@utils/fetchData';
 import {API_URL} from '@env';
 import storage from '@utils/MMKVStore';
+import {registerStoredFcmTokenIfLoggedIn} from '@utils/pushNotifications';
 import {useMMKVBoolean, useMMKVString} from 'react-native-mmkv';
 import ReactNativeBiometrics from 'react-native-biometrics';
 
@@ -191,6 +192,7 @@ const PinLogin = () => {
             storage.set('isLoggedIn', true);
             storage.set('isPinVerified', true);
             setIsPinVerified(true); // Hook'u manuel olarak güncelle - Navigation.jsx otomatik olarak TabStack'e geçecek
+            registerStoredFcmTokenIfLoggedIn();
           } else {
             if (isUserNotFoundError(result)) {
               handleUserNotFoundLogout();
@@ -309,6 +311,7 @@ const PinLogin = () => {
                 storage.set('isLoggedIn', true);
                 storage.set('isPinVerified', true);
                 setIsPinVerified(true); // Hook'u manuel olarak güncelle - Navigation.jsx otomatik olarak TabStack'e geçecek
+                registerStoredFcmTokenIfLoggedIn();
 
                 // Parmak izi ile giriş isteyip istemediğini sor
                 Alert.alert(
@@ -464,7 +467,8 @@ const PinLogin = () => {
           storage.set('isLoggedIn', true);
           storage.set('isPinVerified', true);
           setIsPinVerified(true); // Hook'u manuel olarak güncelle - Navigation.jsx otomatik olarak TabStack'e geçecek
-          
+          registerStoredFcmTokenIfLoggedIn();
+
           // Eğer enableBiometric modundaysa, önce parmak izi modalını aç
           if (enableBiometric) {
             try {

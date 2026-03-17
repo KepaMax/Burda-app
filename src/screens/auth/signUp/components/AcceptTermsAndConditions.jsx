@@ -1,94 +1,70 @@
 import Styled from '@common/StyledComponents';
-import Icons from '@icons/icons.js';
 import '@locales/index';
 import {useTranslation} from 'react-i18next';
-import storage from '@utils/MMKVStore';
 import {useNavigation} from '@react-navigation/native';
+import {View, Text} from 'react-native';
+
+const CHECKBOX_SIZE = 22;
+const LINK_COLOR = '#66B600';
 
 const AcceptTermsAndConditions = ({accepted, setAccepted}) => {
   const {t} = useTranslation();
-  const selectedLanguage = storage.getString('selectedLanguage');
   const navigation = useNavigation();
 
+  const openPrivacyPolicy = () => {
+    navigation.navigate('WebViewScreen', {
+      url: 'https://burda-staticfiles-storage.s3.eu-north-1.amazonaws.com/BURDA+Privacy+policy.pdf',
+      title: t('privacyPolicy'),
+    });
+  };
+
+  const openTermsOfService = () => {
+    navigation.navigate('WebViewScreen', {
+      url: 'https://burda-staticfiles-storage.s3.eu-north-1.amazonaws.com/BURDA+Terms+and+conditions.pdf',
+      title: t('termsOfService'),
+    });
+  };
+
   return (
-    <Styled.View className="w-auto flex-row px-1 mb-3">
+    <Styled.View className="flex-row items-start mb-4" style={{gap: 10}}>
       <Styled.TouchableOpacity
-        onPress={() => {
-          setAccepted(!accepted);
+        onPress={() => setAccepted(!accepted)}
+        style={{
+          width: CHECKBOX_SIZE,
+          height: CHECKBOX_SIZE,
+          borderWidth: 2,
+          borderColor: LINK_COLOR,
+          borderRadius: 4,
+          backgroundColor: accepted ? LINK_COLOR : 'white',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}>
-        {accepted ? <Icons.TermsConditionsFill /> : <Icons.TermsConditions />}
+        {accepted && (
+          <Text style={{color: 'white', fontSize: 14, fontWeight: '700'}}>✓</Text>
+        )}
       </Styled.TouchableOpacity>
 
-      {selectedLanguage === 'az' ? (
-        <Styled.View className="flex-row px-2 items-center w-full">
-          <Styled.TouchableOpacity
-            onPress={() => {
-              navigation.navigate('WebViewScreen', {
-                url: 'https://burda-staticfiles-storage.s3.eu-north-1.amazonaws.com/BURDA+Terms+and+conditions.pdf',
-                title: 'İstifadəçi qaydaları və şərtləri',
-              });
-            }}>
-            <Styled.Text className="font-poppins text-xs text-[#204F50] mr-1">
-              {t('termsOfUse')}
-            </Styled.Text>
-          </Styled.TouchableOpacity>
-
-          <Styled.Text className="font-poppins text-xs text-[#91919F]">
-            {t('and')}
-          </Styled.Text>
-
-          <Styled.TouchableOpacity
-            onPress={() => {
-              navigation.navigate('WebViewScreen', {
-                url: 'https://burda-staticfiles-storage.s3.eu-north-1.amazonaws.com/BURDA+Privacy+policy.pdf',
-                title: 'Məxfilik Siyasəti',
-              });
-            }}>
-            <Styled.Text className="font-poppins text-xs text-[#204F50]">
-              {' '}
-              {t('privacyPolicySignUp')}{' '}
-            </Styled.Text>
-          </Styled.TouchableOpacity>
-
-          <Styled.Text className="font-poppins text-xs text-[#91919F]">
-            {t('readAndAgreed')}
-          </Styled.Text>
-        </Styled.View>
-      ) : (
-        <Styled.View className="flex-row px-2 items-center flex-wrap w-full">
-          <Styled.Text className="font-poppins text-xs text-[#91919F]">
-            {t('readAndAgreed')}
-          </Styled.Text>
-
-          <Styled.TouchableOpacity
-            onPress={() => {
-              navigation.navigate('WebViewScreen', {
-                url: 'https://burda-staticfiles-storage.s3.eu-north-1.amazonaws.com/BURDA+Terms+and+conditions.pdf',
-                title: 'Terms of use',
-              });
-            }}>
-            <Styled.Text className="font-poppins text-xs text-[#204F50] mr-1">
-              {t('termsOfUse')}
-            </Styled.Text>
-          </Styled.TouchableOpacity>
-
-          <Styled.Text className="font-poppins text-xs text-[#91919F]">
-            {t('and')}
-          </Styled.Text>
-
-          <Styled.TouchableOpacity
-            onPress={() => {
-              navigation.navigate('WebViewScreen', {
-                url: 'https://burda-staticfiles-storage.s3.eu-north-1.amazonaws.com/BURDA+Privacy+policy.pdf',
-                title: 'Privacy Policy',
-              });
-            }}>
-            <Styled.Text className="font-poppins text-xs text-[#204F50]">
-              {t('privacyPolicySignUp')}
-            </Styled.Text>
-          </Styled.TouchableOpacity>
-        </Styled.View>
-      )}
+      <View style={{flex: 1, paddingTop: 2}}>
+        <Text
+          style={{
+            fontFamily: 'Poppins-Regular',
+            fontSize: 14,
+            color: '#374151',
+          }}>
+          {t('iAgreeToThe')}{' '}
+          <Text
+            onPress={openPrivacyPolicy}
+            style={{fontFamily: 'Poppins-Regular', fontSize: 14, color: LINK_COLOR}}>
+            {t('privacyPolicy')}
+          </Text>
+          {t('and')}
+          <Text
+            onPress={openTermsOfService}
+            style={{fontFamily: 'Poppins-Regular', fontSize: 14, color: LINK_COLOR}}>
+            {t('termsOfService')}
+          </Text>
+        </Text>
+      </View>
     </Styled.View>
   );
 };

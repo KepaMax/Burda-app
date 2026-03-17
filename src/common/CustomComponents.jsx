@@ -25,12 +25,15 @@ const Button = ({
   icon = null,
   iconPosition = 'left',
   widthInPixels = null,
+  disabled = false,
   // gap = icon ? 'gap-2' : 'gap-0',
 }) => {
   return (
     <Styled.TouchableOpacity
       {...(widthInPixels ? {style: {width: widthInPixels}} : {})}
-      onPress={buttonAction}
+      onPress={disabled ? undefined : buttonAction}
+      disabled={disabled}
+      style={disabled ? {opacity: 0.5} : undefined}
       className={`-z-10 justify-center ${bgColor} ${borderRadius} ${padding} ${margin} ${
         icon && iconPosition === 'right' ? 'flex-row-reverse' : 'flex-row'
       }  ${extraBtnStyling}`}>
@@ -268,10 +271,14 @@ const Dropdown = ({
   textColor,
   error,
 }) => {
+  const {t} = useTranslation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [companyData, setCompanyData] = useState([]);
   const [companyTitle, setCompanyTitle] = useState('');
   const [searchValue, setSearchValue] = useState('');
+  const [companyPage, setCompanyPage] = useState(1);
+  const [companyHasMore, setCompanyHasMore] = useState(true);
+  const [companyLoadingMore, setCompanyLoadingMore] = useState(false);
 
   const DropdownItem = ({item}) => {
     return (
@@ -299,23 +306,38 @@ const Dropdown = ({
     );
   };
 
+  const fetchCompaniesPage = useCallback(async (page = 1, append = false) => {
+    if (inputName !== 'company') return;
+    if (page === 1) setCompanyData([]);
+    if (append) setCompanyLoadingMore(true);
+    const result = await fetchData({
+      url: `${API_URL}/companies/?page=${page}&page_size=20`,
+    });
+    console.log("Company Data", result);
+    if (append) setCompanyLoadingMore(false);
+    if (result?.success && result?.data?.results) {
+      const formatted = result.data.results.map(company => ({
+        label: company.name,
+        value: company.id,
+      }));
+      setCompanyData(prev => (append ? [...prev, ...formatted] : formatted));
+      setCompanyHasMore(!!result.data.next);
+      setCompanyPage(page + 1);
+    }
+  }, [inputName]);
+
   useEffect(() => {
-    const getCompanyData = async () => {
-      const result = await fetchData({
-        url: `${API_URL}/companies/`,
-      });
+    if (inputName === 'company') {
+      setCompanyPage(1);
+      setCompanyHasMore(true);
+      fetchCompaniesPage(1, false);
+    }
+  }, [inputName, fetchCompaniesPage]);
 
-      if (result?.success) {
-        const formattedCompanyData = result?.data.results.map(company => ({
-          label: company.name,
-          value: company.id,
-        }));
-
-        setCompanyData(formattedCompanyData);
-      }
-    };
-    inputName === 'company' && getCompanyData();
-  }, []);
+  const loadMoreCompanies = useCallback(() => {
+    if (inputName !== 'company' || !companyHasMore || companyLoadingMore) return;
+    fetchCompaniesPage(companyPage, true);
+  }, [inputName, companyHasMore, companyLoadingMore, companyPage, fetchCompaniesPage]);
 
   const filteredData =
     searchValue.length > 0
@@ -348,7 +370,7 @@ const Dropdown = ({
       </Styled.View>
 
       {dropdownOpen && (
-        <Styled.View className="z-10 absolute top-12 w-full max-h-[120px] bg-white rounded-b-[18px] overflow-hidden border-t-0 border-[1px] border-[#EDEFF3]">
+        <Styled.View className="z-10 absolute top-12 w-full max-h-[280px] bg-white rounded-b-[18px] overflow-hidden border-t-0 border-[1px] border-[#EDEFF3]">
           {inputName === 'company' && (
             <Styled.TextInput
               value={searchValue}
@@ -359,11 +381,32 @@ const Dropdown = ({
             />
           )}
 
-          <ScrollView nestedScrollEnabled>
-            {(companyData.length ? filteredData : items).map(item => (
-              <DropdownItem key={item.value} item={item} />
-            ))}
-          </ScrollView>
+          {inputName === 'company' ? (
+            <ScrollView
+              nestedScrollEnabled
+              style={{maxHeight: 220}}
+              onScroll={e => {
+                const {contentOffset, contentSize, layoutMeasurement} = e.nativeEvent;
+                const nearEnd = contentOffset.y + layoutMeasurement.height >= contentSize.height - 60;
+                if (nearEnd && companyHasMore && !companyLoadingMore) loadMoreCompanies();
+              }}
+              scrollEventThrottle={200}>
+              {filteredData.map(item => (
+                <DropdownItem key={item.value} item={item} />
+              ))}
+              {companyLoadingMore && (
+                <Styled.View className="py-2 items-center">
+                  <Styled.Text className="text-xs text-[#868782]">{t('loadingCompanies')}</Styled.Text>
+                </Styled.View>
+              )}
+            </ScrollView>
+          ) : (
+            <ScrollView nestedScrollEnabled style={{maxHeight: 120}}>
+              {items.map(item => (
+                <DropdownItem key={item.value} item={item} />
+              ))}
+            </ScrollView>
+          )}
         </Styled.View>
       )}
     </Styled.TouchableOpacity>
@@ -429,6 +472,9 @@ const CompanyModal = ({
   companyData = [],
   searchValue = '',
   onSearchChange,
+  onLoadMore,
+  hasMore = false,
+  loadingMore = false,
 }) => {
   const {t} = useTranslation();
   const searchInputRef = useRef(null);
@@ -440,30 +486,17 @@ const CompanyModal = ({
     );
   }, [companyData, searchValue]);
 
-  // Memoized render item for FlatList
-  const renderCompanyItem = useCallback(({item}) => (
-    <Styled.TouchableOpacity
-      className={`p-4 border-b border-gray-100 ${
-        selectedCompany?.value === item.value ? 'bg-[#66B600]' : 'bg-transparent'
-      }`}
-      onPress={() => onSelect(item)}>
-      <Styled.Text className={`${selectedCompany?.value === item.value ? 'text-white' : 'text-[#868782]'} text-base font-poppins`}>
-        {item.label}
-      </Styled.Text>
-    </Styled.TouchableOpacity>
-  ), [selectedCompany?.value, onSelect]);
-
-  // Memoized key extractor
-  const keyExtractor = useCallback((item) => String(item.value), []);
-
-  // Memoized empty component
-  const listEmptyComponent = useMemo(() => (
-    <Styled.View className="p-4">
-      <Styled.Text className="text-gray-500 text-base font-poppins text-center">
-        {searchValue ? t('noCompaniesFound') : t('loadingCompanies')}
-      </Styled.Text>
-    </Styled.View>
-  ), [searchValue, t]);
+  const handleScroll = useCallback(
+    ({nativeEvent}) => {
+      if (!onLoadMore || !hasMore || loadingMore) return;
+      const {layoutMeasurement, contentOffset, contentSize} = nativeEvent;
+      const padding = 40;
+      const isNearEnd =
+        layoutMeasurement.height + contentOffset.y >= contentSize.height - padding;
+      if (isNearEnd) onLoadMore();
+    },
+    [onLoadMore, hasMore, loadingMore]
+  );
 
   if (!visible) return null;
 
@@ -509,16 +542,46 @@ const CompanyModal = ({
             />
           </Styled.View>
           
-          {/* Company List */}
-          <FlatList
-            data={filteredCompanies}
-            keyExtractor={keyExtractor}
-            renderItem={renderCompanyItem}
+          {/* Company List - ScrollView for infinite scroll */}
+          <ScrollView
+            style={{maxHeight: 280}}
+            onScroll={handleScroll}
+            scrollEventThrottle={200}
             showsVerticalScrollIndicator={false}
-            ListEmptyComponent={listEmptyComponent}
-            removeClippedSubviews={false}
-            keyboardShouldPersistTaps="handled"
-          />
+            keyboardShouldPersistTaps="handled">
+            {filteredCompanies.length === 0 ? (
+              <Styled.View className="p-4">
+                <Styled.Text className="text-gray-500 text-base font-poppins text-center">
+                  {searchValue ? t('noCompaniesFound') : t('loadingCompanies')}
+                </Styled.Text>
+              </Styled.View>
+            ) : (
+              <>
+                {filteredCompanies.map(item => (
+                  <Styled.TouchableOpacity
+                    key={String(item.value)}
+                    className={`p-4 border-b border-gray-100 ${
+                      selectedCompany?.value === item.value ? 'bg-[#66B600]' : 'bg-transparent'
+                    }`}
+                    onPress={() => onSelect(item)}>
+                    <Styled.Text
+                      className={`${
+                        selectedCompany?.value === item.value ? 'text-white' : 'text-[#868782]'
+                      } text-base font-poppins`}>
+                      {item.label}
+                    </Styled.Text>
+                  </Styled.TouchableOpacity>
+                ))}
+                {loadingMore && (
+                  <Styled.View className="p-3 items-center">
+                    <Styled.Text className="text-[#868782] text-sm font-poppins">
+                      {t('loadingCompanies')}
+                    </Styled.Text>
+                  </Styled.View>
+                )}
+              </>
+            )}
+          </ScrollView>
         </Styled.View>
       </Styled.View>
     </Modal>

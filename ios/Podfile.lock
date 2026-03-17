@@ -1036,6 +1036,8 @@ PODS:
     - React-Core
   - react-native-image-picker (5.6.0):
     - React-Core
+  - react-native-maps (1.20.1):
+    - React-Core
   - react-native-mmkv (2.12.2):
     - DoubleConversion
     - glog
@@ -1456,6 +1458,7 @@ DEPENDENCIES:
   - react-native-biometrics (from `../node_modules/react-native-biometrics`)
   - react-native-blob-util (from `../node_modules/react-native-blob-util`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-mmkv (from `../node_modules/react-native-mmkv`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -1588,6 +1591,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-blob-util"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-maps:
+    :path: "../node_modules/react-native-maps"
   react-native-mmkv:
     :path: "../node_modules/react-native-mmkv"
   react-native-netinfo:
@@ -1718,6 +1723,7 @@ SPEC CHECKSUMS:
   react-native-biometrics: 43ed5b828646a7862dbc7945556446be00798e7d
   react-native-blob-util: f7234c91ad0e3faeee51b3edee80b61553f74993
   react-native-image-picker: 81940a00e3fff39786f4bfa242d5b6d454a8b36b
+  react-native-maps: 9febd31278b35cd21e4fad2cf6fa708993be5dab
   react-native-mmkv: f8155c2efbe795cb0c7586d00ff484b1c9388af0
   react-native-netinfo: 26560022f28c06d8ef00a9ff1e03beefbbb60c2d
   react-native-safe-area-context: b72c4611af2e86d80a59ac76279043d8f75f454c

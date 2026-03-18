@@ -5,7 +5,8 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, min_ios_version_supported
+# react-native-google-maps requires iOS 14+
+platform :ios, '14.0'
 prepare_react_native_project!
 
 linkage = ENV['USE_FRAMEWORKS']
@@ -15,6 +16,10 @@ if linkage != nil
 end
 
 target 'burda' do
+
+  # React Native Maps - Google Maps for iOS
+  rn_maps_path = '../node_modules/react-native-maps'
+  pod 'react-native-google-maps', :path => rn_maps_path
 
   config = use_native_modules!
 
@@ -74,6 +79,10 @@ target 'burda' do
         target.build_configurations.each do |config|
           config.build_settings['DEFINES_MODULE'] = 'YES'
         end
+      end
+      # Ensure iOS 14+ deployment target (fixes VisionCamera UIWindowScene, react-native-google-maps)
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
       end
     end
   end

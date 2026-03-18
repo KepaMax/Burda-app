@@ -58,7 +58,7 @@ const Branches = () => {
         </View>
       )}
       <MapView
-        provider={PROVIDER_GOOGLE}
+      provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={initialRegion}
         showsCompass={false}>

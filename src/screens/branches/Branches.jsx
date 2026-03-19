@@ -58,10 +58,12 @@ const Branches = () => {
         </View>
       )}
       <MapView
-      provider={PROVIDER_GOOGLE}
+        provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={initialRegion}
-        showsCompass={false}>
+        showsCompass={false}
+        scrollEnabled={true}
+        onPanDrag={() => {}}>
         {locations.map(location => {
           const lat = Number(location.latitude);
           const lng = Number(location.longitude);
@@ -73,6 +75,8 @@ const Branches = () => {
               key={location.id}
               coordinate={{latitude: lat, longitude: lng}}
               title={location.name}
+              tracksViewChanges={false}
+              image={require('@images/burda-location-icon.png')}
               description={location.address}
             />
           );

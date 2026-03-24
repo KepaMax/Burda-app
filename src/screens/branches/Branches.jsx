@@ -1,10 +1,11 @@
 import React, {useEffect, useState, useRef, useMemo} from 'react';
-import {StyleSheet, View, ActivityIndicator, Text} from 'react-native';
+import {StyleSheet, View, ActivityIndicator, Text, useColorScheme} from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Supercluster from 'supercluster';
 import {useTranslation} from 'react-i18next';
 import {fetchData} from '@utils/fetchData';
 import {API_URL} from '@env';
+import {GOOGLE_MAP_DARK_STYLE} from '../../constants/googleMapDarkStyle';
 
 const INITIAL_REGION = {
   latitude: 40.4093,
@@ -25,6 +26,7 @@ const toGeoJSON = points =>
 
 const Branches = () => {
   const {t} = useTranslation();
+  const colorScheme = useColorScheme();
   const mapRef = useRef(null);
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -107,6 +109,14 @@ const Branches = () => {
     };
   }, [points]);
 
+  const isDark = colorScheme === 'dark';
+
+  const markerIcon = isDark
+    ? require('@images/burda-location-icon.png')
+    : require('@images/burda-location-icon-dark.png');
+
+  const mapCustomStyle = isDark ? GOOGLE_MAP_DARK_STYLE : [];
+
   return (
     <View style={styles.container}>
       {loading && (
@@ -115,10 +125,12 @@ const Branches = () => {
         </View>
       )}
       <MapView
+        key={colorScheme ?? 'light'}
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={initialRegion}
+        customMapStyle={mapCustomStyle}
         showsCompass={false}
         scrollEnabled={true}
         onRegionChangeComplete={setRegion}>
@@ -133,7 +145,13 @@ const Branches = () => {
                 coordinate={{latitude, longitude}}
                 onPress={() => handleClusterPress(cluster)}
                 tracksViewChanges={false}>
-                <View style={styles.clusterMarker}>
+                <View
+                  style={[
+                    styles.clusterMarker,
+                    {
+                      backgroundColor: isDark ? '#66B600' : '#184639',
+                    },
+                  ]}>
                   <Text style={styles.clusterText}>{point_count}</Text>
                 </View>
               </Marker>
@@ -147,7 +165,7 @@ const Branches = () => {
               title={cluster.properties.name}
               description={cluster.properties.address}
               tracksViewChanges={false}
-              image={require('@images/burda-location-icon.png')}
+              image={markerIcon}
             />
           );
         })}
@@ -178,7 +196,6 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#66B600',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,

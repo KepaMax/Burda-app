@@ -98,6 +98,18 @@ const NotificationsPage = () => {
     }
   };
 
+  const dedupeNotificationsById = items => {
+    const seen = new Set();
+    return items.filter(item => {
+      const id = item?.id;
+      if (id == null || seen.has(id)) {
+        return false;
+      }
+      seen.add(id);
+      return true;
+    });
+  };
+
   const openModal = item => {
     if (!item.is_read) markAsRead(item.id, item.is_read);
     setModalNotification({...item, is_read: true});
@@ -113,11 +125,15 @@ const NotificationsPage = () => {
       });
 
       if (result?.success) {
-        const newData = result.data.results || [];
+        const newData = dedupeNotificationsById(result.data.results || []);
         if (isRefresh) {
           setNotifications(newData);
         } else {
-          setNotifications(prev => [...prev, ...newData]);
+          setNotifications(prev => {
+            const seen = new Set(prev.map(n => n.id));
+            const uniqueAppend = newData.filter(n => !seen.has(n.id));
+            return [...prev, ...uniqueAppend];
+          });
         }
         setHasMore(result.data.next !== null);
       }
@@ -216,7 +232,11 @@ const NotificationsPage = () => {
       ) : (
         <FlatList
           data={notifications}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={(item, index) =>
+            item?.id != null
+              ? `notification-${item.id}`
+              : `notification-index-${index}`
+          }
           renderItem={({item}) => (
             <NotificationItem
               item={item}

@@ -1,5 +1,12 @@
 import React, {useEffect, useState, useRef, useMemo} from 'react';
-import {StyleSheet, View, ActivityIndicator, Text, useColorScheme} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  Text,
+  Image,
+  useColorScheme,
+} from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Supercluster from 'supercluster';
 import {useTranslation} from 'react-i18next';
@@ -164,9 +171,16 @@ const Branches = () => {
               coordinate={{latitude, longitude}}
               title={cluster.properties.name}
               description={cluster.properties.address}
-              tracksViewChanges={false}
-              image={markerIcon}
-            />
+              anchor={{x: 0.5, y: 1}}
+              tracksViewChanges={false}>
+              <View style={styles.markerPinWrap}>
+                <Image
+                  source={markerIcon}
+                  style={styles.markerPinImage}
+                  resizeMode="contain"
+                />
+              </View>
+            </Marker>
           );
         })}
       </MapView>
@@ -205,6 +219,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '700',
     fontSize: 14,
+  },
+  markerPinWrap: {
+    width: 28,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  markerPinImage: {
+    width: 28,
+    height: 40,
   },
 });
 

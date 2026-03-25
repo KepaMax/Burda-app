@@ -22,8 +22,11 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/../node_modules/@notifee/react-native/android" />
             <option value="$PROJECT_DIR$/../node_modules/@react-native-community/masked-view/android" />
             <option value="$PROJECT_DIR$/../node_modules/@react-native-community/netinfo/android" />
+            <option value="$PROJECT_DIR$/../node_modules/@react-native-firebase/app/android" />
+            <option value="$PROJECT_DIR$/../node_modules/@react-native-firebase/messaging/android" />
             <option value="$PROJECT_DIR$/../node_modules/@react-native/gradle-plugin" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-biometrics/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-blob-util/android" />
@@ -32,6 +35,7 @@
             <option value="$PROJECT_DIR$/../node_modules/react-native-fs/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-gesture-handler/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-image-picker/android" />
+            <option value="$PROJECT_DIR$/../node_modules/react-native-maps/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-mmkv/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-permissions/android" />
             <option value="$PROJECT_DIR$/../node_modules/react-native-reanimated/android" />

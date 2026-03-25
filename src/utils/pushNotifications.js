@@ -112,7 +112,7 @@ export async function displayNotificationFromRemoteMessage(remoteMessage) {
     const title =
       remoteMessage.notification?.title ||
       remoteMessage.data?.title ||
-      'BURDA';
+      'Burda';
     const body =
       remoteMessage.notification?.body ||
       remoteMessage.data?.body ||

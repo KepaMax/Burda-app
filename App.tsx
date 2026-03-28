@@ -26,7 +26,7 @@ import { useIsFocused } from '@react-navigation/native';
 import Styled from './src/common/StyledComponents';
 import Receipt from './src/screens/profile/paymentMethods/Receipt';
 import ForceUpdateModal from './src/common/ForceUpdateModal';
-import { APP_VERSION, getPlatform } from './src/utils/appVersion';
+import { APP_VERSION, getPlatform, compareSemver } from './src/utils/appVersion';
 import {
   requestUserPermissionAndGetToken,
   requestNotificationPermissionAndCreateChannel,
@@ -121,7 +121,9 @@ function App(): JSX.Element {
       if (result?.success && result?.data) {
         const { has_update, is_force_update, deep_link, latest_version, release_notes } = result.data;
 
-        if (has_update) {
+        // Yerel sürüm API'deki latest ile eşit/üstündeyse modal gösterme (APP_VERSION sync hatası / API tutarsızlığı)
+        const clientBehindLatest = compareSemver(APP_VERSION, latest_version) < 0;
+        if (has_update && clientBehindLatest) {
           setUpdateInfo({
             latestVersion: latest_version,
             releaseNotes: release_notes || '',

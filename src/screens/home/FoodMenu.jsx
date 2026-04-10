@@ -1,16 +1,43 @@
 import Styled from '@common/StyledComponents';
 import {fetchData} from '@utils/fetchData';
 import storage from '@utils/MMKVStore';
-import {useEffect, useState, useRef, useMemo} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import FoodItem from './components/FoodItem';
 import {useRoute} from '@react-navigation/native';
-import {SectionList} from 'react-native';
+import {FlatList} from 'react-native';
 import NoItemsFound from '@common/NoItemsFound';
 import CustomComponents from '@common/CustomComponents';
 import {format} from 'date-fns';
 import {az, enUS} from 'date-fns/locale';
 import CategoryHeader from './components/CategoryHeader';
 import {API_URL} from '@env';
+
+// Section başlığı (renderSectionHeader ile aynı spacing) — getItemLayout ile uyumlu sabit yükseklik
+const SECTION_HEADER_HEIGHT = 72;
+// FoodItem: h-[140px] + my-2 (8+8)
+const FOOD_ROW_HEIGHT = 156;
+
+const buildFlatRows = sections => {
+  const rows = [];
+  for (const section of sections) {
+    rows.push({kind: 'header', title: section.title});
+    for (const item of section.data) {
+      rows.push({kind: 'food', item});
+    }
+  }
+  return rows;
+};
+
+const buildRowOffsets = rows => {
+  const offsets = [];
+  let offset = 0;
+  for (let i = 0; i < rows.length; i++) {
+    offsets.push(offset);
+    offset +=
+      rows[i].kind === 'header' ? SECTION_HEADER_HEIGHT : FOOD_ROW_HEIGHT;
+  }
+  return offsets;
+};
 
 const FoodMenu = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -21,20 +48,75 @@ const FoodMenu = () => {
   const {year, date, fullDate} = route.params;
   const scrollToCategory = route.params?.scrollToCategory;
   const today = new Date();
-  const sectionListRef = useRef(null);
+  const listRef = useRef(null);
 
-  const scrollToSectionByTitle = title => {
-    const sectionIndex = filteredMenu.findIndex(section => section.title === title);
-
-    if (sectionIndex !== -1 && sectionListRef.current) {
-      sectionListRef.current.scrollToLocation({
-        animated: true,
-        sectionIndex: sectionIndex,
-        itemIndex: 0,
-        viewPosition: 0,
-        viewOffset: 50, // Section header height offset
-      });
+  const filteredMenu = useMemo(() => {
+    if (!searchText.trim()) {
+      return menu;
     }
+
+    const searchLower = searchText.toLowerCase();
+    return menu
+      .map(section => ({
+        ...section,
+        data: section.data.filter(item => {
+          const name = item.meal?.name || item.name || '';
+          const description = item.meal?.description || item.description || '';
+          return (
+            name.toLowerCase().includes(searchLower) ||
+            description.toLowerCase().includes(searchLower)
+          );
+        }),
+      }))
+      .filter(section => section.data.length > 0);
+  }, [menu, searchText]);
+
+  const flatRows = useMemo(() => buildFlatRows(filteredMenu), [filteredMenu]);
+
+  const rowOffsets = useMemo(() => buildRowOffsets(flatRows), [flatRows]);
+
+  const getItemLayout = useCallback(
+    (_data, index) => {
+      const row = flatRows[index];
+      const length =
+        row.kind === 'header' ? SECTION_HEADER_HEIGHT : FOOD_ROW_HEIGHT;
+      return {
+        length,
+        offset: rowOffsets[index],
+        index,
+      };
+    },
+    [flatRows, rowOffsets],
+  );
+
+  const scrollToSectionByTitle = useCallback(
+    title => {
+      const index = flatRows.findIndex(
+        row => row.kind === 'header' && row.title === title,
+      );
+      if (index === -1 || !listRef.current) {
+        return;
+      }
+      listRef.current.scrollToIndex({
+        index,
+        animated: true,
+        viewPosition: 0,
+        viewOffset: 50,
+      });
+    },
+    [flatRows],
+  );
+
+  const onScrollToIndexFailed = info => {
+    const targetIndex = info.index;
+    setTimeout(() => {
+      listRef.current?.scrollToIndex({
+        index: targetIndex,
+        animated: true,
+        viewPosition: 0,
+        viewOffset: 50,
+      });
+    }, 100);
   };
 
   const selectedLanguage = storage.getString('selectedLanguage');
@@ -53,7 +135,6 @@ const FoodMenu = () => {
     locale: getLocale(selectedLanguage),
   });
 
-
   const getFoodData = async () => {
     const result = await fetchData({
       url: `${API_URL}/menu-items/?date=${fullDate}&page_size=100`,
@@ -62,7 +143,6 @@ const FoodMenu = () => {
     console.log(result);
 
     if (!result?.success || !result?.data?.results?.[0]?.meal_items) {
-      // API hatası veya boş veri
       setMenu([]);
       setCategories([]);
       return;
@@ -99,13 +179,9 @@ const FoodMenu = () => {
     setMenu(structuredData);
   };
 
-  const onScrollToIndexFailed = info => {
-    console.warn('Scroll to index failed', info);
-    // You might want to handle this more gracefully
-  };
-
   useEffect(() => {
     getFoodData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- yalnız mount: fullDate ile tek istek
   }, []);
 
   useEffect(() => {
@@ -113,28 +189,43 @@ const FoodMenu = () => {
   }, [scrollToCategory, categories]);
 
   useEffect(() => {
-    if (selectedCategory && filteredMenu.length) {
-    scrollToSectionByTitle(selectedCategory);
+    if (!selectedCategory || !flatRows.length) {
+      return;
     }
-  }, [selectedCategory, filteredMenu]);
+    const id = requestAnimationFrame(() => {
+      scrollToSectionByTitle(selectedCategory);
+    });
+    return () => cancelAnimationFrame(id);
+  }, [selectedCategory, scrollToSectionByTitle, flatRows.length]);
 
-  // Filter menu based on search text
-  const filteredMenu = useMemo(() => {
-    if (!searchText.trim()) {
-      return menu;
+  const keyExtractor = useCallback((row, index) => {
+    if (row.kind === 'header') {
+      return `h-${row.title}-${index}`;
     }
-    
-    const searchLower = searchText.toLowerCase();
-    return menu.map(section => ({
-      ...section,
-      data: section.data.filter(item => {
-        const name = item.meal?.name || item.name || '';
-        const description = item.meal?.description || item.description || '';
-        return name.toLowerCase().includes(searchLower) ||
-               description.toLowerCase().includes(searchLower);
-      })
-    })).filter(section => section.data.length > 0);
-  }, [menu, searchText]);
+    const mealId = row.item?.meal?.id ?? row.item?.id ?? index;
+    return `f-${mealId}-${index}`;
+  }, []);
+
+  const renderRow = useCallback(
+    ({item: row}) => {
+      if (row.kind === 'header') {
+        return (
+          <Styled.Text className="text-[#414141] font-poppins-medium text-[20px] mx-5 mt-5 mb-3">
+            {row.title}
+          </Styled.Text>
+        );
+      }
+      return (
+        <FoodItem
+          showCount={true}
+          item={row.item}
+          source="WeeklyMenu"
+          menuDate={fullDate}
+        />
+      );
+    },
+    [fullDate],
+  );
 
   return (
     <>
@@ -144,7 +235,6 @@ const FoodMenu = () => {
         title={`${date} ${formattedMonth} ${year}`}
       />
 
-      {/* Search Bar */}
       <Styled.View className="bg-white px-4 py-3 ">
         <Styled.View className="relative">
           <Styled.TextInput
@@ -172,17 +262,18 @@ const FoodMenu = () => {
       />
 
       {filteredMenu?.length ? (
-        <SectionList
-          ref={sectionListRef}
-          stickySectionHeadersEnabled={false}
-          sections={filteredMenu}
+        <FlatList
+          ref={listRef}
+          style={{flex: 1, backgroundColor: '#F8F8F8'}}
+          data={flatRows}
+          keyExtractor={keyExtractor}
+          renderItem={renderRow}
+          getItemLayout={getItemLayout}
           onScrollToIndexFailed={onScrollToIndexFailed}
-          renderItem={({item}) => <FoodItem showCount={true} item={item} source="WeeklyMenu" menuDate={fullDate} />}
-          renderSectionHeader={({section: {title}}) => (
-            <Styled.Text className="text-[#414141] font-poppins-medium text-[20px] mx-5 mt-5 mb-3">
-              {title}
-            </Styled.Text>
-          )}
+          initialNumToRender={24}
+          maxToRenderPerBatch={12}
+          windowSize={11}
+          removeClippedSubviews={false}
         />
       ) : (
         <NoItemsFound />

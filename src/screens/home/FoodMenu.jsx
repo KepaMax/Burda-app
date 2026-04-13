@@ -13,7 +13,8 @@ import CategoryHeader from './components/CategoryHeader';
 import {API_URL} from '@env';
 
 // Section başlığı (renderSectionHeader ile aynı spacing) — getItemLayout ile uyumlu sabit yükseklik
-const SECTION_HEADER_HEIGHT = 72;
+
+const SECTION_HEADER_HEIGHT = Platform.OS === 'android' ? 72 : 64;
 // FoodItem: h-[140px] + my-2 (8+8)
 const FOOD_ROW_HEIGHT = 156;
 

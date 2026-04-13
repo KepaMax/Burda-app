@@ -1,6 +1,6 @@
 import Styled from '@common/StyledComponents';
 import {useNavigation} from '@react-navigation/native';
-import {Dimensions} from 'react-native';
+import {Dimensions, Platform} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Icons from '@icons/icons';
 import {useEffect} from 'react';
@@ -25,9 +25,12 @@ const BasketItem = ({item, incrementBasketItemCount, decrementBasketItemCount, r
             basketItemId: item.id,
           });
         }}
-        hitSlop={{top: 30, bottom: 30, left: 30, right: 30}}
-        className="absolute -right-3 -top-3 p-[6px] bg-white shadow shadow-zinc-300 rounded-[8px]">
-        <Icons.X />
+        hitSlop={{top: 24, bottom: 24, left: 24, right: 24}}
+        style={Platform.OS === 'android' ? {elevation: 5} : undefined}
+        className="absolute -right-2 -top-4 p-[8px] items-center justify-center bg-white shadow shadow-zinc-300 rounded-full">
+        <Styled.View style={{transform: [{scale: 1.12}]}}>
+          <Icons.X width={20} height={20} />
+        </Styled.View>
       </Styled.TouchableOpacity>
 
       <Styled.View className="absolute right-4 bottom-2 flex-row items-center gap-2 bg-white rounded-[8px] p-1 z-10">

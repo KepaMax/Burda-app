@@ -87,8 +87,8 @@ android {
         applicationId "com.myburda.burda"
         minSdkVersion 23
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 34
-        versionName "2.0.4"
+        versionCode 35
+        versionName "2.0.5"
     }
     signingConfigs {
         debug {

@@ -18,7 +18,6 @@ const TodaysMenu = () => {
     useMMKVString('selectedLanguage');
   const date = format(new Date(), 'yyyy-MM-d');
   const formatString = 'd MMMM';
-  console.log(selectedLanguage);
 
   const locale = selectedLanguage === 'az' ? az : enUS;
 
@@ -61,9 +60,10 @@ const TodaysMenu = () => {
     const originalPrice = item.meal.original_price;
     const discountedPrice = item.meal.discounted_price;
 
-    // İndirim yüzdesini API response'dan al (max_discount)
-    const discountPercent = hasDiscount 
-      ? (item.meal?.category?.max_discount ?? 0)
+    const mealDiscountPercent = item.meal?.discount_percent;
+    const discountPercent = hasDiscount
+      ? Number(mealDiscountPercent ?? item.meal?.category?.max_discount ?? 0) ||
+        0
       : 0;
     return (
       <Styled.TouchableOpacity
